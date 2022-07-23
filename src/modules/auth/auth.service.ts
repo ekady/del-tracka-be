@@ -17,11 +17,11 @@ import {
   SignInRequestDto,
   SignUpRequestDto,
   TokensDto,
-} from '../dto';
-import { TokenJwtConfig } from '../enum';
-import { EmailService } from './email.service';
+} from './dto';
+import { TokenJwtConfig } from './enum';
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
+import { EmailService } from 'src/modules/email/email.service';
 
 @Injectable()
 export class AuthService {

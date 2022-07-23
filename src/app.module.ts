@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { GroupProjectModule } from './modules/group-project/group-project.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserProjectModule } from './modules/user-project/user-project.module';
     ProfileModule,
     GroupProjectModule,
     UserProjectModule,
+    EmailModule,
   ],
 })
 export class AppModule {

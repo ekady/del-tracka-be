@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { ApiResProperty } from 'src/common/decorators/api-res-property.decorator';
 import { StatusMessageDto } from 'src/common/dto';
-import { AuthService } from './services';
 import { JwtPayloadReq, SkipAuth } from './decorators';
 import {
   ContinueProviderRequestDto,
@@ -21,6 +20,7 @@ import {
 } from './dto';
 import { AuthJwtRefreshGuard } from './guard';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @ApiTags('Auth')

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateGroupProjectDto {
   @ApiProperty()
@@ -7,8 +7,8 @@ export class CreateGroupProjectDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty()
-  @IsArray()
+  @ApiPropertyOptional()
+  @IsString()
   @IsNotEmpty()
-  member: { userId: string }[];
+  description: string;
 }

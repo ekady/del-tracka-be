@@ -11,20 +11,22 @@ import {
 import { ResponseDto } from '../dto';
 
 export const ApiResProperty = <TModel extends Type<any>>(
-  model: TModel,
+  model: TModel | TModel[],
   statusCode: number,
 ) => {
+  const models = Array.isArray(model) ? model : [model];
+  const data = Array.isArray(model)
+    ? { type: 'array', items: { $ref: getSchemaPath(model[0]) } }
+    : { $ref: getSchemaPath(model) };
   return applyDecorators(
-    ApiExtraModels(ResponseDto, model),
+    ApiExtraModels(ResponseDto, ...models),
     ApiOkResponse({
       schema: {
         allOf: [
           { $ref: getSchemaPath(ResponseDto) },
           {
             properties: {
-              data: {
-                $ref: getSchemaPath(model),
-              },
+              data,
               statusCode: {
                 default: statusCode,
               },

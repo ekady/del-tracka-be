@@ -5,7 +5,7 @@ export class UpdateProfileDto extends OmitType(SignUpRequestDto, [
   'password',
   'passwordConfirm',
 ]) {
-  @ApiPropertyOptional({ format: 'binary' })
+  @ApiPropertyOptional({ format: 'binary', type: 'string' })
   picture: any;
 
   @ApiPropertyOptional()

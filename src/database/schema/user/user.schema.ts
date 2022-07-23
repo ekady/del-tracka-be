@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 
 @Schema({ timestamps: true, versionKey: false })
-export class User {
+export class User implements Timestamps {
   @Prop()
   createdAt: Date;
 

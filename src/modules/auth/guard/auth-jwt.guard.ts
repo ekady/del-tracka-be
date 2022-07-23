@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { TokenInvalidException } from 'src/common/http-exceptions/exceptions';
 import { SKIP_AUTH } from '../constants';
 import { TokenJwtConfig } from '../enum';
-import { TokenService } from '../services/token.service';
+import { TokenService } from '../token.service';
 
 @Injectable()
 export class AuthJwtGuard extends AuthGuard('jwt') {

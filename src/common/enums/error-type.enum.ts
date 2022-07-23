@@ -15,4 +15,5 @@ export enum ErrorType {
   CastError = 'CAST_ERROR',
   DuplicationError = 'DUPLICATION_ERROR',
   MongoError = 'MONGO_ERROR',
+  DocumentNotFound = 'DOCUMENT_NOT_FOUND',
 }

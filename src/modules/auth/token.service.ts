@@ -12,8 +12,8 @@ import {
 } from 'src/common/http-exceptions/exceptions';
 import { User, UserDocument } from 'src/database/schema/user/user.schema';
 import { HashHelper } from 'src/helpers';
-import { JwtPayload, TokensDto } from '../dto';
-import { TokenJwtConfig } from '../enum';
+import { JwtPayload, TokensDto } from './dto';
+import { TokenJwtConfig } from './enum';
 
 @Injectable()
 export class TokenService {
@@ -57,6 +57,7 @@ export class TokenService {
     const user = await this.userSchema.findById(payload.id).exec();
     if (!user) throw new TokenInvalidException();
 
+    payload.id = user._id;
     return payload;
   }
 
