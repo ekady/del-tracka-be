@@ -6,9 +6,9 @@ import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProfileModule } from './modules/profile/profile.module';
-import { GroupProjectModule } from './modules/group-project/group-project.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -17,9 +17,9 @@ import { EmailModule } from './modules/email/email.module';
     UsersModule,
     AuthModule,
     ProfileModule,
-    GroupProjectModule,
     UserProjectModule,
     EmailModule,
+    ProjectsModule,
   ],
 })
 export class AppModule {

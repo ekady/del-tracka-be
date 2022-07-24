@@ -1,26 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
 import { User, UserDocument } from 'src/database/schema/user/user.schema';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userSchema: Model<UserDocument>,
+  ) {}
 
-  findAll() {
-    return this.userModel.find();
-  }
+  async findOne(id: string): Promise<UserDocument> {
+    const user = await this.userSchema.findById(id).exec();
+    if (!user) throw new DocumentNotFoundException('User not found');
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return { id, user: updateUserDto };
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    return user;
   }
 }

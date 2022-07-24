@@ -3,9 +3,9 @@ import { ErrorDto } from 'src/common/dto';
 import { ErrorType } from 'src/common/enums';
 
 export class DocumentNotFoundException extends NotFoundException {
-  constructor() {
+  constructor(message?: string) {
     super({
-      message: 'Document Not Found',
+      message: message ?? 'Document Not Found',
       errorType: ErrorType.DocumentNotFound,
     } as ErrorDto);
   }
