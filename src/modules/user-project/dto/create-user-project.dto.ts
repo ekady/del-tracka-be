@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserProjectDto {
@@ -6,7 +6,6 @@ export class CreateUserProjectDto {
   @IsNotEmpty()
   userId: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  groupProjectId: string;
+  @ApiPropertyOptional()
+  projectId: string;
 }

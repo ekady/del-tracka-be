@@ -4,7 +4,7 @@ import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { User } from '../user/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class GroupProject implements Timestamps {
+export class Project implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -24,6 +24,6 @@ export class GroupProject implements Timestamps {
   updatedBy: User;
 }
 
-export type GroupProjectDocument = GroupProject & Document;
+export type ProjectDocument = Project & Document;
 
-export const GroupProjectSchema = SchemaFactory.createForClass(GroupProject);
+export const ProjectSchema = SchemaFactory.createForClass(Project);

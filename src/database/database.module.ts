@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database.service';
-import { GroupProjectSchemaProvider } from './schema/group-project/group-project-schema.provider';
+import { ProjectSchemaProvider } from './schema/project/project-schema.provider';
 import { UserProjectSchemaProvider } from './schema/user-project/user-project-schema.provider';
 import { UserSchemaProvider } from './schema/user/user-schema.provider';
 
@@ -16,7 +16,7 @@ import { UserSchemaProvider } from './schema/user/user-schema.provider';
     }),
     MongooseModule.forFeatureAsync([
       UserSchemaProvider,
-      GroupProjectSchemaProvider,
+      ProjectSchemaProvider,
       UserProjectSchemaProvider,
     ]),
   ],

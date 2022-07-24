@@ -5,7 +5,9 @@ import { ErrorDto, ErrorResponseDto } from 'src/common/dto';
 import { ErrorType } from 'src/common/enums';
 
 @Catch(Error.ValidationError)
-export class ValidationException implements ExceptionFilter {
+export class ValidationException
+  implements ExceptionFilter<Error.ValidationError>
+{
   catch(exception: Error.ValidationError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
