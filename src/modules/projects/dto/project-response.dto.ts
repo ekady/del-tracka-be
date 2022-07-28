@@ -19,7 +19,7 @@ export class ProjectResponseDto
   updatedBy: User;
 
   @ApiResponseProperty()
-  _id: string;
+  _id?: string;
 
   @ApiResponseProperty()
   createdAt: Date;

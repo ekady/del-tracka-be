@@ -1,0 +1,7 @@
+export enum ProjectRoleName {
+  OWNER = 'OWNER',
+  MAINTAINER = 'MAINTAINER',
+  DEVELOPER = 'DEVELOPER',
+  SUBMITTER = 'SUBMITTER',
+  GUEST = 'GUEST',
+}
