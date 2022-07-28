@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, PopulateOptions } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import { ProjectRoleName } from 'src/common/enums';
+import {
+  DocumentExistException,
+  DocumentNotFoundException,
+} from 'src/common/http-exceptions/exceptions';
 import {
   Project,
   ProjectDocument,
 } from 'src/database/schema/project/project.schema';
+import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
+import { ProjectRolesService } from '../project-roles/project-roles.service';
+import { UpdateUserProjectDto } from '../user-project/dto';
 import { CreateUserProjectDto } from '../user-project/dto/create-user-project.dto';
 import { UserProjectService } from '../user-project/user-project.service';
 import { UsersService } from '../users/users.service';
@@ -14,6 +21,7 @@ import {
   AddUpdateMemberDto,
   CreateProjectDto,
   ProjectResponseDto,
+  RemoveMemberRequest,
   UpdateProjectDto,
 } from './dto';
 
@@ -23,6 +31,7 @@ export class ProjectsService {
     @InjectModel(Project.name) private projectSchema: Model<ProjectDocument>,
     private userProjectService: UserProjectService,
     private userService: UsersService,
+    private projectRolesService: ProjectRolesService,
   ) {}
 
   async create(
@@ -34,94 +43,139 @@ export class ProjectsService {
       createdBy: userId,
       updatedBy: userId,
     };
-    const project = await this.projectSchema.create(payload);
-    await this.userProjectService.addMemberProject({
-      projectId: project._id,
-      userId,
+    const role = await this.projectRolesService.findOneRole({
+      name: ProjectRoleName.OWNER,
     });
+    const userProject = await this.findUserProject(
+      userId,
+      createProjectDto.name,
+    );
+    if (userProject)
+      throw new DocumentExistException('Project already exists.');
 
+    const project = await this.projectSchema.create(payload);
+    await this.userProjectService.addUserProject(
+      { projectId: project._id, userId, roleId: role._id },
+      userId,
+    );
     return { message: 'Success' };
   }
 
-  async findAll(): Promise<ProjectResponseDto[]> {
-    return this.projectSchema.find().populate([
-      { path: 'createdBy', select: '_id firstName lastName' },
-      { path: 'updatedBy', select: '_id firstName lastName' },
-    ]);
+  async findAll(userId: string): Promise<ProjectResponseDto[]> {
+    const userProjects = await this.userProjectService.findProjectsByUserId(
+      userId,
+    );
+    return userProjects.map((userProject) => userProject.project);
   }
 
   async findOne(id: string): Promise<ProjectResponseDto> {
-    const project = await this.projectSchema
-      .findById(id)
-      .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'updatedBy', select: '_id firstName lastName' },
-      ])
-      .exec();
-    if (!project) throw new DocumentNotFoundException();
-
-    return project;
+    const populateOptions: PopulateOptions[] = [
+      { path: 'createdBy', select: '_id firstName lastName' },
+      { path: 'updatedBy', select: '_id firstName lastName' },
+    ];
+    return this.getProject(id, populateOptions);
   }
 
   async update(
     userId: string,
     id: string,
     updateProjectDto: UpdateProjectDto,
-  ): Promise<ProjectResponseDto> {
+  ): Promise<StatusMessageDto> {
     const payload = { ...updateProjectDto, updatedBy: userId };
     const project = await this.projectSchema
-      .findByIdAndUpdate(id, payload, {
-        new: true,
-      })
-      .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'updatedBy', select: '_id firstName lastName' },
-      ])
+      .findByIdAndUpdate(id, payload, { new: true })
       .exec();
-    if (!project) throw new DocumentNotFoundException();
+    if (!project) throw new DocumentNotFoundException('Project not found');
 
-    return project;
+    return { message: 'Success' };
   }
 
   async remove(id: string): Promise<StatusMessageDto> {
-    const project = await this.projectSchema.findById(id).exec();
-    if (!project) throw new DocumentNotFoundException();
-
+    const project = await this.getProject(id);
     await project.remove();
+    await this.userProjectService.deleteAllUserProjects(project._id);
     return { message: 'Success' };
   }
 
   async addMember(
+    userCreatedId: string,
     id: string,
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
-    const project = await this.projectSchema.findById(id).exec();
-    if (!project) throw new DocumentNotFoundException('Project not found');
-
-    const user = await this.userService.findOne(addUpdateMemberDto.userId);
-
+    const { userId, roleName } = addUpdateMemberDto;
+    const project = await this.getProject(id);
+    const user = await this.userService.findOne(userId);
+    const role = await this.projectRolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
       projectId: project._id,
       userId: user._id,
+      roleId: role._id,
     };
-    await this.userProjectService.addMemberProject(createUserProjectDto);
+    await this.userProjectService.addUserProject(
+      createUserProjectDto,
+      userCreatedId,
+    );
+    return { message: 'Success' };
+  }
 
+  async updateMember(
+    userUpdatedId: string,
+    id: string,
+    addUpdateMemberDto: AddUpdateMemberDto,
+  ): Promise<StatusMessageDto> {
+    const { userId, roleName } = addUpdateMemberDto;
+    const project = await this.getProject(id);
+    const user = await this.userService.findOne(userId);
+    const role = await this.projectRolesService.findOneRole({ name: roleName });
+    const updateUserProjectDto: UpdateUserProjectDto = {
+      projectId: project._id,
+      ...addUpdateMemberDto,
+      userId: user._id,
+      roleId: role._id,
+    };
+    await this.userProjectService.updateUserProject(
+      updateUserProjectDto,
+      userUpdatedId,
+    );
     return { message: 'Success' };
   }
 
   async getMember(id: string) {
-    return this.userProjectService.getMemberProject(id);
+    const project = await this.getProject(id);
+    return this.userProjectService.findUsersByProjectId(project._id);
   }
 
   async removeMember(
     id: string,
-    addUpdateMemberDto: AddUpdateMemberDto,
+    removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
-    await this.userProjectService.deleteMemberProject({
-      projectId: id,
-      userId: addUpdateMemberDto.userId,
+    const user = await this.userService.findOne(removeMemberDto.userId);
+    const project = await this.getProject(id);
+    await this.userProjectService.deleteUserProject({
+      projectId: project._id,
+      userId: user._id,
     });
-
     return { message: 'Success' };
+  }
+
+  async getProject(
+    id: string,
+    populateOptions?: PopulateOptions[],
+  ): Promise<ProjectDocument> {
+    const project = await this.projectSchema
+      .findById(id)
+      .populate(populateOptions)
+      .exec();
+    if (!project) throw new DocumentNotFoundException('Project not found');
+    return project;
+  }
+
+  async findUserProject(
+    userId: string,
+    projectName: string,
+  ): Promise<UserProjectDocument> {
+    return this.userProjectService.findUserProject({ name: projectName }, [
+      { path: 'user', match: { _id: userId } },
+    ]);
   }
 }

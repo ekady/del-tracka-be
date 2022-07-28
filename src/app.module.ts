@@ -9,6 +9,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { ProjectRolesModule } from './modules/project-roles/project-roles.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
     UserProjectModule,
     EmailModule,
     ProjectsModule,
+    ProjectRolesModule,
   ],
 })
 export class AppModule {
