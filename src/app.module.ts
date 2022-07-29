@@ -10,6 +10,7 @@ import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ProjectRolesModule } from './modules/project-roles/project-roles.module';
+import { ProjectSectionsModule } from './modules/project-sections/project-sections.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProjectRolesModule } from './modules/project-roles/project-roles.module
     EmailModule,
     ProjectsModule,
     ProjectRolesModule,
+    ProjectSectionsModule,
   ],
 })
 export class AppModule {

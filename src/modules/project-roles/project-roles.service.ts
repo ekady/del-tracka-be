@@ -43,7 +43,7 @@ export class ProjectRolesService {
 
   async findProjectOwner(projectId: string): Promise<string> {
     const roleOwner = await this.findOneRole({ name: ProjectRoleName.OWNER });
-    const userProject = await this.userProjectService.findUserProject(
+    const userProject = await this.userProjectService.findOne(
       { project: projectId, role: roleOwner._id },
       [{ path: 'user', select: '_id' }],
     );

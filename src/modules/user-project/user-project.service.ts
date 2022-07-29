@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PopulateOptions } from 'mongoose';
+import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { ProjectRoleName } from 'src/common/enums';
 import {
   DocumentExistException,
@@ -10,7 +10,11 @@ import {
   UserProject,
   UserProjectDocument,
 } from 'src/database/schema/user-project/user-project.schema';
-import { CreateUserProjectDto, UpdateUserProjectDto } from './dto';
+import {
+  CreateUserProjectDto,
+  UpdateUserProjectDto,
+  ProjectUserResponseDto,
+} from './dto';
 
 @Injectable()
 export class UserProjectService {
@@ -19,13 +23,28 @@ export class UserProjectService {
     private userProjectSchema: Model<UserProjectDocument>,
   ) {}
 
-  async findUserProject(
+  async findOne(
     queryOptions: FilterQuery<UserProjectDocument>,
     populateOptions?: PopulateOptions[],
   ): Promise<UserProjectDocument> {
     return this.userProjectSchema
       .findOne(queryOptions)
-      .populate(populateOptions);
+      .populate(populateOptions)
+      .exec();
+  }
+
+  async findUserProject(
+    userId: string,
+    projectId: string,
+  ): Promise<UserProjectDocument> {
+    const objectUserId = new Types.ObjectId(userId);
+    const objectProjectId = new Types.ObjectId(projectId);
+    const userProject = await this.findOne(
+      { user: objectUserId, project: objectProjectId },
+      [{ path: 'user' }, { path: 'project' }, { path: 'role' }],
+    );
+    if (!userProject) throw new DocumentNotFoundException('Project not found');
+    return userProject;
   }
 
   async findProjectsByUserId(userId: string): Promise<UserProjectDocument[]> {
@@ -42,7 +61,9 @@ export class UserProjectService {
       .exec();
   }
 
-  async findUsersByProjectId(projectId: string) {
+  async findUsersByProjectId(
+    projectId: string,
+  ): Promise<ProjectUserResponseDto[]> {
     const users = await this.userProjectSchema
       .find({ project: projectId })
       .select('_id user role')
@@ -58,7 +79,7 @@ export class UserProjectService {
       firstName: user.user.firstName,
       lastName: user.user.lastName,
       role: user.role,
-      addedBy: user.createdBy,
+      createdBy: user.createdBy,
       updatedBy: user.updatedBy,
     }));
   }

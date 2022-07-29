@@ -1,7 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Types } from 'mongoose';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
 import { UserProjectService } from 'src/modules/user-project/user-project.service';
 import { ProjectRolesService } from '../project-roles.service';
 
@@ -23,23 +21,21 @@ export class RolePermissionGuard implements CanActivate {
 
     const [menu, permission] = menuPermission;
     const { id: userId } = request.user;
-    const projectId = new Types.ObjectId(request.params.projectId);
+    const projectId = request.params.projectId;
 
     return this.matchingPermission(userId, projectId, menu, permission);
   }
 
   async matchingPermission(
-    userId: Types.ObjectId,
-    projectId: Types.ObjectId,
+    userId: string,
+    projectId: string,
     menu: string,
     permission: string,
   ): Promise<boolean> {
     const userProject = await this.userProjectService.findUserProject(
-      { user: userId, project: projectId },
-      [{ path: 'role', select: '_id' }],
+      userId,
+      projectId,
     );
-    if (!userProject) throw new DocumentNotFoundException('Project Not Found');
-
     const rolePermission = await this.projectRolesService.findOnePermission({
       menu,
       projectRole: userProject.role._id,
