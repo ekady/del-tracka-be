@@ -22,6 +22,11 @@ import {
   UserProjectDocument,
   UserProjectSchema,
 } from '../schema/user-project/user-project.schema';
+import {
+  ProjectSection,
+  ProjectSectionDocument,
+  ProjectSectionSchema,
+} from '../schema/project-section/project-section.schema';
 
 plugin(softDeletePlugin);
 
@@ -37,6 +42,10 @@ const ProjectModel = model<ProjectDocument>(Project.name, ProjectSchema);
 const UserProjectModel = model<UserProjectDocument>(
   UserProject.name,
   UserProjectSchema,
+);
+const ProjectSectionModel = model<ProjectSectionDocument>(
+  ProjectSection.name,
+  ProjectSectionSchema,
 );
 
 dotenv.config({ path: './.env' });
@@ -91,6 +100,7 @@ const deleteData = async (): Promise<void> => {
     await PermissionModel.deleteMany({}).exec();
     await ProjectModel.deleteMany({}).exec();
     await UserProjectModel.deleteMany({}).exec();
+    await ProjectSectionModel.deleteMany({}).exec();
 
     console.log('Delete data success');
   } catch (_) {

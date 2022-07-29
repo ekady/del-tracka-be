@@ -13,8 +13,11 @@ import {
 } from 'src/database/schema/project/project.schema';
 import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
 import { ProjectRolesService } from '../project-roles/project-roles.service';
-import { UpdateUserProjectDto } from '../user-project/dto';
-import { CreateUserProjectDto } from '../user-project/dto/create-user-project.dto';
+import {
+  ProjectUserResponseDto,
+  UpdateUserProjectDto,
+  CreateUserProjectDto,
+} from '../user-project/dto';
 import { UserProjectService } from '../user-project/user-project.service';
 import { UsersService } from '../users/users.service';
 import {
@@ -140,7 +143,7 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async getMember(id: string) {
+  async getMember(id: string): Promise<ProjectUserResponseDto[]> {
     const project = await this.getProject(id);
     return this.userProjectService.findUsersByProjectId(project._id);
   }
@@ -174,7 +177,7 @@ export class ProjectsService {
     userId: string,
     projectName: string,
   ): Promise<UserProjectDocument> {
-    return this.userProjectService.findUserProject({ name: projectName }, [
+    return this.userProjectService.findOne({ name: projectName }, [
       { path: 'user', match: { _id: userId } },
     ]);
   }

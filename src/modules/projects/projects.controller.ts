@@ -22,6 +22,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from '../project-roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { ProjectUserResponseDto } from '../user-project/dto';
 
 @ApiTags('Projects')
 @Controller('projects')
@@ -99,8 +100,8 @@ export class ProjectsController {
 
   @Get(':projectId/member')
   @RolePermission(ProjectMenu.ProjectMember, PermissionMenu.Read)
-  @ApiResProperty(StatusMessageDto, 200)
-  addMember(@Param('projectId') id: string) {
+  @ApiResProperty(ProjectUserResponseDto, 200)
+  addMember(@Param('projectId') id: string): Promise<ProjectUserResponseDto[]> {
     return this.projectsService.getMember(id);
   }
 

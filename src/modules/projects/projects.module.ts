@@ -9,5 +9,6 @@ import { ProjectRolesModule } from '../project-roles/project-roles.module';
   controllers: [ProjectsController],
   providers: [ProjectsService],
   imports: [UsersModule, UserProjectModule, ProjectRolesModule],
+  exports: [ProjectsService],
 })
 export class ProjectsModule {}
