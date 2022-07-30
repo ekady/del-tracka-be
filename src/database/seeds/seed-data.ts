@@ -5,11 +5,7 @@ import {
   PermissionDocument,
   PermissionSchema,
 } from '../schema/permission/permission.schema';
-import {
-  ProjectRole,
-  ProjectRoleDocument,
-  ProjectRoleSchema,
-} from '../schema/project-role/project-role.schema';
+import { Role, RoleDocument, RoleSchema } from '../schema/role/role.schema';
 import { RolePermissionsConstant } from './data/role-permission.contant';
 import { softDeletePlugin } from '../plugins';
 import {
@@ -23,17 +19,15 @@ import {
   UserProjectSchema,
 } from '../schema/user-project/user-project.schema';
 import {
-  ProjectSection,
-  ProjectSectionDocument,
-  ProjectSectionSchema,
-} from '../schema/project-section/project-section.schema';
+  Stage,
+  StageDocument,
+  StageSchema,
+} from '../schema/stage/stage.schema';
+import { Task, TaskDocument, TaskSchema } from '../schema/task/task.schema';
 
 plugin(softDeletePlugin);
 
-const RoleModel = model<ProjectRoleDocument>(
-  ProjectRole.name,
-  ProjectRoleSchema,
-);
+const RoleModel = model<RoleDocument>(Role.name, RoleSchema);
 const PermissionModel = model<PermissionDocument>(
   Permission.name,
   PermissionSchema,
@@ -43,10 +37,8 @@ const UserProjectModel = model<UserProjectDocument>(
   UserProject.name,
   UserProjectSchema,
 );
-const ProjectSectionModel = model<ProjectSectionDocument>(
-  ProjectSection.name,
-  ProjectSectionSchema,
-);
+const StageModel = model<StageDocument>(Stage.name, StageSchema);
+const TaskModel = model<TaskDocument>(Task.name, TaskSchema);
 
 dotenv.config({ path: './.env' });
 
@@ -74,7 +66,7 @@ const addRolePermissions = async (): Promise<void> => {
     });
     const permission = menuPermissions.map(async (menuPermission) => {
       const p = new PermissionModel(menuPermission);
-      p.projectRole = role._id;
+      p.role = role._id;
       return p.save();
     });
     return Promise.all(permission);
@@ -100,7 +92,8 @@ const deleteData = async (): Promise<void> => {
     await PermissionModel.deleteMany({}).exec();
     await ProjectModel.deleteMany({}).exec();
     await UserProjectModel.deleteMany({}).exec();
-    await ProjectSectionModel.deleteMany({}).exec();
+    await StageModel.deleteMany({}).exec();
+    await TaskModel.deleteMany({}).exec();
 
     console.log('Delete data success');
   } catch (_) {

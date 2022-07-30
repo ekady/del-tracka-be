@@ -20,7 +20,7 @@ import {
   RemoveMemberRequest,
 } from './dto';
 import { ApiTags } from '@nestjs/swagger';
-import { RolePermission } from '../project-roles/decorator';
+import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ProjectUserResponseDto } from '../user-project/dto';
 
@@ -75,7 +75,7 @@ export class ProjectsController {
   }
 
   @Post(':projectId/member')
-  @RolePermission(ProjectMenu.ProjectMember, PermissionMenu.Create)
+  @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   getMember(
     @JwtPayloadReq() jwtPayload: JwtPayload,
@@ -87,7 +87,7 @@ export class ProjectsController {
   }
 
   @Put(':projectId/member')
-  @RolePermission(ProjectMenu.ProjectMember, PermissionMenu.Update)
+  @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
     @JwtPayloadReq() jwtPayload: JwtPayload,
@@ -99,14 +99,14 @@ export class ProjectsController {
   }
 
   @Get(':projectId/member')
-  @RolePermission(ProjectMenu.ProjectMember, PermissionMenu.Read)
+  @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
   addMember(@Param('projectId') id: string): Promise<ProjectUserResponseDto[]> {
     return this.projectsService.getMember(id);
   }
 
   @Delete(':projectId/member')
-  @RolePermission(ProjectMenu.ProjectMember, PermissionMenu.Delete)
+  @RolePermission(ProjectMenu.Member, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   removeMember(
     @Param('projectId') id: string,

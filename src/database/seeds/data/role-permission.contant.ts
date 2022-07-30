@@ -1,8 +1,8 @@
-import { ProjectMenu, ProjectRoleName } from '../../../common/enums';
+import { ProjectMenu, RoleName } from '../../../common/enums';
 
 export const RolePermissionsConstant = [
   {
-    name: ProjectRoleName.OWNER,
+    name: RoleName.OWNER,
     priority: 1,
     menuPermissions: [
       {
@@ -13,28 +13,28 @@ export const RolePermissionsConstant = [
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectMember,
+        menu: ProjectMenu.Member,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectSection,
+        menu: ProjectMenu.Stage,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectCard,
+        menu: ProjectMenu.Task,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectComment,
+        menu: ProjectMenu.Comment,
         create: true,
         read: true,
         update: false,
@@ -43,7 +43,7 @@ export const RolePermissionsConstant = [
     ],
   },
   {
-    name: ProjectRoleName.MAINTAINER,
+    name: RoleName.MAINTAINER,
     priority: 2,
     menuPermissions: [
       {
@@ -54,28 +54,28 @@ export const RolePermissionsConstant = [
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectMember,
+        menu: ProjectMenu.Member,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectSection,
+        menu: ProjectMenu.Stage,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectCard,
+        menu: ProjectMenu.Task,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectComment,
+        menu: ProjectMenu.Comment,
         create: true,
         read: true,
         update: false,
@@ -84,7 +84,7 @@ export const RolePermissionsConstant = [
     ],
   },
   {
-    name: ProjectRoleName.DEVELOPER,
+    name: RoleName.DEVELOPER,
     priority: 3,
     menuPermissions: [
       {
@@ -95,28 +95,28 @@ export const RolePermissionsConstant = [
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectMember,
+        menu: ProjectMenu.Member,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectSection,
+        menu: ProjectMenu.Stage,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectCard,
+        menu: ProjectMenu.Task,
         create: false,
         read: true,
         update: true,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectComment,
+        menu: ProjectMenu.Comment,
         create: true,
         read: true,
         update: false,
@@ -125,7 +125,7 @@ export const RolePermissionsConstant = [
     ],
   },
   {
-    name: ProjectRoleName.SUBMITTER,
+    name: RoleName.SUBMITTER,
     priority: 4,
     menuPermissions: [
       {
@@ -136,28 +136,28 @@ export const RolePermissionsConstant = [
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectMember,
+        menu: ProjectMenu.Member,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectSection,
+        menu: ProjectMenu.Stage,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectCard,
+        menu: ProjectMenu.Task,
         create: true,
         read: true,
         update: true,
         delete: true,
       },
       {
-        menu: ProjectMenu.ProjectComment,
+        menu: ProjectMenu.Comment,
         create: true,
         read: true,
         update: false,
@@ -166,7 +166,7 @@ export const RolePermissionsConstant = [
     ],
   },
   {
-    name: ProjectRoleName.GUEST,
+    name: RoleName.GUEST,
     priority: 5,
     menuPermissions: [
       {
@@ -177,28 +177,28 @@ export const RolePermissionsConstant = [
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectMember,
+        menu: ProjectMenu.Member,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectSection,
+        menu: ProjectMenu.Stage,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectCard,
+        menu: ProjectMenu.Task,
         create: false,
         read: true,
         update: false,
         delete: false,
       },
       {
-        menu: ProjectMenu.ProjectComment,
+        menu: ProjectMenu.Comment,
         create: false,
         read: true,
         update: false,

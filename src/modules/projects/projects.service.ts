@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PopulateOptions } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { ProjectRoleName } from 'src/common/enums';
+import { RoleName } from 'src/common/enums';
 import {
   DocumentExistException,
   DocumentNotFoundException,
@@ -12,7 +12,7 @@ import {
   ProjectDocument,
 } from 'src/database/schema/project/project.schema';
 import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
-import { ProjectRolesService } from '../project-roles/project-roles.service';
+import { RolesService } from '../roles/roles.service';
 import {
   ProjectUserResponseDto,
   UpdateUserProjectDto,
@@ -34,7 +34,7 @@ export class ProjectsService {
     @InjectModel(Project.name) private projectSchema: Model<ProjectDocument>,
     private userProjectService: UserProjectService,
     private userService: UsersService,
-    private projectRolesService: ProjectRolesService,
+    private rolesService: RolesService,
   ) {}
 
   async create(
@@ -46,8 +46,8 @@ export class ProjectsService {
       createdBy: userId,
       updatedBy: userId,
     };
-    const role = await this.projectRolesService.findOneRole({
-      name: ProjectRoleName.OWNER,
+    const role = await this.rolesService.findOneRole({
+      name: RoleName.OWNER,
     });
     const userProject = await this.findUserProject(
       userId,
@@ -108,7 +108,7 @@ export class ProjectsService {
     const { userId, roleName } = addUpdateMemberDto;
     const project = await this.getProject(id);
     const user = await this.userService.findOne(userId);
-    const role = await this.projectRolesService.findOneRole({ name: roleName });
+    const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
       projectId: project._id,
       userId: user._id,
@@ -129,7 +129,7 @@ export class ProjectsService {
     const { userId, roleName } = addUpdateMemberDto;
     const project = await this.getProject(id);
     const user = await this.userService.findOne(userId);
-    const role = await this.projectRolesService.findOneRole({ name: roleName });
+    const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
       projectId: project._id,
       ...addUpdateMemberDto,

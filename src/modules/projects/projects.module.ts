@@ -3,12 +3,12 @@ import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
 import { UsersModule } from '../users/users.module';
 import { UserProjectModule } from '../user-project/user-project.module';
-import { ProjectRolesModule } from '../project-roles/project-roles.module';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   controllers: [ProjectsController],
   providers: [ProjectsService],
-  imports: [UsersModule, UserProjectModule, ProjectRolesModule],
+  imports: [UsersModule, UserProjectModule, RolesModule],
   exports: [ProjectsService],
 })
 export class ProjectsModule {}

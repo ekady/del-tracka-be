@@ -1,9 +1,9 @@
 import { ApiResponseProperty, PartialType, PickType } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/common/dto';
-import { ProjectRoleDocument } from 'src/database/schema/project-role/project-role.schema';
+import { RoleDocument } from 'src/database/schema/role/role.schema';
 import { User } from 'src/database/schema/user/user.schema';
 import { ProfileResponseDto } from 'src/modules/profile/dto/profile-response.dto';
-import { ProjectRoleDto } from 'src/modules/project-roles/dto';
+import { RoleDto } from 'src/modules/roles/dto';
 
 export class ProjectUserResponseDto
   extends PickType(ProfileResponseDto, ['firstName', 'lastName'])
@@ -22,6 +22,6 @@ export class ProjectUserResponseDto
   @ApiResponseProperty()
   _id: string;
 
-  @ApiResponseProperty({ type: () => PartialType(ProjectRoleDto) })
-  role: ProjectRoleDocument;
+  @ApiResponseProperty({ type: () => PartialType(RoleDto) })
+  role: RoleDocument;
 }

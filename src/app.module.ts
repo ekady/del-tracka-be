@@ -9,8 +9,9 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
 import { ProjectsModule } from './modules/projects/projects.module';
-import { ProjectRolesModule } from './modules/project-roles/project-roles.module';
-import { ProjectSectionsModule } from './modules/project-sections/project-sections.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { StagesModule } from './modules/stages/stages.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { ProjectSectionsModule } from './modules/project-sections/project-sectio
     UserProjectModule,
     EmailModule,
     ProjectsModule,
-    ProjectRolesModule,
-    ProjectSectionsModule,
+    RolesModule,
+    StagesModule,
+    TasksModule,
   ],
 })
 export class AppModule {
