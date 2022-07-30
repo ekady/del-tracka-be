@@ -1,6 +1,6 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ProjectRoleName } from 'src/common/enums';
+import { RoleName } from 'src/common/enums';
 import { CreateUserProjectDto } from 'src/modules/user-project/dto/create-user-project.dto';
 
 export class AddUpdateMemberDto extends OmitType(CreateUserProjectDto, [
@@ -10,5 +10,5 @@ export class AddUpdateMemberDto extends OmitType(CreateUserProjectDto, [
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  roleName: ProjectRoleName;
+  roleName: RoleName;
 }

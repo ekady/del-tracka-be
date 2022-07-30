@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectMenu } from 'src/common/enums';
-import { ProjectRoleDocument } from '../project-role/project-role.schema';
+import { RoleDocument } from '../role/role.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Permission {
@@ -20,8 +20,8 @@ export class Permission {
   @Prop({ required: true })
   delete: boolean;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'ProjectRole' })
-  projectRole: ProjectRoleDocument;
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Role' })
+  role: RoleDocument;
 }
 
 export type PermissionDocument = Permission & Document;

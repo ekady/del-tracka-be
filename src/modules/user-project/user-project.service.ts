@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
-import { ProjectRoleName } from 'src/common/enums';
+import { RoleName } from 'src/common/enums';
 import {
   DocumentExistException,
   DocumentNotFoundException,
@@ -122,7 +122,7 @@ export class UserProjectService {
     const { userId, projectId, roleId } = updateUserProjectDto;
     const userRole = await this.findUserProjectsByRoleId(projectId, roleId);
     const isOwnerLimit =
-      userRole.length >= 2 && userRole[0].role.name === ProjectRoleName.OWNER;
+      userRole.length >= 2 && userRole[0].role.name === RoleName.OWNER;
     if (isOwnerLimit) {
       const errmsg = 'This project can only have two owners';
       throw new DocumentNotFoundException(errmsg);
@@ -155,7 +155,7 @@ export class UserProjectService {
 
     const { name: roleName, _id: roleId } = userProject.role;
     const userRole = await this.findUserProjectsByRoleId(projectId, roleId);
-    if (roleName === ProjectRoleName.OWNER && userRole.length < 2) {
+    if (roleName === RoleName.OWNER && userRole.length < 2) {
       throw new DocumentNotFoundException(
         'This user is the only owner of this project',
       );
