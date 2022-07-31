@@ -36,6 +36,7 @@ export class UserProjectService {
   async findUserProject(
     userId: string,
     projectId: string,
+    errorMessage?: string,
   ): Promise<UserProjectDocument> {
     const objectUserId = new Types.ObjectId(userId);
     const objectProjectId = new Types.ObjectId(projectId);
@@ -43,7 +44,10 @@ export class UserProjectService {
       { user: objectUserId, project: objectProjectId },
       [{ path: 'user' }, { path: 'project' }, { path: 'role' }],
     );
-    if (!userProject) throw new DocumentNotFoundException('Project not found');
+    if (!userProject) {
+      const errmsg = errorMessage || 'Project not found';
+      throw new DocumentNotFoundException(errmsg);
+    }
     return userProject;
   }
 

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { Project } from '../project/project.schema';
+import { ProjectDocument } from '../project/project.schema';
 import { User } from '../user/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
@@ -25,7 +25,7 @@ export class Stage implements Timestamps {
   description: string;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Project' })
-  project: Project;
+  project: ProjectDocument;
 }
 
 export type StageDocument = Stage & Document;

@@ -53,8 +53,8 @@ export class StagesController {
   @Get(':id')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty(StageResponseDto, 200)
-  findOne(@Param('id') id: string) {
-    return this.stagesService.findOne(id);
+  findOne(@Param('id') id: string, @Param('projectId') projectId: string) {
+    return this.stagesService.findOne(id, projectId);
   }
 
   @Put(':id')
@@ -77,7 +77,7 @@ export class StagesController {
   @Delete(':id')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@Param('id') id: string) {
-    return this.stagesService.remove(id);
+  remove(@Param('id') id: string, @Param('projectId') projectId: string) {
+    return this.stagesService.remove(id, projectId);
   }
 }
