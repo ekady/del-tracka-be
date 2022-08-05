@@ -11,6 +11,7 @@ import { ProjectSchemaProvider } from './schema/project/project-schema.provider'
 import { UserProjectSchemaProvider } from './schema/user-project/user-project-schema.provider';
 import { UserSchemaProvider } from './schema/user/user-schema.provider';
 import { TaskSchemaProvider } from './schema/task/task-schema.provider';
+import { CommentSchemaProvider } from './schema/comment/comment-schema.provider';
 
 @Global()
 @Module({
@@ -28,6 +29,7 @@ import { TaskSchemaProvider } from './schema/task/task-schema.provider';
       PermissionSchemaProvider,
       StageSchemaProvider,
       TaskSchemaProvider,
+      CommentSchemaProvider,
     ]),
   ],
   exports: [MongooseModule],

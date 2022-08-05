@@ -41,8 +41,8 @@ export class StagesService {
       .select('-project -createdBy -updatedBy');
   }
 
-  async findOne(id: string): Promise<StageResponseDto> {
-    return this.findStageById(id, '-project -createdBy -updatedBy');
+  async findOne(id: string, projectId): Promise<StageResponseDto> {
+    return this.findStageById(id, projectId, '-project -createdBy -updatedBy');
   }
 
   async update(
@@ -50,6 +50,7 @@ export class StagesService {
     updateStageDto: UpdateStageDto,
   ): Promise<StatusMessageDto> {
     const { userId, projectId, ...payload } = updateStageDto;
+    await this.findStageById(id, projectId);
     await this.checkStageExist({
       name: payload.name,
       project: new Types.ObjectId(projectId),
@@ -63,8 +64,8 @@ export class StagesService {
     return { message: 'Success' };
   }
 
-  async remove(id: string): Promise<StatusMessageDto> {
-    const stage = await this.findStageById(id);
+  async remove(id: string, projectId: string): Promise<StatusMessageDto> {
+    const stage = await this.findStageById(id, projectId);
     await stage.remove();
     return { message: 'Success' };
   }
@@ -72,19 +73,26 @@ export class StagesService {
   async checkStageExist(
     query: FilterQuery<StageDocument>,
     populateOptions?: PopulateOptions[],
-  ): Promise<StageDocument> {
+  ): Promise<void> {
     const stage = await this.stageSchema
       .findOne(query)
       .populate(populateOptions)
       .exec();
 
     if (stage) throw new DocumentNotFoundException('Stage already exists');
-    return stage;
   }
 
-  async findStageById(id: string, select?: string): Promise<StageDocument> {
+  async findStageById(
+    id: string,
+    projectId: string,
+    select?: string,
+  ): Promise<StageDocument> {
+    const project = await this.projectService.findProjectById(projectId);
     const stage = await this.stageSchema
-      .findById(id)
+      .findOne({
+        _id: new Types.ObjectId(id),
+        project: project._id,
+      })
       .populate('project')
       .select(select)
       .exec();

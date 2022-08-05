@@ -12,6 +12,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { StagesModule } from './modules/stages/stages.module';
 import { TasksModule } from './modules/tasks/tasks.module';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TasksModule } from './modules/tasks/tasks.module';
     RolesModule,
     StagesModule,
     TasksModule,
+    CommentsModule,
   ],
 })
 export class AppModule {

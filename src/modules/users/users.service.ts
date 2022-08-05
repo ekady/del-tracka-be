@@ -10,10 +10,12 @@ export class UsersService {
     @InjectModel(User.name) private userSchema: Model<UserDocument>,
   ) {}
 
-  async findOne(id: string): Promise<UserDocument> {
+  async findOne(id: string, notFoundError?: string): Promise<UserDocument> {
     const user = await this.userSchema.findById(id).exec();
-    if (!user) throw new DocumentNotFoundException('User not found');
-
+    if (!user) {
+      const errorMessage = notFoundError || 'User not found';
+      throw new DocumentNotFoundException(errorMessage);
+    }
     return user;
   }
 }

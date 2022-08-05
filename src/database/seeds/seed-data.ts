@@ -24,6 +24,11 @@ import {
   StageSchema,
 } from '../schema/stage/stage.schema';
 import { Task, TaskDocument, TaskSchema } from '../schema/task/task.schema';
+import {
+  Comment,
+  CommentDocument,
+  CommentSchema,
+} from '../schema/comment/comment.schema';
 
 plugin(softDeletePlugin);
 
@@ -39,6 +44,7 @@ const UserProjectModel = model<UserProjectDocument>(
 );
 const StageModel = model<StageDocument>(Stage.name, StageSchema);
 const TaskModel = model<TaskDocument>(Task.name, TaskSchema);
+const CommentModel = model<CommentDocument>(Comment.name, CommentSchema);
 
 dotenv.config({ path: './.env' });
 
@@ -94,6 +100,7 @@ const deleteData = async (): Promise<void> => {
     await UserProjectModel.deleteMany({}).exec();
     await StageModel.deleteMany({}).exec();
     await TaskModel.deleteMany({}).exec();
+    await CommentModel.deleteMany({}).exec();
 
     console.log('Delete data success');
   } catch (_) {
