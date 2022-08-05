@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import {
   DocumentExistException,
   DocumentNotFoundException,
 } from 'src/common/http-exceptions/exceptions';
+import { ProjectDocument } from 'src/database/schema/project/project.schema';
+import { RoleDocument } from 'src/database/schema/role/role.schema';
 import {
   UserProject,
   UserProjectDocument,
@@ -23,14 +25,66 @@ export class UserProjectService {
     private userProjectSchema: Model<UserProjectDocument>,
   ) {}
 
-  async findOne(
-    queryOptions: FilterQuery<UserProjectDocument>,
-    populateOptions?: PopulateOptions[],
-  ): Promise<UserProjectDocument> {
-    return this.userProjectSchema
-      .findOne(queryOptions)
-      .populate(populateOptions)
-      .exec();
+  async findUserProjects(
+    userId: string,
+    queryProject?: FilterQuery<ProjectDocument>,
+    queryRole?: FilterQuery<RoleDocument>,
+  ): Promise<UserProjectDocument[]> {
+    const matchProject = queryProject ?? {};
+    const matchRole = queryRole ?? {};
+    const nameField = { _id: 1, name: 1 };
+    const userFields = {
+      _id: 1,
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+      picture: 1,
+    };
+    return this.userProjectSchema.aggregate([
+      { $match: { user: userId } },
+      {
+        $lookup: {
+          from: 'projects',
+          localField: 'project',
+          foreignField: '_id',
+          as: 'project',
+          pipeline: [{ $match: matchProject }, { $project: nameField }],
+        },
+      },
+      {
+        $lookup: {
+          from: 'roles',
+          localField: 'role',
+          foreignField: '_id',
+          as: 'role',
+          pipeline: [{ $match: matchRole }, { $project: nameField }],
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+          pipeline: [{ $project: userFields }],
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          user: { $arrayElemAt: ['$user', 0] },
+          project: { $arrayElemAt: ['$project', 0] },
+          role: { $arrayElemAt: ['$role', 0] },
+        },
+      },
+      {
+        $match: {
+          user: { $ne: undefined },
+          project: { $ne: undefined },
+          role: { $ne: undefined },
+        },
+      },
+    ]);
   }
 
   async findUserProject(
@@ -38,13 +92,11 @@ export class UserProjectService {
     projectId: string,
     errorMessage?: string,
   ): Promise<UserProjectDocument> {
-    const objectUserId = new Types.ObjectId(userId);
     const objectProjectId = new Types.ObjectId(projectId);
-    const userProject = await this.findOne(
-      { user: objectUserId, project: objectProjectId },
-      [{ path: 'user' }, { path: 'project' }, { path: 'role' }],
-    );
-    if (!userProject) {
+    const [userProject] = await this.findUserProjects(userId, {
+      _id: objectProjectId,
+    });
+    if (!userProject || !userProject.project) {
       const errmsg = errorMessage || 'Project not found';
       throw new DocumentNotFoundException(errmsg);
     }

@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { IdsDto, StatusMessageDto } from 'src/common/dto';
-import {
-  DocumentExistException,
-  DocumentNotFoundException,
-} from 'src/common/http-exceptions/exceptions';
+import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
 import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
 import { StagesService } from '../stages/stages.service';
@@ -30,39 +27,42 @@ export class TasksService {
     ids: IdsDto,
     createRequestDto: CreateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    const stageObjectId = new Types.ObjectId(ids.stageId);
+    const { projectId, stageId, userId } = ids;
+    const stage = await this.stagesService.findStageById(stageId, projectId);
+
     await this.checkTaskExist(
-      { projectId: ids.projectId },
-      { stage: stageObjectId, title: createRequestDto.title },
+      { projectId, stageId },
+      { title: createRequestDto.title },
     );
     const { images, assignee, reporter, ...taskValues } = createRequestDto;
     const userAssignee = await this.findUserForTask(
       assignee,
-      ids.projectId,
+      projectId,
       'Assignee not found',
     );
     const userReporter = await this.findUserForTask(
       reporter,
-      ids.projectId,
+      projectId,
       'Reporter not found',
     );
     const payload: CreateTaskDto = {
       ...taskValues,
-      createdBy: ids.userId,
-      updatedBy: ids.userId,
-      reporter: userReporter?.user._id ?? ids.userId,
+      createdBy: userId,
+      updatedBy: userId,
+      reporter: userReporter?.user._id ?? userId,
       assignee: userAssignee?.user._id,
-      stage: stageObjectId,
+      stage: stage._id,
       images: images?.map((image) => image.originalname),
     };
     await this.taskSchema.create(payload);
     return { message: 'Success' };
   }
 
-  async findAll(stageId: string): Promise<TaskResponseDto[]> {
-    const stageObjectId = new Types.ObjectId(stageId);
+  async findAll(ids: IdsDto): Promise<TaskResponseDto[]> {
+    const { projectId, stageId } = ids;
+    const stage = await this.stagesService.findStageById(stageId, projectId);
     return this.taskSchema
-      .find({ stage: stageObjectId })
+      .find({ stage: stage._id })
       .populate(['reporter', 'assignee'])
       .select('-createdBy -updatedBy -stage')
       .exec();
@@ -79,8 +79,8 @@ export class TasksService {
     const stageObjectId = new Types.ObjectId(ids.stageId);
     const taskFound = await this.findTaskById(ids);
     await this.checkTaskExist(
-      { projectId: ids.projectId },
-      { stage: stageObjectId, title: updateRequestDto.title },
+      { projectId: ids.projectId, stageId: ids.stageId },
+      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
     );
     const { images, assignee, reporter, ...taskValues } = updateRequestDto;
     const userAssignee = await this.findUserForTask(
@@ -113,37 +113,37 @@ export class TasksService {
   }
 
   async checkTaskExist(
-    ids: Pick<IdsDto, 'projectId'>,
+    ids: Pick<IdsDto, 'projectId' | 'stageId'>,
     query: FilterQuery<TaskDocument>,
     populateOptions?: PopulateOptions[],
   ): Promise<void> {
+    const { projectId, stageId } = ids;
+    const stage = await this.stagesService.findStageById(stageId, projectId);
     const populate = populateOptions ? populateOptions : [];
     const task = await this.taskSchema
-      .findOne(query)
+      .findOne({ ...query, stage: stage._id })
       .populate([{ path: 'stage' }, ...populate])
       .exec();
 
     if (task) {
-      const { stage } = task;
-      await this.stagesService.findStageById(stage?._id, ids.projectId);
       throw new DocumentExistException('Task already exists.');
     }
   }
 
   async findTaskById(ids: IdsDto, select?: string): Promise<TaskDocument> {
     const { taskId, projectId, stageId } = ids;
+    const stage = await this.stagesService.findStageById(stageId, projectId);
     const task = await this.taskSchema
       .findOne({
         _id: new Types.ObjectId(taskId),
-        stage: new Types.ObjectId(stageId),
+        stage: stage._id,
       })
       .populate('stage reporter assignee')
       .populate({ path: 'stage', select: '_id name description' })
       .select(select)
       .exec();
-    await this.stagesService.findStageById(stageId, projectId);
 
-    if (!task) throw new DocumentNotFoundException('Task not found');
+    if (!task) throw new DocumentExistException('Task not found');
     return task;
   }
 

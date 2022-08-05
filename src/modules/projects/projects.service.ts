@@ -53,7 +53,8 @@ export class ProjectsService {
       userId,
       createProjectDto.name,
     );
-    if (userProject)
+
+    if (userProject && userProject.project)
       throw new DocumentExistException('Project already exists.');
 
     const project = await this.projectSchema.create(payload);
@@ -76,7 +77,7 @@ export class ProjectsService {
       { path: 'createdBy', select: '_id firstName lastName' },
       { path: 'updatedBy', select: '_id firstName lastName' },
     ];
-    return this.getProject(id, populateOptions);
+    return this.findProjectById(id, populateOptions);
   }
 
   async update(
@@ -94,7 +95,7 @@ export class ProjectsService {
   }
 
   async remove(id: string): Promise<StatusMessageDto> {
-    const project = await this.getProject(id);
+    const project = await this.findProjectById(id);
     await project.remove();
     await this.userProjectService.deleteAllUserProjects(project._id);
     return { message: 'Success' };
@@ -106,7 +107,7 @@ export class ProjectsService {
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.getProject(id);
+    const project = await this.findProjectById(id);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
@@ -127,7 +128,7 @@ export class ProjectsService {
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.getProject(id);
+    const project = await this.findProjectById(id);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
@@ -144,7 +145,7 @@ export class ProjectsService {
   }
 
   async getMember(id: string): Promise<ProjectUserResponseDto[]> {
-    const project = await this.getProject(id);
+    const project = await this.findProjectById(id);
     return this.userProjectService.findUsersByProjectId(project._id);
   }
 
@@ -153,7 +154,7 @@ export class ProjectsService {
     removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     const user = await this.userService.findOne(removeMemberDto.userId);
-    const project = await this.getProject(id);
+    const project = await this.findProjectById(id);
     await this.userProjectService.deleteUserProject({
       projectId: project._id,
       userId: user._id,
@@ -161,7 +162,7 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async getProject(
+  async findProjectById(
     id: string,
     populateOptions?: PopulateOptions[],
   ): Promise<ProjectDocument> {
@@ -177,8 +178,10 @@ export class ProjectsService {
     userId: string,
     projectName: string,
   ): Promise<UserProjectDocument> {
-    return this.userProjectService.findOne({ name: projectName }, [
-      { path: 'user', match: { _id: userId } },
-    ]);
+    const [userProject] = await this.userProjectService.findUserProjects(
+      userId,
+      { name: projectName },
+    );
+    return userProject;
   }
 }

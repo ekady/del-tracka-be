@@ -49,8 +49,13 @@ export class TasksController {
   @Get()
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
-  findAll(@Param('stageId') stageId: string): Promise<TaskResponseDto[]> {
-    return this.tasksService.findAll(stageId);
+  findAll(
+    @JwtPayloadReq() user: JwtPayload,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+  ): Promise<TaskResponseDto[]> {
+    const ids: IdsDto = { userId: user.id, projectId, stageId };
+    return this.tasksService.findAll(ids);
   }
 
   @Get(':id')

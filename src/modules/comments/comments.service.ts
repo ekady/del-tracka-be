@@ -24,16 +24,10 @@ export class CommentsService {
     ids: IdsDto,
     createDto: CreateCommentRequestDto,
   ): Promise<StatusMessageDto> {
-    const { userId, projectId } = ids;
-    const user = await this.tasksService.findUserForTask(
-      userId,
-      projectId,
-      'User not found',
-    );
     const task = await this.tasksService.findTaskById(ids);
     const payload: CreateCommentDto = {
       ...createDto,
-      user: user.user._id,
+      user: ids.userId,
       task: task._id,
     };
     await this.commentSchema.create(payload);
@@ -41,11 +35,6 @@ export class CommentsService {
   }
 
   async findAll(ids: IdsDto): Promise<CommentResponse[]> {
-    await this.tasksService.findUserForTask(
-      ids.userId,
-      ids.projectId,
-      'User not found',
-    );
     const task = await this.tasksService.findTaskById(ids);
     return this.commentSchema
       .find({ task: task._id })

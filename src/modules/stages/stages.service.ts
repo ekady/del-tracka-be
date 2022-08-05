@@ -50,6 +50,7 @@ export class StagesService {
     updateStageDto: UpdateStageDto,
   ): Promise<StatusMessageDto> {
     const { userId, projectId, ...payload } = updateStageDto;
+    await this.findStageById(id, projectId);
     await this.checkStageExist({
       name: payload.name,
       project: new Types.ObjectId(projectId),
@@ -86,10 +87,11 @@ export class StagesService {
     projectId: string,
     select?: string,
   ): Promise<StageDocument> {
+    const project = await this.projectService.findProjectById(projectId);
     const stage = await this.stageSchema
       .findOne({
         _id: new Types.ObjectId(id),
-        project: new Types.ObjectId(projectId),
+        project: project._id,
       })
       .populate('project')
       .select(select)
