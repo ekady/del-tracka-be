@@ -30,6 +30,7 @@ export class UserProjectService {
     queryProject?: FilterQuery<ProjectDocument>,
     queryRole?: FilterQuery<RoleDocument>,
   ): Promise<UserProjectDocument[]> {
+    const objectUserId = new Types.ObjectId(userId);
     const matchProject = queryProject ?? {};
     const matchRole = queryRole ?? {};
     const nameField = { _id: 1, name: 1 };
@@ -41,7 +42,7 @@ export class UserProjectService {
       picture: 1,
     };
     return this.userProjectSchema.aggregate([
-      { $match: { user: userId } },
+      { $match: { user: objectUserId } },
       {
         $lookup: {
           from: 'projects',

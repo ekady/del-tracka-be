@@ -6,7 +6,7 @@ import {
   Comment,
   CommentDocument,
 } from 'src/database/schema/comment/comment.schema';
-import { TasksService } from '../tasks/tasks.service';
+import { TasksService } from '../tasks/services';
 import {
   CommentResponse,
   CreateCommentDto,

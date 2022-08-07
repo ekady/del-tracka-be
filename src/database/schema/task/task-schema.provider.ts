@@ -7,6 +7,7 @@ export const TaskSchemaProvider: AsyncModelFactory = {
   useFactory: () => {
     const schema = TaskSchema;
     schema.plugin(softDeletePlugin);
+    schema.index({ status: 1 });
 
     return schema;
   },

@@ -5,15 +5,15 @@ import { IdsDto, StatusMessageDto } from 'src/common/dto';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
 import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
-import { StagesService } from '../stages/stages.service';
-import { UserProjectService } from '../user-project/user-project.service';
+import { StagesService } from 'src/modules/stages/stages.service';
+import { UserProjectService } from 'src/modules/user-project/user-project.service';
 import {
   CreateTaskDto,
   CreateTaskRequestDto,
   TaskResponseDto,
   UpdateTaskDto,
   UpdateTaskRequestDto,
-} from './dto';
+} from '../dto';
 
 @Injectable()
 export class TasksService {

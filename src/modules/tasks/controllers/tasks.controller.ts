@@ -9,19 +9,19 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import { TasksService } from './tasks.service';
+import { TasksService } from '../services';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ApiResProperty } from 'src/common/decorators';
 import { IdsDto, StatusMessageDto } from 'src/common/dto';
-import { RolePermission } from '../roles/decorator';
+import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
-import { JwtPayloadReq } from '../auth/decorators';
-import { JwtPayload } from '../auth/dto';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { JwtPayload } from 'src/modules/auth/dto';
 import {
   CreateTaskRequestDto,
   TaskResponseDto,
   UpdateTaskRequestDto,
-} from './dto';
+} from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Tasks')

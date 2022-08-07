@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import {
+  DocumentExistException,
+  DocumentNotFoundException,
+} from 'src/common/http-exceptions/exceptions';
 import { Stage, StageDocument } from 'src/database/schema/stage/stage.schema';
 import { ProjectsService } from '../projects/projects.service';
 import { CreateStageDto, StageResponseDto, UpdateStageDto } from './dto';
@@ -79,7 +82,7 @@ export class StagesService {
       .populate(populateOptions)
       .exec();
 
-    if (stage) throw new DocumentNotFoundException('Stage already exists');
+    if (stage) throw new DocumentExistException('Stage already exists');
   }
 
   async findStageById(
