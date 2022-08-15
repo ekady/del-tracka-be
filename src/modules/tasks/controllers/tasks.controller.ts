@@ -20,6 +20,7 @@ import { JwtPayload } from 'src/modules/auth/dto';
 import {
   CreateTaskRequestDto,
   TaskResponseDto,
+  UpdateStatusTaskDto,
   UpdateTaskRequestDto,
 } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -70,6 +71,18 @@ export class TasksController {
     return this.tasksService.findOne(ids);
   }
 
+  @Get(':id/activities')
+  @ApiResProperty(TaskResponseDto, 200)
+  @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  findActivities(
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Param('id') id: string,
+  ) {
+    const ids: IdsDto = { taskId: id, stageId, projectId };
+    return this.tasksService.findTaskActivities(ids);
+  }
+
   @Put(':id')
   @ApiConsumes('multipart/form-data')
   @ApiResProperty(StatusMessageDto, 200)
@@ -85,18 +98,33 @@ export class TasksController {
   ) {
     updateTaskDto.images = images;
     const ids: IdsDto = { taskId: id, userId: user.id, stageId, projectId };
-    return this.tasksService.update(ids, updateTaskDto);
+    return this.tasksService.updateOne(ids, updateTaskDto);
+  }
+
+  @Put(':id/update-status')
+  @ApiResProperty(StatusMessageDto, 200)
+  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  updateStatus(
+    @JwtPayloadReq() user: JwtPayload,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateStatusTaskDto,
+  ) {
+    const ids: IdsDto = { taskId: id, userId: user.id, stageId, projectId };
+    return this.tasksService.updateStatus(ids, updateTaskDto);
   }
 
   @Delete(':id')
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Delete)
   remove(
+    @JwtPayloadReq() user: JwtPayload,
     @Param('projectId') projectId: string,
     @Param('stageId') stageId: string,
     @Param('id') id: string,
   ) {
-    const ids: IdsDto = { taskId: id, stageId, projectId };
+    const ids: IdsDto = { taskId: id, stageId, projectId, userId: user.id };
     return this.tasksService.remove(ids);
   }
 }

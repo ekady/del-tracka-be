@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
+import { ProjectsService } from './services';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { JwtPayload } from '../auth/dto';
@@ -23,11 +23,16 @@ import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ProjectUserResponseDto } from '../user-project/dto';
+import { ActivitiesService } from '../activities/activities.service';
+import { ActivityResponseDto } from '../activities/dto';
 
 @ApiTags('Projects')
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly activitiesService: ActivitiesService,
+  ) {}
 
   @Post()
   @ApiResProperty(StatusMessageDto, 201)
@@ -53,6 +58,15 @@ export class ProjectsController {
   @ApiResProperty(ProjectResponseDto, 200)
   findOne(@Param('projectId') id: string): Promise<ProjectResponseDto> {
     return this.projectsService.findOne(id);
+  }
+
+  @Get(':projectId/activities')
+  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @ApiResProperty([ActivityResponseDto], 200)
+  findActivities(
+    @Param('projectId') id: string,
+  ): Promise<ActivityResponseDto[]> {
+    return this.activitiesService.findActivitiesByProjectId(id);
   }
 
   @Put(':projectId')

@@ -11,27 +11,28 @@ import {
   Project,
   ProjectDocument,
 } from 'src/database/schema/project/project.schema';
-import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
-import { RolesService } from '../roles/roles.service';
+import { RolesService } from '../../roles/roles.service';
 import {
   ProjectUserResponseDto,
   UpdateUserProjectDto,
   CreateUserProjectDto,
-} from '../user-project/dto';
-import { UserProjectService } from '../user-project/user-project.service';
-import { UsersService } from '../users/users.service';
+} from '../../user-project/dto';
+import { UserProjectService } from '../../user-project/user-project.service';
+import { UsersService } from '../../users/users.service';
 import {
   AddUpdateMemberDto,
   CreateProjectDto,
   ProjectResponseDto,
   RemoveMemberRequest,
   UpdateProjectDto,
-} from './dto';
+} from '../dto';
+import { ProjectsHelperService } from './project-helper.service';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectModel(Project.name) private projectSchema: Model<ProjectDocument>,
+    private projectsHelperService: ProjectsHelperService,
     private userProjectService: UserProjectService,
     private userService: UsersService,
     private rolesService: RolesService,
@@ -49,7 +50,7 @@ export class ProjectsService {
     const role = await this.rolesService.findOneRole({
       name: RoleName.OWNER,
     });
-    const userProject = await this.findUserProject(
+    const userProject = await this.projectsHelperService.findUserProject(
       userId,
       createProjectDto.name,
     );
@@ -77,7 +78,7 @@ export class ProjectsService {
       { path: 'createdBy', select: '_id firstName lastName' },
       { path: 'updatedBy', select: '_id firstName lastName' },
     ];
-    return this.findProjectById(id, populateOptions);
+    return this.projectsHelperService.findProjectById(id, populateOptions);
   }
 
   async update(
@@ -95,7 +96,7 @@ export class ProjectsService {
   }
 
   async remove(id: string): Promise<StatusMessageDto> {
-    const project = await this.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectById(id);
     await project.remove();
     await this.userProjectService.deleteAllUserProjects(project._id);
     return { message: 'Success' };
@@ -107,7 +108,7 @@ export class ProjectsService {
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectById(id);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
@@ -128,7 +129,7 @@ export class ProjectsService {
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectById(id);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
@@ -145,7 +146,7 @@ export class ProjectsService {
   }
 
   async getMember(id: string): Promise<ProjectUserResponseDto[]> {
-    const project = await this.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectById(id);
     return this.userProjectService.findUsersByProjectId(project._id);
   }
 
@@ -154,34 +155,11 @@ export class ProjectsService {
     removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     const user = await this.userService.findOne(removeMemberDto.userId);
-    const project = await this.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectById(id);
     await this.userProjectService.deleteUserProject({
       projectId: project._id,
       userId: user._id,
     });
     return { message: 'Success' };
-  }
-
-  async findProjectById(
-    id: string,
-    populateOptions?: PopulateOptions[],
-  ): Promise<ProjectDocument> {
-    const project = await this.projectSchema
-      .findById(id)
-      .populate(populateOptions)
-      .exec();
-    if (!project) throw new DocumentNotFoundException('Project not found');
-    return project;
-  }
-
-  async findUserProject(
-    userId: string,
-    projectName: string,
-  ): Promise<UserProjectDocument> {
-    const [userProject] = await this.userProjectService.findUserProjects(
-      userId,
-      { name: projectName },
-    );
-    return userProject;
   }
 }

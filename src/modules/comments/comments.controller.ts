@@ -10,7 +10,7 @@ import { CommentsService } from './comments.service';
 import { CommentResponse } from './dto';
 import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
-@ApiTags('Comments')
+@ApiTags('Tasks')
 @Controller('projects/:projectId/stages/:stageId/tasks/:taskId/comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}

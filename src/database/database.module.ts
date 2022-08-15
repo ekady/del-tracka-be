@@ -12,6 +12,7 @@ import { UserProjectSchemaProvider } from './schema/user-project/user-project-sc
 import { UserSchemaProvider } from './schema/user/user-schema.provider';
 import { TaskSchemaProvider } from './schema/task/task-schema.provider';
 import { CommentSchemaProvider } from './schema/comment/comment-schema.provider';
+import { ActivitySchemaProvider } from './schema/activity/activity-schema.provider';
 
 @Global()
 @Module({
@@ -30,6 +31,7 @@ import { CommentSchemaProvider } from './schema/comment/comment-schema.provider'
       StageSchemaProvider,
       TaskSchemaProvider,
       CommentSchemaProvider,
+      ActivitySchemaProvider,
     ]),
   ],
   exports: [MongooseModule],

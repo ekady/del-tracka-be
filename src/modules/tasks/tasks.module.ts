@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
   MyTasksService,
+  TasksHelperService,
   TasksService,
   TasksStatisticService,
 } from './services';
@@ -11,11 +12,17 @@ import {
   TasksController,
   TasksStatisticController,
 } from './controllers';
+import { ActivitiesModule } from '../activities/activities.module';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
-  providers: [TasksService, MyTasksService, TasksStatisticService],
-  imports: [StagesModule, UserProjectModule],
-  exports: [TasksService],
+  providers: [
+    TasksHelperService,
+    TasksService,
+    MyTasksService,
+    TasksStatisticService,
+  ],
+  imports: [StagesModule, UserProjectModule, ActivitiesModule],
+  exports: [TasksHelperService],
 })
 export class TasksModule {}

@@ -7,7 +7,7 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { StagesService } from './stages.service';
+import { StagesService } from './services';
 import {
   CreateStageDto,
   CreateStageRequestDto,
@@ -18,7 +18,7 @@ import {
 import { JwtPayloadReq } from '../auth/decorators';
 import { JwtPayload } from '../auth/dto';
 import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { IdsDto, StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ApiTags } from '@nestjs/swagger';
@@ -57,6 +57,16 @@ export class StagesController {
     return this.stagesService.findOne(id, projectId);
   }
 
+  @Get(':id/activities')
+  @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
+  @ApiResProperty(StageResponseDto, 200)
+  findActivities(
+    @Param('id') id: string,
+    @Param('projectId') projectId: string,
+  ) {
+    return this.stagesService.findStageActivities(id, projectId);
+  }
+
   @Put(':id')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
@@ -77,7 +87,12 @@ export class StagesController {
   @Delete(':id')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@Param('id') id: string, @Param('projectId') projectId: string) {
-    return this.stagesService.remove(id, projectId);
+  remove(
+    @JwtPayloadReq() user: JwtPayload,
+    @Param('id') id: string,
+    @Param('projectId') projectId: string,
+  ) {
+    const ids: IdsDto = { userId: user.id, stageId: id, projectId };
+    return this.stagesService.remove(ids);
   }
 }

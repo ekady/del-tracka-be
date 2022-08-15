@@ -11,21 +11,6 @@ export class RolePermissionGuard implements CanActivate {
     private rolesService: RolesService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const menuPermission = this.reflector.get(
-      'permission',
-      context.getHandler(),
-    );
-    if (!menuPermission) return true;
-
-    const [menu, permission] = menuPermission;
-    const { id: userId } = request.user;
-    const projectId = request.params.projectId;
-
-    return this.matchingPermission(userId, projectId, menu, permission);
-  }
-
   async matchingPermission(
     userId: string,
     projectId: string,
@@ -42,5 +27,20 @@ export class RolePermissionGuard implements CanActivate {
     });
 
     return !!rolePermission[permission];
+  }
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const menuPermission = this.reflector.get(
+      'permission',
+      context.getHandler(),
+    );
+    if (!menuPermission) return true;
+
+    const [menu, permission] = menuPermission;
+    const { id: userId } = request.user;
+    const projectId = request.params.projectId;
+
+    return this.matchingPermission(userId, projectId, menu, permission);
   }
 }

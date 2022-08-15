@@ -3,8 +3,11 @@ import { NestApplication, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/http-exceptions/http-exception.filter';
 import { SwaggerSetup } from './config';
-import { DuplicationException } from './database/exception';
-import { ValidationException } from './database/exception/validation-error.filter';
+import {
+  DuplicationException,
+  ValidationException,
+  CastErrorException,
+} from './database/exception';
 import { ResponseInterceptor } from './interceptors';
 
 async function bootstrap() {
@@ -16,6 +19,7 @@ async function bootstrap() {
   app.useGlobalFilters(
     new ValidationException(),
     new DuplicationException(),
+    new CastErrorException(),
     new HttpExceptionFilter(),
   );
 

@@ -13,6 +13,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { StagesModule } from './modules/stages/stages.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { CommentsModule } from './modules/comments/comments.module';
+import { ActivitiesModule } from './modules/activities/activities.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CommentsModule } from './modules/comments/comments.module';
     StagesModule,
     TasksModule,
     CommentsModule,
+    ActivitiesModule,
   ],
 })
 export class AppModule {

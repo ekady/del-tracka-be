@@ -5,7 +5,7 @@ import { RoleDocument } from '../role/role.schema';
 import { ProjectDocument } from '../project/project.schema';
 import { User, UserDocument } from '../user/user.schema';
 
-@Schema()
+@Schema({ timestamps: true, versionKey: false })
 export class UserProject implements Timestamps {
   @Prop()
   createdAt: Date;

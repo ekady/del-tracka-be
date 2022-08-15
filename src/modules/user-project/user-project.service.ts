@@ -114,6 +114,7 @@ export class UserProjectService {
           { path: 'updatedBy', select: '_id firstName lastName' },
         ],
       })
+      .sort({ createdAt: -1 })
       .select('project')
       .exec();
   }

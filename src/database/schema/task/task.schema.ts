@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 import { TaskPriority, TaskStatus } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { StageDocument } from '../stage/stage.schema';
-import { User } from '../user/user.schema';
+import { UserDocument } from '../user/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Task implements Timestamps {
@@ -14,10 +14,10 @@ export class Task implements Timestamps {
   updatedAt: Date;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
-  createdBy: User;
+  createdBy: UserDocument;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
-  updatedBy: User;
+  updatedBy: UserDocument;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Stage' })
   stage: StageDocument;
@@ -35,10 +35,10 @@ export class Task implements Timestamps {
   priority: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  assignee: User;
+  assignee: UserDocument;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
-  reporter: User;
+  reporter: UserDocument;
 
   @Prop({ required: true, enum: TaskStatus })
   status: string;
