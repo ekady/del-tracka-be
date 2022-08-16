@@ -28,7 +28,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('sign-in')
-  @ApiResProperty(TokensDto, 200)
+  @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   signIn(@Body() body: SignInRequestDto): Promise<TokensDto> {
@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post('with-provider')
-  @ApiResProperty(TokensDto, 200)
+  @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   continueWithProvider(
@@ -46,7 +46,7 @@ export class AuthController {
   }
 
   @Post('sign-up')
-  @ApiResProperty(StatusMessageDto, 201)
+  @ApiResProperty(StatusMessageDto, 201, { isDisableAuth: true })
   @SkipAuth()
   async signUp(@Body() signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
     return this.authService.signUp(signUpDto);
@@ -72,7 +72,7 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  @ApiResProperty(StatusMessageDto, 200)
+  @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   forgotPassword(@Body() body: ForgotPasswordDto): Promise<StatusMessageDto> {
@@ -80,7 +80,7 @@ export class AuthController {
   }
 
   @Post('verify-reset-token')
-  @ApiResProperty(StatusMessageDto, 200)
+  @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   verifyResetPasswordToken(
@@ -90,7 +90,7 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  @ApiResProperty(StatusMessageDto, 200)
+  @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   resetPassword(

@@ -22,6 +22,7 @@ import { IdsDto, StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ApiTags } from '@nestjs/swagger';
+import { ActivityResponseDto } from '../activities/dto';
 
 @ApiTags('Stages')
 @Controller('projects/:projectId/stages')
@@ -59,11 +60,11 @@ export class StagesController {
 
   @Get(':id/activities')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
-  @ApiResProperty(StageResponseDto, 200)
+  @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
     @Param('id') id: string,
     @Param('projectId') projectId: string,
-  ) {
+  ): Promise<ActivityResponseDto[]> {
     return this.stagesService.findStageActivities(id, projectId);
   }
 

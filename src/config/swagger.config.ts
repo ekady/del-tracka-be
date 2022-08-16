@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 export const SwaggerSetup = (app: NestApplication, version: string) => {
   const vs = parseFloat(version) + '';
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Swagger')
     .setDescription('Swagger for api tracka')
     .setVersion(vs)

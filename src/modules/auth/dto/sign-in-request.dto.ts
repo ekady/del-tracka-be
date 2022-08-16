@@ -5,7 +5,6 @@ export class SignInRequestDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
   email: string;
 
   @ApiProperty()

@@ -24,6 +24,7 @@ import {
   UpdateTaskRequestDto,
 } from '../dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ActivityResponseDto } from 'src/modules/activities/dto';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectId/stages/:stageId/tasks')
@@ -72,13 +73,13 @@ export class TasksController {
   }
 
   @Get(':id/activities')
-  @ApiResProperty(TaskResponseDto, 200)
+  @ApiResProperty([ActivityResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findActivities(
     @Param('projectId') projectId: string,
     @Param('stageId') stageId: string,
     @Param('id') id: string,
-  ) {
+  ): Promise<ActivityResponseDto[]> {
     const ids: IdsDto = { taskId: id, stageId, projectId };
     return this.tasksService.findTaskActivities(ids);
   }
