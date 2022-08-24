@@ -12,6 +12,12 @@ import { ResponseInterceptor } from './interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule);
+  app.enableCors({
+    origin: AppModule.corsOrigin,
+    methods: 'GET,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
 
   app.setGlobalPrefix(`/${AppModule.prefix}/v${AppModule.version}`);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

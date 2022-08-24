@@ -36,10 +36,12 @@ export class AppModule {
   static port: number;
   static version: string;
   static prefix: string;
+  static corsOrigin: string;
 
   constructor(private config: ConfigService) {
     AppModule.port = this.config.get('API_PORT') * 1;
     AppModule.version = this.config.get('API_VERSION');
     AppModule.prefix = this.config.get('API_PREFIX');
+    AppModule.corsOrigin = this.config.get('API_CORS_ORIGIN');
   }
 }
