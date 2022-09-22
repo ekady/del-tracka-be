@@ -55,10 +55,9 @@ export class AuthService {
   async continueWithProvider(
     providerRequestDto: ContinueProviderRequestDto,
   ): Promise<TokensDto> {
-    const userJwt = this.tokenService.verifyToken(
+    const userJwt = await this.tokenService.verifyGoogleIdToken(
       providerRequestDto.jwtToken,
-      TokenJwtConfig.GoogleProviderToken,
-    ) as ProviderJwtPayload;
+    );
 
     if (!userJwt || !userJwt.email || !userJwt.given_name)
       throw new TokenInvalidException();

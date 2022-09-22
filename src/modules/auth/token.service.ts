@@ -14,6 +14,8 @@ import { User, UserDocument } from 'src/database/schema/user/user.schema';
 import { HashHelper } from 'src/helpers';
 import { JwtPayload, TokensDto } from './dto';
 import { TokenJwtConfig } from './enum';
+import { OAuth2Client } from 'google-auth-library';
+import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 
 @Injectable()
 export class TokenService {
@@ -106,6 +108,22 @@ export class TokenService {
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() },
       });
+    } catch (_) {
+      throw new TokenInvalidException();
+    }
+  }
+
+  async verifyGoogleIdToken(idToken: string): Promise<TokenPayload> {
+    const clientId = this.config.get('GOOGLE_OAUTH_CLIENT');
+    const client = new OAuth2Client(clientId);
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: clientId,
+      });
+      const payload = ticket.getPayload();
+
+      return payload;
     } catch (_) {
       throw new TokenInvalidException();
     }
