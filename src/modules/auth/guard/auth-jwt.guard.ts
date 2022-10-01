@@ -1,4 +1,8 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
@@ -29,7 +33,7 @@ export class AuthJwtGuard extends AuthGuard('jwt') {
     const accessToken = ExtractJwt.fromAuthHeaderAsBearerToken()(
       context.switchToHttp().getRequest(),
     );
-    if (!accessToken) throw new TokenInvalidException();
+    if (!accessToken) throw new UnauthorizedException();
 
     const verifyToken = this.tokenService.verifyToken(
       accessToken,

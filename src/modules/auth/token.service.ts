@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -57,7 +57,7 @@ export class TokenService {
 
   async validateTokenUser(payload: JwtPayload): Promise<JwtPayload> {
     const user = await this.userSchema.findById(payload.id).exec();
-    if (!user) throw new TokenInvalidException();
+    if (!user) throw new UnauthorizedException();
 
     payload.id = user._id;
     return payload;
@@ -82,7 +82,7 @@ export class TokenService {
       ) {
         throw new RefreshTokenExpiredException();
       }
-      throw new TokenInvalidException();
+      throw new UnauthorizedException();
     }
   }
 
