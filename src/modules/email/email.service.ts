@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createTransport, Transporter, SendMailOptions } from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
+import { renderFile } from 'pug';
+import { ISendEmail } from './interfaces/send-email.interface';
 
 @Injectable()
 export class EmailService {
@@ -17,10 +19,22 @@ export class EmailService {
     });
   }
 
-  async sendMail(options: Omit<SendMailOptions, 'from'>): Promise<void> {
+  async sendMail(options: ISendEmail): Promise<void> {
     const from = this.config.get('EMAIL_IDENTITY');
     try {
-      await this.transporter.sendMail({ from, ...options });
+      const html = renderFile(
+        `${__dirname}\\templates\\${options.templateName}.pug`,
+        {
+          firstName: options.name,
+          url: options.url ?? '',
+        },
+      );
+      await this.transporter.sendMail({
+        from,
+        to: options.to,
+        subject: `[Tracka] - ${options.subject}`,
+        html,
+      });
     } catch (error) {
       console.log({ error });
     }

@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/common/dto';
-import { MongoServerError } from 'mongoose/node_modules/mongodb';
+import { MongoServerError } from 'mongodb';
 import { ErrorType } from 'src/common/enums';
 
 @Catch(MongoServerError)

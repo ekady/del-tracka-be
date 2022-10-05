@@ -12,13 +12,11 @@ import { HashHelper } from 'src/helpers';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
-  ProviderJwtPayload,
   ResetPasswordDto,
   SignInRequestDto,
   SignUpRequestDto,
   TokensDto,
 } from './dto';
-import { TokenJwtConfig } from './enum';
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/email.service';
@@ -71,6 +69,13 @@ export class AuthService {
         lastName: userJwt.family_name,
         isViaProvider: true,
       });
+      this.emailService.sendMail({
+        to: user.email,
+        subject: 'Welcome to Tracka Application',
+        templateName: 'welcome',
+        name: user.firstName,
+        url: this.config.get('URL_CLIENT'),
+      });
     }
 
     return this.tokenService.generateAuthTokens({ id: user._id });
@@ -82,9 +87,16 @@ export class AuthService {
       .exec();
     if (user) throw new EmailUsernameExistException();
 
-    await this.userSchema.create({
+    const newUser = await this.userSchema.create({
       ...signUpDto,
       isViaProvider: false,
+    });
+    this.emailService.sendMail({
+      to: newUser.email,
+      subject: 'Welcome to Tracka Application',
+      templateName: 'welcome',
+      name: newUser.firstName,
+      url: this.config.get('URL_CLIENT'),
     });
 
     return { message: 'Success' } as StatusMessageDto;
@@ -117,7 +129,6 @@ export class AuthService {
     forgotPasswordDto: ForgotPasswordDto,
   ): Promise<StatusMessageDto> {
     const resetToken = this.tokenService.generateResetPasswordToken();
-    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetToken.resetToken}.\nIf you didn't forget your password, please ignore this email!`;
     const user = await this.userSchema
       .findOneAndUpdate(
         { email: forgotPasswordDto.email },
@@ -131,7 +142,11 @@ export class AuthService {
       this.emailService.sendMail({
         to: user.email,
         subject: 'Reset Password',
-        text: message,
+        templateName: 'resetPassword',
+        name: user.firstName,
+        url: `${this.config.get('URL_CLIENT')}/auth/reset/${
+          resetToken.resetToken
+        }`,
       });
     }
     return { message: 'Success' };
@@ -163,6 +178,8 @@ export class AuthService {
       to: user.email,
       subject: 'Reset Password Successfull',
       text: message,
+      templateName: 'resetPassword',
+      name: user.firstName,
     });
 
     return { message: 'Success' };

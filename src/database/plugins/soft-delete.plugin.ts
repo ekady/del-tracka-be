@@ -60,7 +60,7 @@ export const softDeletePlugin = (schema: Schema) => {
   });
 
   typesQueryFind.forEach((type) => {
-    schema.pre(type, excludeInFindQueriesIsDeleted);
+    schema.pre(type as unknown as RegExp, excludeInFindQueriesIsDeleted);
   });
 
   schema.pre('aggregate', excludeInDeletedInAggregateMiddleware);
