@@ -142,9 +142,9 @@ export class AuthService {
       this.emailService.sendMail({
         to: user.email,
         subject: 'Reset Password',
-        templateName: 'resetPassword',
+        templateName: 'reset-password',
         name: user.firstName,
-        url: `${this.config.get('URL_CLIENT')}/auth/reset/${
+        url: `${this.config.get('URL_CLIENT')}/auth/reset-password?token=${
           resetToken.resetToken
         }`,
       });
@@ -173,12 +173,11 @@ export class AuthService {
     user.hashedRefreshToken = undefined;
     await user.save();
 
-    const message = 'You have successfully reset your password';
     this.emailService.sendMail({
       to: user.email,
-      subject: 'Reset Password Successfull',
-      text: message,
-      templateName: 'resetPassword',
+      subject: 'Reset Password Successful',
+      url: `${this.config.get('URL_CLIENT')}/auth/sign-in`,
+      templateName: 'success-reset-password',
       name: user.firstName,
     });
 

@@ -21,6 +21,7 @@ import {
 import { AuthJwtRefreshGuard } from './guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { VerifyResetDto } from './dto/verify-reset-payload.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -84,9 +85,9 @@ export class AuthController {
   @SkipAuth()
   @HttpCode(200)
   verifyResetPasswordToken(
-    @Body('token') token: string,
+    @Body() body: VerifyResetDto,
   ): Promise<StatusMessageDto> {
-    return this.authService.verifyTokenResetPassword(token);
+    return this.authService.verifyTokenResetPassword(body.token);
   }
 
   @Post('reset-password')
