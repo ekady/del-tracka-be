@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectMenu } from 'src/common/enums';
 import { RoleDocument } from '../role/role.schema';
@@ -27,3 +27,8 @@ export class Permission {
 export type PermissionDocument = Permission & Document;
 
 export const PermissionSchema = SchemaFactory.createForClass(Permission);
+
+export const PermissionFeature: ModelDefinition = {
+  name: Permission.name,
+  schema: PermissionSchema,
+};

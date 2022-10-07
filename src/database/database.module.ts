@@ -4,15 +4,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfigService } from './database.service';
 
 // Schema Providers
-import { PermissionSchemaProvider } from './schema/permission/permission-schema.provider';
-import { RoleSchemaProvider } from './schema/role/role-schema.provider';
-import { StageSchemaProvider } from './schema/stage/stage-schema.provider';
-import { ProjectSchemaProvider } from './schema/project/project-schema.provider';
-import { UserProjectSchemaProvider } from './schema/user-project/user-project-schema.provider';
 import { UserSchemaProvider } from './schema/user/user-schema.provider';
 import { TaskSchemaProvider } from './schema/task/task-schema.provider';
-import { CommentSchemaProvider } from './schema/comment/comment-schema.provider';
-import { ActivitySchemaProvider } from './schema/activity/activity-schema.provider';
+import { ProjectFeature } from './schema/project/project.schema';
+import { ActivityFeature } from './schema/activity/activity.schema';
+import { CommentFeature } from './schema/comment/comment.schema';
+import { PermissionFeature } from './schema/permission/permission.schema';
+import { RoleFeature } from './schema/role/role.schema';
+import { StageFeature } from './schema/stage/stage.schema';
+import { UserProjectFeature } from './schema/user-project/user-project.schema';
 
 @Global()
 @Module({
@@ -22,17 +22,16 @@ import { ActivitySchemaProvider } from './schema/activity/activity-schema.provid
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     }),
-    MongooseModule.forFeatureAsync([
-      UserSchemaProvider,
-      ProjectSchemaProvider,
-      UserProjectSchemaProvider,
-      RoleSchemaProvider,
-      PermissionSchemaProvider,
-      StageSchemaProvider,
-      TaskSchemaProvider,
-      CommentSchemaProvider,
-      ActivitySchemaProvider,
+    MongooseModule.forFeature([
+      ActivityFeature,
+      CommentFeature,
+      PermissionFeature,
+      ProjectFeature,
+      RoleFeature,
+      StageFeature,
+      UserProjectFeature,
     ]),
+    MongooseModule.forFeatureAsync([UserSchemaProvider, TaskSchemaProvider]),
   ],
   exports: [MongooseModule],
 })

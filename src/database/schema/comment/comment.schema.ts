@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { TaskDocument } from '../task/task.schema';
@@ -25,3 +25,8 @@ export class Comment implements Timestamps {
 export type CommentDocument = Comment & Document;
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+export const CommentFeature: ModelDefinition = {
+  name: Comment.name,
+  schema: CommentSchema,
+};

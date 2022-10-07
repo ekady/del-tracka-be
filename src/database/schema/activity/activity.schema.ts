@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
@@ -43,3 +43,8 @@ export class Activity implements Timestamps {
 export type ActivityDocument = Activity & Document;
 
 export const ActivitySchema = SchemaFactory.createForClass(Activity);
+
+export const ActivityFeature: ModelDefinition = {
+  name: Activity.name,
+  schema: ActivitySchema,
+};

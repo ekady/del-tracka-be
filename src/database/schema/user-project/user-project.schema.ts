@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { RoleDocument } from '../role/role.schema';
@@ -32,3 +32,8 @@ export class UserProject implements Timestamps {
 export type UserProjectDocument = UserProject & Document;
 
 export const UserProjectSchema = SchemaFactory.createForClass(UserProject);
+
+export const UserProjectFeature: ModelDefinition = {
+  name: UserProject.name,
+  schema: UserProjectSchema,
+};

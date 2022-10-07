@@ -1,5 +1,4 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
-import { softDeletePlugin } from 'src/database/plugins';
 import { HashHelper } from 'src/helpers';
 import { User, UserDocument, UserSchema } from './user.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -10,7 +9,6 @@ export const UserSchemaProvider: AsyncModelFactory = {
   inject: [ConfigService],
   useFactory: (config: ConfigService) => {
     const schema = UserSchema;
-    schema.plugin(softDeletePlugin);
 
     schema.pre<UserDocument>('save', async function () {
       // If data is modified or create new data using provider, do nothing

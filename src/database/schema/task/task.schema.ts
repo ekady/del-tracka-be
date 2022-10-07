@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { TaskPriority, TaskStatus } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
@@ -50,3 +50,8 @@ export class Task implements Timestamps {
 export type TaskDocument = Task & Document;
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
+
+export const TaskFeature: ModelDefinition = {
+  name: Task.name,
+  schema: TaskSchema,
+};
