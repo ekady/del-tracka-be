@@ -16,12 +16,25 @@ export class ProjectsHelperService {
     private userProjectService: UserProjectService,
   ) {}
 
+  // TODO: Remove this method
   async findProjectById(
     id: string,
     populateOptions?: PopulateOptions[],
   ): Promise<ProjectDocument> {
     const project = await this.projectSchema
       .findById(id)
+      .populate(populateOptions)
+      .exec();
+    if (!project) throw new DocumentNotFoundException('Project not found');
+    return project;
+  }
+
+  async findProjectBySlug(
+    slug: string,
+    populateOptions?: PopulateOptions[],
+  ): Promise<ProjectDocument> {
+    const project = await this.projectSchema
+      .findOne({ slug })
       .populate(populateOptions)
       .exec();
     if (!project) throw new DocumentNotFoundException('Project not found');

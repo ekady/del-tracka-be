@@ -90,12 +90,11 @@ export class UserProjectService {
 
   async findUserProject(
     userId: string,
-    projectId: string,
+    slug: string,
     errorMessage?: string,
   ): Promise<UserProjectDocument> {
-    const objectProjectId = new Types.ObjectId(projectId);
     const [userProject] = await this.findUserProjects(userId, {
-      _id: objectProjectId,
+      slug,
     });
     if (!userProject || !userProject.project) {
       const errmsg = errorMessage || 'Project not found';

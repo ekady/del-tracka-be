@@ -11,6 +11,7 @@ import {
   Project,
   ProjectDocument,
 } from 'src/database/schema/project/project.schema';
+import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { RolesService } from '../../roles/roles.service';
 import {
   ProjectUserResponseDto,
@@ -19,6 +20,7 @@ import {
 } from '../../user-project/dto';
 import { UserProjectService } from '../../user-project/user-project.service';
 import { UsersService } from '../../users/users.service';
+import { ActivitiesService } from '../../activities/activities.service';
 import {
   AddUpdateMemberDto,
   CreateProjectDto,
@@ -36,6 +38,7 @@ export class ProjectsService {
     private userProjectService: UserProjectService,
     private userService: UsersService,
     private rolesService: RolesService,
+    private activitiesService: ActivitiesService,
   ) {}
 
   async create(
@@ -73,30 +76,30 @@ export class ProjectsService {
     return userProjects.map((userProject) => userProject.project);
   }
 
-  async findOne(id: string): Promise<ProjectResponseDto> {
+  async findOne(slug: string): Promise<ProjectResponseDto> {
     const populateOptions: PopulateOptions[] = [
       { path: 'createdBy', select: '_id firstName lastName' },
       { path: 'updatedBy', select: '_id firstName lastName' },
     ];
-    return this.projectsHelperService.findProjectById(id, populateOptions);
+    return this.projectsHelperService.findProjectBySlug(slug, populateOptions);
   }
 
   async update(
     userId: string,
-    id: string,
+    slug: string,
     updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const payload = { ...updateProjectDto, updatedBy: userId };
     const project = await this.projectSchema
-      .findByIdAndUpdate(id, payload, { new: true })
+      .findOneAndUpdate({ slug }, payload, { new: true })
       .exec();
     if (!project) throw new DocumentNotFoundException('Project not found');
 
     return { message: 'Success' };
   }
 
-  async remove(id: string): Promise<StatusMessageDto> {
-    const project = await this.projectsHelperService.findProjectById(id);
+  async remove(slug: string): Promise<StatusMessageDto> {
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
     await project.remove();
     await this.userProjectService.deleteAllUserProjects(project._id);
     return { message: 'Success' };
@@ -104,11 +107,11 @@ export class ProjectsService {
 
   async addMember(
     userCreatedId: string,
-    id: string,
+    slug: string,
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.projectsHelperService.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
@@ -125,11 +128,11 @@ export class ProjectsService {
 
   async updateMember(
     userUpdatedId: string,
-    id: string,
+    slug: string,
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.projectsHelperService.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
@@ -145,21 +148,26 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async getMember(id: string): Promise<ProjectUserResponseDto[]> {
-    const project = await this.projectsHelperService.findProjectById(id);
+  async getMember(slug: string): Promise<ProjectUserResponseDto[]> {
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
     return this.userProjectService.findUsersByProjectId(project._id);
   }
 
   async removeMember(
-    id: string,
+    slug: string,
     removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     const user = await this.userService.findOne(removeMemberDto.userId);
-    const project = await this.projectsHelperService.findProjectById(id);
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
     await this.userProjectService.deleteUserProject({
       projectId: project._id,
       userId: user._id,
     });
     return { message: 'Success' };
+  }
+
+  async findActivities(slug: string): Promise<ActivityResponseDto[]> {
+    const project = await this.projectsHelperService.findProjectBySlug(slug);
+    return this.activitiesService.findActivitiesByProjectId(project._id);
   }
 }

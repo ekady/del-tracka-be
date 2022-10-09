@@ -6,13 +6,13 @@ import { MongooseConfigService } from './database.service';
 // Schema Providers
 import { UserSchemaProvider } from './schema/user/user-schema.provider';
 import { TaskSchemaProvider } from './schema/task/task-schema.provider';
-import { ProjectFeature } from './schema/project/project.schema';
 import { ActivityFeature } from './schema/activity/activity.schema';
 import { CommentFeature } from './schema/comment/comment.schema';
 import { PermissionFeature } from './schema/permission/permission.schema';
 import { RoleFeature } from './schema/role/role.schema';
 import { StageFeature } from './schema/stage/stage.schema';
 import { UserProjectFeature } from './schema/user-project/user-project.schema';
+import { ProjectSchemaProvider } from './schema/project/project-schema.provider';
 
 @Global()
 @Module({
@@ -26,12 +26,15 @@ import { UserProjectFeature } from './schema/user-project/user-project.schema';
       ActivityFeature,
       CommentFeature,
       PermissionFeature,
-      ProjectFeature,
       RoleFeature,
       StageFeature,
       UserProjectFeature,
     ]),
-    MongooseModule.forFeatureAsync([UserSchemaProvider, TaskSchemaProvider]),
+    MongooseModule.forFeatureAsync([
+      UserSchemaProvider,
+      TaskSchemaProvider,
+      ProjectSchemaProvider,
+    ]),
   ],
   exports: [MongooseModule],
 })

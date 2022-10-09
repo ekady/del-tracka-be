@@ -4,6 +4,7 @@ import { TaskPriority, TaskStatus } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { StageDocument } from '../stage/stage.schema';
 import { UserDocument } from '../user/user.schema';
+import { ProjectDocument } from '../project/project.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Task implements Timestamps {
@@ -18,6 +19,9 @@ export class Task implements Timestamps {
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   updatedBy: UserDocument;
+
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Project' })
+  project: ProjectDocument;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Stage' })
   stage: StageDocument;

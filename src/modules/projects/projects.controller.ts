@@ -53,79 +53,77 @@ export class ProjectsController {
     return this.projectsService.findAll(userId);
   }
 
-  @Get(':projectId')
+  @Get(':slug')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty(ProjectResponseDto, 200)
-  findOne(@Param('projectId') id: string): Promise<ProjectResponseDto> {
-    return this.projectsService.findOne(id);
+  findOne(@Param('slug') slug: string): Promise<ProjectResponseDto> {
+    return this.projectsService.findOne(slug);
   }
 
-  @Get(':projectId/activities')
+  @Get(':slug/activities')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
-  findActivities(
-    @Param('projectId') id: string,
-  ): Promise<ActivityResponseDto[]> {
-    return this.activitiesService.findActivitiesByProjectId(id);
+  findActivities(@Param('slug') slug: string): Promise<ActivityResponseDto[]> {
+    return this.projectsService.findActivities(slug);
   }
 
-  @Put(':projectId')
+  @Put(':slug')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() jwtPayload: JwtPayload,
-    @Param('projectId') id: string,
+    @Param('slug') slug: string,
     @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
-    return this.projectsService.update(userId, id, updateProjectDto);
+    return this.projectsService.update(userId, slug, updateProjectDto);
   }
 
-  @Delete(':projectId')
+  @Delete(':slug')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@Param('projectId') id: string): Promise<StatusMessageDto> {
-    return this.projectsService.remove(id);
+  remove(@Param('slug') slug: string): Promise<StatusMessageDto> {
+    return this.projectsService.remove(slug);
   }
 
-  @Post(':projectId/member')
+  @Post(':slug/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   getMember(
     @JwtPayloadReq() jwtPayload: JwtPayload,
-    @Param('projectId') id: string,
+    @Param('slug') slug: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
-    return this.projectsService.addMember(userId, id, addUpdateMemberDto);
+    return this.projectsService.addMember(userId, slug, addUpdateMemberDto);
   }
 
-  @Put(':projectId/member')
+  @Put(':slug/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
     @JwtPayloadReq() jwtPayload: JwtPayload,
-    @Param('projectId') id: string,
+    @Param('slug') slug: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
-    return this.projectsService.updateMember(userId, id, addUpdateMemberDto);
+    return this.projectsService.updateMember(userId, slug, addUpdateMemberDto);
   }
 
-  @Get(':projectId/member')
+  @Get(':slug/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
-  addMember(@Param('projectId') id: string): Promise<ProjectUserResponseDto[]> {
-    return this.projectsService.getMember(id);
+  addMember(@Param('slug') slug: string): Promise<ProjectUserResponseDto[]> {
+    return this.projectsService.getMember(slug);
   }
 
-  @Delete(':projectId/member')
+  @Delete(':slug/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   removeMember(
-    @Param('projectId') id: string,
+    @Param('slug') slug: string,
     @Body() removeMemberReq: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
-    return this.projectsService.removeMember(id, removeMemberReq);
+    return this.projectsService.removeMember(slug, removeMemberReq);
   }
 }

@@ -13,13 +13,13 @@ export class RolePermissionGuard implements CanActivate {
 
   async matchingPermission(
     userId: string,
-    projectId: string,
+    slug: string,
     menu: string,
     permission: string,
   ): Promise<boolean> {
     const userProject = await this.userProjectService.findUserProject(
       userId,
-      projectId,
+      slug,
     );
     const rolePermission = await this.rolesService.findOnePermission({
       menu,
@@ -39,8 +39,8 @@ export class RolePermissionGuard implements CanActivate {
 
     const [menu, permission] = menuPermission;
     const { id: userId } = request.user;
-    const projectId = request.params.projectId;
+    const slug = request.params.slug;
 
-    return this.matchingPermission(userId, projectId, menu, permission);
+    return this.matchingPermission(userId, slug, menu, permission);
   }
 }

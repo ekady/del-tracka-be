@@ -22,6 +22,9 @@ export class Project implements Timestamps {
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   updatedBy: User;
+
+  @Prop({ type: String, unique: true })
+  slug: string;
 }
 
 export type ProjectDocument = Project & Document;
