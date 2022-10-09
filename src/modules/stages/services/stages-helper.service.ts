@@ -49,6 +49,23 @@ export class StagesHelperService {
     return stage;
   }
 
+  async findStageByShortId(
+    stageShortId: string,
+    projectShortId: string,
+    select?: string,
+  ): Promise<StageDocument> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      projectShortId,
+    );
+    const stage = await this.stageSchema
+      .findOne({ project: project._id, shortId: stageShortId })
+      .populate('project')
+      .select(select)
+      .exec();
+    if (!stage) throw new DocumentNotFoundException('Stage not found');
+    return stage;
+  }
+
   async createStageActivity(
     payload: Omit<CreateActivityDto, 'taskBefore' | 'taskAfter'>,
   ): Promise<void> {

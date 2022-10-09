@@ -24,7 +24,7 @@ export class Project implements Timestamps {
   updatedBy: User;
 
   @Prop({ type: String, unique: true })
-  slug: string;
+  shortId: string;
 }
 
 export type ProjectDocument = Project & Document;

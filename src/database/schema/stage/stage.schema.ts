@@ -26,6 +26,9 @@ export class Stage implements Timestamps {
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Project' })
   project: ProjectDocument;
+
+  @Prop({ type: String, unique: true })
+  shortId: string;
 }
 
 export type StageDocument = Stage & Document;

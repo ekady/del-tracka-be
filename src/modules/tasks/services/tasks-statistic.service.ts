@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage, Types } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
 import {
   UserProject,
   UserProjectDocument,
 } from 'src/database/schema/user-project/user-project.schema';
+import { ProjectsHelperService } from 'src/modules/projects/services';
 import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class TasksStatisticService {
     @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
     @InjectModel(UserProject.name)
     private userProjectSchema: Model<UserProjectDocument>,
+    private projectsHelperService: ProjectsHelperService,
   ) {}
 
   async getTasksStatisticAll(userId: string): Promise<TaskStatisticDto[]> {
@@ -31,20 +33,26 @@ export class TasksStatisticService {
 
   async getTasksStatisticByProjectId(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStatisticDto[]> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      projectShortId,
+    );
     const userProject: PipelineStage.Match = {
-      $match: { user: userId, project: new Types.ObjectId(projectId) },
+      $match: { user: userId, project: project._id },
     };
     return this.getTasksStatisticByStatus(userProject);
   }
 
   async getTasksStatisticByStages(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStageStatisticDto[]> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      projectShortId,
+    );
     const match: PipelineStage.Match = {
-      $match: { user: userId, project: new Types.ObjectId(projectId) },
+      $match: { user: userId, project: project._id },
     };
     const taskGroup: PipelineStage.Group = {
       $group: {

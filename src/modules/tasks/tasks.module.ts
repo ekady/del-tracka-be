@@ -13,6 +13,7 @@ import {
   TasksStatisticController,
 } from './controllers';
 import { ActivitiesModule } from '../activities/activities.module';
+import { ProjectsModule } from '../projects/projects.module';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
@@ -22,7 +23,7 @@ import { ActivitiesModule } from '../activities/activities.module';
     MyTasksService,
     TasksStatisticService,
   ],
-  imports: [StagesModule, UserProjectModule, ActivitiesModule],
+  imports: [StagesModule, UserProjectModule, ActivitiesModule, ProjectsModule],
   exports: [TasksHelperService],
 })
 export class TasksModule {}

@@ -10,9 +10,9 @@ import { ActivityFeature } from './schema/activity/activity.schema';
 import { CommentFeature } from './schema/comment/comment.schema';
 import { PermissionFeature } from './schema/permission/permission.schema';
 import { RoleFeature } from './schema/role/role.schema';
-import { StageFeature } from './schema/stage/stage.schema';
 import { UserProjectFeature } from './schema/user-project/user-project.schema';
 import { ProjectSchemaProvider } from './schema/project/project-schema.provider';
+import { StageSchemaProvider } from './schema/stage/stage-schema.provider';
 
 @Global()
 @Module({
@@ -27,13 +27,13 @@ import { ProjectSchemaProvider } from './schema/project/project-schema.provider'
       CommentFeature,
       PermissionFeature,
       RoleFeature,
-      StageFeature,
       UserProjectFeature,
     ]),
     MongooseModule.forFeatureAsync([
       UserSchemaProvider,
-      TaskSchemaProvider,
       ProjectSchemaProvider,
+      StageSchemaProvider,
+      TaskSchemaProvider,
     ]),
   ],
   exports: [MongooseModule],

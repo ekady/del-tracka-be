@@ -1,2 +1,2 @@
 export { default as HashHelper } from './hash.helper';
-export { default as slugUrl } from './slug-url.helper';
+export { default as generateShortId } from './generate-short-id.helper';

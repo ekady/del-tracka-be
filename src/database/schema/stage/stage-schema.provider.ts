@@ -1,12 +1,11 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
 import { generateShortId } from 'src/helpers';
-import { Task, TaskSchema } from './task.schema';
+import { Stage, StageSchema } from './stage.schema';
 
-export const TaskSchemaProvider: AsyncModelFactory = {
-  name: Task.name,
+export const StageSchemaProvider: AsyncModelFactory = {
+  name: Stage.name,
   useFactory: () => {
-    const schema = TaskSchema;
-    schema.index({ status: 1 });
+    const schema = StageSchema;
 
     schema.pre('save', async function () {
       if (this.isNew) {

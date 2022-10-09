@@ -76,30 +76,35 @@ export class ProjectsService {
     return userProjects.map((userProject) => userProject.project);
   }
 
-  async findOne(slug: string): Promise<ProjectResponseDto> {
+  async findOne(shortId: string): Promise<ProjectResponseDto> {
     const populateOptions: PopulateOptions[] = [
       { path: 'createdBy', select: '_id firstName lastName' },
       { path: 'updatedBy', select: '_id firstName lastName' },
     ];
-    return this.projectsHelperService.findProjectBySlug(slug, populateOptions);
+    return this.projectsHelperService.findProjectByShortId(
+      shortId,
+      populateOptions,
+    );
   }
 
   async update(
     userId: string,
-    slug: string,
+    shortId: string,
     updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const payload = { ...updateProjectDto, updatedBy: userId };
     const project = await this.projectSchema
-      .findOneAndUpdate({ slug }, payload, { new: true })
+      .findOneAndUpdate({ shortId }, payload, { new: true })
       .exec();
     if (!project) throw new DocumentNotFoundException('Project not found');
 
     return { message: 'Success' };
   }
 
-  async remove(slug: string): Promise<StatusMessageDto> {
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+  async remove(shortId: string): Promise<StatusMessageDto> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     await project.remove();
     await this.userProjectService.deleteAllUserProjects(project._id);
     return { message: 'Success' };
@@ -107,11 +112,13 @@ export class ProjectsService {
 
   async addMember(
     userCreatedId: string,
-    slug: string,
+    shortId: string,
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
@@ -128,11 +135,13 @@ export class ProjectsService {
 
   async updateMember(
     userUpdatedId: string,
-    slug: string,
+    shortId: string,
     addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = addUpdateMemberDto;
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     const user = await this.userService.findOne(userId);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
@@ -148,17 +157,21 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async getMember(slug: string): Promise<ProjectUserResponseDto[]> {
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+  async getMember(shortId: string): Promise<ProjectUserResponseDto[]> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     return this.userProjectService.findUsersByProjectId(project._id);
   }
 
   async removeMember(
-    slug: string,
+    shortId: string,
     removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     const user = await this.userService.findOne(removeMemberDto.userId);
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     await this.userProjectService.deleteUserProject({
       projectId: project._id,
       userId: user._id,
@@ -166,8 +179,10 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async findActivities(slug: string): Promise<ActivityResponseDto[]> {
-    const project = await this.projectsHelperService.findProjectBySlug(slug);
+  async findActivities(shortId: string): Promise<ActivityResponseDto[]> {
+    const project = await this.projectsHelperService.findProjectByShortId(
+      shortId,
+    );
     return this.activitiesService.findActivitiesByProjectId(project._id);
   }
 }

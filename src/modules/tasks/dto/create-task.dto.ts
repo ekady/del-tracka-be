@@ -60,4 +60,8 @@ export class CreateTaskDto extends OmitType(CreateTaskRequestDto, ['images']) {
   updatedBy: string;
 
   images: string[];
+
+  @IsString()
+  @IsNotEmpty()
+  project: string;
 }

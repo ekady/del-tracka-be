@@ -29,12 +29,12 @@ export class ProjectsHelperService {
     return project;
   }
 
-  async findProjectBySlug(
-    slug: string,
+  async findProjectByShortId(
+    shortId: string,
     populateOptions?: PopulateOptions[],
   ): Promise<ProjectDocument> {
     const project = await this.projectSchema
-      .findOne({ slug })
+      .findOne({ shortId })
       .populate(populateOptions)
       .exec();
     if (!project) throw new DocumentNotFoundException('Project not found');

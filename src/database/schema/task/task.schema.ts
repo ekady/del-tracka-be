@@ -49,6 +49,9 @@ export class Task implements Timestamps {
 
   @Prop({ type: [String] })
   images: string[];
+
+  @Prop({ type: String, unique: true })
+  shortId: string;
 }
 
 export type TaskDocument = Task & Document;

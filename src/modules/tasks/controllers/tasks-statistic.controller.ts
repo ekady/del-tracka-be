@@ -27,27 +27,27 @@ export class TasksStatisticController {
     return this.taskStatisticService.getTasksStatisticByUser(user.id);
   }
 
-  @Get('project/:projectId')
+  @Get('project/:projectShortId')
   @ApiResProperty([TaskStatisticDto], 200)
   getTasksStatisticByProjectId(
     @JwtPayloadReq() user: JwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<TaskStatisticDto[]> {
     return this.taskStatisticService.getTasksStatisticByProjectId(
       user.id,
-      projectId,
+      projectShortId,
     );
   }
 
-  @Get('project/:projectId/stages')
+  @Get('project/:projectShortId/stages')
   @ApiResProperty([TaskStageStatisticDto], 200)
   getTasksStatisticByStages(
     @JwtPayloadReq() user: JwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<TaskStageStatisticDto[]> {
     return this.taskStatisticService.getTasksStatisticByStages(
       user.id,
-      projectId,
+      projectShortId,
     );
   }
 }

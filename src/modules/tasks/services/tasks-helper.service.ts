@@ -11,6 +11,7 @@ import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';
 import { UserProjectService } from 'src/modules/user-project/user-project.service';
 import { UpdateTaskDto, UpdateTaskRequestDto } from '../dto';
+import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 
 @Injectable()
 export class TasksHelperService {
@@ -53,8 +54,33 @@ export class TasksHelperService {
         _id: new Types.ObjectId(taskId),
         stage: stage._id,
       })
-      .populate('stage reporter assignee')
-      .populate({ path: 'stage', select: '_id name description' })
+      .populate('stage reporter assignee project')
+      .populate({ path: 'stage', select: 'shortId name description' })
+      .populate({ path: 'project', select: 'shortId name description' })
+      .select(select)
+      .exec();
+
+    if (!task) throw new DocumentExistException('Task not found');
+    return task;
+  }
+
+  async findTaskByShortId(
+    ids: ITaskShortIds,
+    select?: string,
+  ): Promise<TaskDocument> {
+    const { taskShortId, projectShortId, stageShortId } = ids;
+    const stage = await this.stagesHelperService.findStageByShortId(
+      stageShortId,
+      projectShortId,
+    );
+    const task = await this.taskSchema
+      .findOne({
+        shortId: taskShortId,
+        stage: stage._id,
+      })
+      .populate('stage reporter assignee project')
+      .populate({ path: 'stage', select: 'shortId name description' })
+      .populate({ path: 'project', select: 'shortId name description' })
       .select(select)
       .exec();
 
@@ -80,40 +106,40 @@ export class TasksHelperService {
   }
 
   async update(
-    ids: IdsDto,
+    ids: ITaskShortIds & { userId: string },
     updateRequestDto: UpdateTaskRequestDto,
     type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
   ): Promise<TaskDocument> {
-    const stageObjectId = new Types.ObjectId(ids.stageId);
-    const stage = await this.stagesHelperService.findStageById(
-      ids.stageId,
-      ids.projectId,
+    const { projectShortId, stageShortId, userId } = ids;
+    const stage = await this.stagesHelperService.findStageByShortId(
+      stageShortId,
+      projectShortId,
     );
-    const taskFound = await this.findTaskById(ids);
+    const taskFound = await this.findTaskByShortId(ids);
     await this.checkTaskExist(
-      { projectId: ids.projectId, stageId: ids.stageId },
+      { projectId: stage.project._id, stageId: stage._id },
       { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
     );
     const { images, assignee, reporter, ...taskValues } = updateRequestDto;
     const userAssignee = await this.findUserForTask(
       assignee,
-      ids.projectId,
+      stage.project._id,
       'Assignee not found',
     );
     const userReporter = await this.findUserForTask(
       reporter,
-      ids.projectId,
+      stage.project._id,
       'Reporter not found',
     );
     const payload: UpdateTaskDto = {
       ...taskValues,
-      updatedBy: ids.userId,
-      reporter: userReporter?.user._id ?? ids.userId,
+      updatedBy: userId,
+      reporter: userReporter?.user._id ?? userId,
       assignee: userAssignee?.user._id,
       images: images?.map((image) => image.originalname),
     };
     const taskUpdate = await this.taskSchema
-      .findOneAndUpdate({ _id: taskFound._id, stage: stageObjectId }, payload, {
+      .findOneAndUpdate({ _id: taskFound._id, stage: stage._id }, payload, {
         new: true,
       })
       .populate(['stage', 'updatedBy'])

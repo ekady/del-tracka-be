@@ -15,9 +15,9 @@ export class CreateStageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  projectId: string;
+  projectShortId: string;
 }
 
 export class CreateStageRequestDto extends OmitType(CreateStageDto, [
-  'projectId',
+  'projectShortId',
 ]) {}

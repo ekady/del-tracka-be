@@ -18,14 +18,15 @@ import {
 import { JwtPayloadReq } from '../auth/decorators';
 import { JwtPayload } from '../auth/dto';
 import { ApiResProperty } from 'src/common/decorators';
-import { IdsDto, StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ApiTags } from '@nestjs/swagger';
 import { ActivityResponseDto } from '../activities/dto';
+import { IStageShortId } from './interfaces/stageShortIds.interface';
 
 @ApiTags('Stages')
-@Controller('projects/:projectId/stages')
+@Controller('projects/:projectShortId/stages')
 export class StagesController {
   constructor(private readonly stagesService: StagesService) {}
 
@@ -34,12 +35,12 @@ export class StagesController {
   @ApiResProperty(StatusMessageDto, 201)
   create(
     @JwtPayloadReq() user: JwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
     @Body() createStageDto: CreateStageRequestDto,
   ): Promise<StatusMessageDto> {
     const payload: CreateStageDto = {
       ...createStageDto,
-      projectId,
+      projectShortId,
     };
     return this.stagesService.create(user.id, payload);
   }
@@ -47,53 +48,61 @@ export class StagesController {
   @Get()
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
-  findAll(@Param('projectId') projectId: string): Promise<StageResponseDto[]> {
-    return this.stagesService.findAll(projectId);
+  findAll(
+    @Param('projectShortId') projectShortId: string,
+  ): Promise<StageResponseDto[]> {
+    return this.stagesService.findAll(projectShortId);
   }
 
-  @Get(':id')
+  @Get(':shortId')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty(StageResponseDto, 200)
-  findOne(@Param('id') id: string, @Param('projectId') projectId: string) {
-    return this.stagesService.findOne(id, projectId);
+  findOne(
+    @Param('shortId') shortId: string,
+    @Param('projectShortId') projectShortId: string,
+  ) {
+    return this.stagesService.findOne(shortId, projectShortId);
   }
 
-  @Get(':id/activities')
+  @Get(':shortId/activities')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
-    @Param('id') id: string,
-    @Param('projectId') projectId: string,
+    @Param('shortId') shortId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<ActivityResponseDto[]> {
-    return this.stagesService.findStageActivities(id, projectId);
+    return this.stagesService.findStageActivities(shortId, projectShortId);
   }
 
-  @Put(':id')
+  @Put(':shortId')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() user: JwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('shortId') shortId: string,
     @Body() updateStageDto: UpdateStageRequestDto,
   ) {
     const payload: UpdateStageDto = {
       ...updateStageDto,
       userId: user.id,
-      projectId,
+      projectShortId,
     };
-    return this.stagesService.update(id, payload);
+    return this.stagesService.update(shortId, payload);
   }
 
-  @Delete(':id')
+  @Delete(':shortId')
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   remove(
     @JwtPayloadReq() user: JwtPayload,
-    @Param('id') id: string,
-    @Param('projectId') projectId: string,
+    @Param('shortId') shortId: string,
+    @Param('projectShortId') projectShortId: string,
   ) {
-    const ids: IdsDto = { userId: user.id, stageId: id, projectId };
-    return this.stagesService.remove(ids);
+    const shortIds: IStageShortId = {
+      stageShortId: shortId,
+      projectShortId: projectShortId,
+    };
+    return this.stagesService.remove(shortIds, user.id);
   }
 }
