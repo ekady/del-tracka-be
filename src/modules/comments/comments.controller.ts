@@ -4,7 +4,7 @@ import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { JwtPayloadReq } from '../auth/decorators';
-import { JwtPayload } from '../auth/dto';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { RolePermission } from '../roles/decorator';
 import { ITaskShortIds } from '../tasks/interfaces/taskShortIds.interface';
 import { CommentsService } from './comments.service';
@@ -22,7 +22,7 @@ export class CommentsController {
   @ApiResProperty(StatusMessageDto, 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Create)
   create(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Param('taskShortId') taskShortId: string,

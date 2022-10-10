@@ -16,7 +16,7 @@ import {
   UpdateStageRequestDto,
 } from './dto';
 import { JwtPayloadReq } from '../auth/decorators';
-import { JwtPayload } from '../auth/dto';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
@@ -34,7 +34,7 @@ export class StagesController {
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   create(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Body() createStageDto: CreateStageRequestDto,
   ): Promise<StatusMessageDto> {
@@ -78,7 +78,7 @@ export class StagesController {
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('shortId') shortId: string,
     @Body() updateStageDto: UpdateStageRequestDto,
@@ -95,7 +95,7 @@ export class StagesController {
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   remove(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('shortId') shortId: string,
     @Param('projectShortId') projectShortId: string,
   ) {

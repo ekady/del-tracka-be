@@ -1,4 +1,4 @@
-export class IdsDto {
+export interface ITaskIds {
   userId?: string;
   projectId?: string;
   stageId?: string;

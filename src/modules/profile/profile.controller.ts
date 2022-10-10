@@ -10,7 +10,7 @@ import {
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { JwtPayloadReq } from '../auth/decorators';
-import { JwtPayload } from '../auth/dto';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/common/decorators';
 import { ProfileResponseDto } from './dto/profile-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -25,7 +25,7 @@ export class ProfileController {
   @Get()
   @ApiResProperty(ProfileResponseDto, 200)
   getProfile(
-    @JwtPayloadReq() jwtPayloadDto: JwtPayload,
+    @JwtPayloadReq() jwtPayloadDto: IJwtPayload,
   ): Promise<ProfileResponseDto> {
     return this.profileService.findProfile(jwtPayloadDto.id);
   }
@@ -35,7 +35,7 @@ export class ProfileController {
   @ApiResProperty(ProfileResponseDto, 200)
   @UseInterceptors(FileInterceptor('picture'))
   update(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
     @UploadedFile() picture: Express.Multer.File,
     @Body() body: UpdateProfileDto,
   ): Promise<ProfileResponseDto> {
@@ -45,7 +45,7 @@ export class ProfileController {
 
   @Delete()
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@JwtPayloadReq() jwtPayload: JwtPayload): Promise<StatusMessageDto> {
+  remove(@JwtPayloadReq() jwtPayload: IJwtPayload): Promise<StatusMessageDto> {
     return this.profileService.deleteProfile(jwtPayload.id);
   }
 }

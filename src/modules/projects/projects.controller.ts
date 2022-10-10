@@ -10,7 +10,7 @@ import {
 import { ProjectsService } from './services';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { JwtPayload } from '../auth/dto';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from '../auth/decorators';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
@@ -33,7 +33,7 @@ export class ProjectsController {
   @Post()
   @ApiResProperty(StatusMessageDto, 201)
   create(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Body() createProjectDto: CreateProjectDto,
   ): Promise<StatusMessageDto> {
     const { id } = jwtPayload;
@@ -43,7 +43,7 @@ export class ProjectsController {
   @Get()
   @ApiResProperty([ProjectResponseDto], 200)
   findAll(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
   ): Promise<ProjectResponseDto[]> {
     const { id: userId } = jwtPayload;
     return this.projectsService.findAll(userId);
@@ -71,7 +71,7 @@ export class ProjectsController {
   @RolePermission(ProjectMenu.Project, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectShortId') shortId: string,
     @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
@@ -90,7 +90,7 @@ export class ProjectsController {
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   getMember(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectShortId') shortId: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
@@ -102,7 +102,7 @@ export class ProjectsController {
   @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
-    @JwtPayloadReq() jwtPayload: JwtPayload,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectShortId') shortId: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {

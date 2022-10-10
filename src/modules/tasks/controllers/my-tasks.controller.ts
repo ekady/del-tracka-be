@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResProperty } from 'src/common/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { JwtPayload } from 'src/modules/auth/dto';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { MyTaskResponseDto } from '../dto';
 import { MyTasksService } from '../services';
 
@@ -13,7 +13,7 @@ export class MyTasksController {
 
   @Get()
   @ApiResProperty(MyTaskResponseDto, 200)
-  findAll(@JwtPayloadReq() user: JwtPayload): Promise<MyTaskResponseDto[]> {
+  findAll(@JwtPayloadReq() user: IJwtPayload): Promise<MyTaskResponseDto[]> {
     return this.myTasksService.findMyTasks(user.id);
   }
 }

@@ -12,10 +12,11 @@ import {
 } from 'src/common/http-exceptions/exceptions';
 import { User, UserDocument } from 'src/database/schema/user/user.schema';
 import { HashHelper } from 'src/helpers';
-import { JwtPayload, TokensDto } from './dto';
+import { TokensDto } from './dto';
 import { TokenJwtConfig } from './enum';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
+import { IJwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class TokenService {
@@ -26,7 +27,7 @@ export class TokenService {
   ) {}
 
   async generateAuthTokens(
-    payload: Pick<JwtPayload, 'id'>,
+    payload: Pick<IJwtPayload, 'id'>,
   ): Promise<TokensDto> {
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: this.config.get('JWT_EXPIRES_IN'),
@@ -55,7 +56,7 @@ export class TokenService {
     };
   }
 
-  async validateTokenUser(payload: JwtPayload): Promise<JwtPayload> {
+  async validateTokenUser(payload: IJwtPayload): Promise<IJwtPayload> {
     const user = await this.userSchema.findById(payload.id).exec();
     if (!user) throw new UnauthorizedException();
 

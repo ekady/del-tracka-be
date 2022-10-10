@@ -12,7 +12,6 @@ import { JwtPayloadReq, SkipAuth } from './decorators';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
-  JwtPayload,
   ResetPasswordDto,
   SignInRequestDto,
   SignUpRequestDto,
@@ -22,6 +21,7 @@ import { AuthJwtRefreshGuard } from './guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { VerifyResetDto } from './dto/verify-reset-payload.dto';
+import { IJwtPayload } from './interfaces/jwt-payload.interface';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -56,7 +56,7 @@ export class AuthController {
   @Post('sign-out')
   @ApiResProperty(StatusMessageDto, 200)
   @HttpCode(200)
-  signOut(@JwtPayloadReq() jwtPayload: JwtPayload): Promise<StatusMessageDto> {
+  signOut(@JwtPayloadReq() jwtPayload: IJwtPayload): Promise<StatusMessageDto> {
     return this.authService.signOut(jwtPayload.id);
   }
 
@@ -66,7 +66,7 @@ export class AuthController {
   @UseGuards(AuthJwtRefreshGuard)
   @HttpCode(200)
   refresh(
-    @JwtPayloadReq() jwtPayload: JwtPayload & Pick<TokensDto, 'refreshToken'>,
+    @JwtPayloadReq() jwtPayload: IJwtPayload & Pick<TokensDto, 'refreshToken'>,
   ): Promise<TokensDto> {
     const { id, refreshToken } = jwtPayload;
     return this.authService.refreshToken(id, refreshToken);

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
-import { IdsDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
@@ -11,6 +10,7 @@ import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';
 import { UserProjectService } from 'src/modules/user-project/user-project.service';
 import { UpdateTaskDto, UpdateTaskRequestDto } from '../dto';
+import { ITaskIds } from '../interfaces/taskIds.interface';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class TasksHelperService {
   ) {}
 
   async checkTaskExist(
-    ids: Pick<IdsDto, 'projectId' | 'stageId'>,
+    ids: Pick<ITaskIds, 'projectId' | 'stageId'>,
     query: FilterQuery<TaskDocument>,
     populateOptions?: PopulateOptions[],
   ): Promise<void> {
@@ -43,7 +43,7 @@ export class TasksHelperService {
     }
   }
 
-  async findTaskById(ids: IdsDto, select?: string): Promise<TaskDocument> {
+  async findTaskById(ids: ITaskIds, select?: string): Promise<TaskDocument> {
     const { taskId, projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageById(
       stageId,

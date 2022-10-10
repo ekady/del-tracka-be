@@ -16,7 +16,6 @@ import { StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { JwtPayload } from 'src/modules/auth/dto';
 import {
   CreateTaskRequestDto,
   TaskResponseDto,
@@ -27,6 +26,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectShortId/stages/:stageShortId/tasks')
@@ -39,7 +39,7 @@ export class TasksController {
   @RolePermission(ProjectMenu.Task, PermissionMenu.Create)
   @UseInterceptors(FilesInterceptor('images'))
   create(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Body() body: CreateTaskRequestDto,
@@ -57,7 +57,7 @@ export class TasksController {
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findAll(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
   ): Promise<TaskResponseDto[]> {
@@ -103,7 +103,7 @@ export class TasksController {
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   @UseInterceptors(FilesInterceptor('images'))
   update(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @UploadedFiles() images: Express.Multer.File[],
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
@@ -123,7 +123,7 @@ export class TasksController {
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   updateStatus(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Param('id') id: string,
@@ -141,7 +141,7 @@ export class TasksController {
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Delete)
   remove(
-    @JwtPayloadReq() user: JwtPayload,
+    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Param('id') id: string,
