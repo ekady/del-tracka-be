@@ -16,4 +16,7 @@ export class StageResponseDto implements EntityResponseDto {
 
   @ApiResponseProperty()
   description: string;
+
+  @ApiResponseProperty()
+  shortId: string;
 }

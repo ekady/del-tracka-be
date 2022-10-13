@@ -26,7 +26,7 @@ import { ActivityResponseDto } from '../activities/dto';
 import { IStageShortId } from './interfaces/stageShortIds.interface';
 
 @ApiTags('Stages')
-@Controller('projects/:projectShortId/stages')
+@Controller('projects/:projectId/stages')
 export class StagesController {
   constructor(private readonly stagesService: StagesService) {}
 
@@ -35,12 +35,12 @@ export class StagesController {
   @ApiResProperty(StatusMessageDto, 201)
   create(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectShortId') projectShortId: string,
+    @Param('projectId') projectId: string,
     @Body() createStageDto: CreateStageRequestDto,
   ): Promise<StatusMessageDto> {
     const payload: CreateStageDto = {
       ...createStageDto,
-      projectShortId,
+      projectId,
     };
     return this.stagesService.create(user.id, payload);
   }
@@ -48,10 +48,8 @@ export class StagesController {
   @Get()
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
-  findAll(
-    @Param('projectShortId') projectShortId: string,
-  ): Promise<StageResponseDto[]> {
-    return this.stagesService.findAll(projectShortId);
+  findAll(@Param('projectId') projectId: string): Promise<StageResponseDto[]> {
+    return this.stagesService.findAll(projectId);
   }
 
   @Get(':shortId')
@@ -59,9 +57,9 @@ export class StagesController {
   @ApiResProperty(StageResponseDto, 200)
   findOne(
     @Param('shortId') shortId: string,
-    @Param('projectShortId') projectShortId: string,
+    @Param('projectId') projectId: string,
   ) {
-    return this.stagesService.findOne(shortId, projectShortId);
+    return this.stagesService.findOne(shortId, projectId);
   }
 
   @Get(':shortId/activities')
@@ -69,9 +67,9 @@ export class StagesController {
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
     @Param('shortId') shortId: string,
-    @Param('projectShortId') projectShortId: string,
+    @Param('projectId') projectId: string,
   ): Promise<ActivityResponseDto[]> {
-    return this.stagesService.findStageActivities(shortId, projectShortId);
+    return this.stagesService.findStageActivities(shortId, projectId);
   }
 
   @Put(':shortId')
@@ -79,14 +77,14 @@ export class StagesController {
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectShortId') projectShortId: string,
+    @Param('projectId') projectId: string,
     @Param('shortId') shortId: string,
     @Body() updateStageDto: UpdateStageRequestDto,
   ) {
     const payload: UpdateStageDto = {
       ...updateStageDto,
       userId: user.id,
-      projectShortId,
+      projectId,
     };
     return this.stagesService.update(shortId, payload);
   }
@@ -97,11 +95,11 @@ export class StagesController {
   remove(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('shortId') shortId: string,
-    @Param('projectShortId') projectShortId: string,
+    @Param('projectId') projectId: string,
   ) {
     const shortIds: IStageShortId = {
-      stageShortId: shortId,
-      projectShortId: projectShortId,
+      stageId: shortId,
+      projectId: projectId,
     };
     return this.stagesService.remove(shortIds, user.id);
   }

@@ -12,9 +12,7 @@ import { CommentResponse } from './dto';
 import { CreateCommentRequestDto } from './dto/create-comment.dto';
 
 @ApiTags('Tasks')
-@Controller(
-  'projects/:projectShortId/stages/:stageShortId/tasks/:taskShortId/comments',
-)
+@Controller('projects/:projectId/stages/:stageId/tasks/:taskId/comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
@@ -23,15 +21,15 @@ export class CommentsController {
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Create)
   create(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectShortId') projectShortId: string,
-    @Param('stageShortId') stageShortId: string,
-    @Param('taskShortId') taskShortId: string,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Param('taskId') taskId: string,
     @Body() createDto: CreateCommentRequestDto,
   ): Promise<StatusMessageDto> {
     const ids: ITaskShortIds = {
-      projectShortId,
-      stageShortId,
-      taskShortId,
+      projectId,
+      stageId,
+      taskId,
     };
     return this.commentsService.create(ids, user.id, createDto);
   }
@@ -40,14 +38,14 @@ export class CommentsController {
   @ApiResProperty([CommentResponse], 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
   findAll(
-    @Param('projectShortId') projectShortId: string,
-    @Param('stageShortId') stageShortId: string,
-    @Param('taskShortId') taskShortId: string,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Param('taskId') taskId: string,
   ): Promise<CommentResponse[]> {
     const ids: ITaskShortIds = {
-      projectShortId,
-      stageShortId,
-      taskShortId,
+      projectId,
+      stageId,
+      taskId,
     };
     return this.commentsService.findAll(ids);
   }

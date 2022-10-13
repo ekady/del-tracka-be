@@ -32,10 +32,10 @@ export class TasksService {
     userId: string,
     createRequestDto: CreateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    const { projectShortId, stageShortId } = ids;
+    const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
+      stageId,
+      projectId,
     );
 
     await this.tasksHelperService.checkTaskExist(
@@ -45,12 +45,12 @@ export class TasksService {
     const { images, assignee, reporter, ...taskValues } = createRequestDto;
     const userAssignee = await this.tasksHelperService.findUserForTask(
       assignee,
-      projectShortId,
+      projectId,
       'Assignee not found',
     );
     const userReporter = await this.tasksHelperService.findUserForTask(
       reporter,
-      projectShortId,
+      projectId,
       'Reporter not found',
     );
     const payload: CreateTaskDto = {
@@ -81,10 +81,10 @@ export class TasksService {
     ids: IStageShortId,
     userId: string,
   ): Promise<TaskResponseDto[]> {
-    const { projectShortId, stageShortId } = ids;
+    const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
+      stageId,
+      projectId,
     );
     return this.taskSchema
       .find({ stage: stage._id })
@@ -104,8 +104,8 @@ export class TasksService {
   async findTaskActivities(ids: ITaskShortIds): Promise<ActivityResponseDto[]> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageShortId,
-      ids.projectShortId,
+      ids.stageId,
+      ids.projectId,
     );
     return this.activitiesService.findActivitiesTask(
       stage.project._id,
@@ -142,8 +142,8 @@ export class TasksService {
 
   async remove(ids: ITaskShortIds, userId: string): Promise<StatusMessageDto> {
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageShortId,
-      ids.projectShortId,
+      ids.stageId,
+      ids.projectId,
     );
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     await task.remove();

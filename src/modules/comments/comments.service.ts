@@ -30,8 +30,8 @@ export class CommentsService {
     createDto: CreateCommentRequestDto,
   ): Promise<StatusMessageDto> {
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageShortId,
-      ids.projectShortId,
+      ids.stageId,
+      ids.projectId,
     );
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const payload: CreateCommentDto = {

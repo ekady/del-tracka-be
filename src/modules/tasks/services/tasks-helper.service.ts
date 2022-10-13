@@ -8,6 +8,7 @@ import { UserProjectDocument } from 'src/database/schema/user-project/user-proje
 import { ActivitiesService } from 'src/modules/activities/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';
+import { UserProjectResponseDto } from 'src/modules/user-project/dto';
 import { UserProjectService } from 'src/modules/user-project/user-project.service';
 import { UpdateTaskDto, UpdateTaskRequestDto } from '../dto';
 import { ITaskIds } from '../interfaces/taskIds.interface';
@@ -68,14 +69,14 @@ export class TasksHelperService {
     ids: ITaskShortIds,
     select?: string,
   ): Promise<TaskDocument> {
-    const { taskShortId, projectShortId, stageShortId } = ids;
+    const { taskId, projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
+      stageId,
+      projectId,
     );
     const task = await this.taskSchema
       .findOne({
-        shortId: taskShortId,
+        shortId: taskId,
         stage: stage._id,
       })
       .populate('stage reporter assignee project')
@@ -92,7 +93,7 @@ export class TasksHelperService {
     userId: string,
     projectId: string,
     errorMessage?: string,
-  ): Promise<UserProjectDocument> {
+  ): Promise<UserProjectResponseDto> {
     if (!userId) return null;
     return this.userProjectService.findUserProject(
       userId,
@@ -110,10 +111,10 @@ export class TasksHelperService {
     updateRequestDto: UpdateTaskRequestDto,
     type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
   ): Promise<TaskDocument> {
-    const { projectShortId, stageShortId, userId } = ids;
+    const { projectId, stageId, userId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
+      stageId,
+      projectId,
     );
     const taskFound = await this.findTaskByShortId(ids);
     await this.checkTaskExist(

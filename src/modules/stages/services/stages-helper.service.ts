@@ -50,15 +50,15 @@ export class StagesHelperService {
   }
 
   async findStageByShortId(
-    stageShortId: string,
-    projectShortId: string,
+    stageId: string,
+    projectId: string,
     select?: string,
   ): Promise<StageDocument> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectShortId,
+      projectId,
     );
     const stage = await this.stageSchema
-      .findOne({ project: project._id, shortId: stageShortId })
+      .findOne({ project: project._id, shortId: stageId })
       .populate('project')
       .select(select)
       .exec();

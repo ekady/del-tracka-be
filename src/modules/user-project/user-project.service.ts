@@ -16,6 +16,7 @@ import {
   CreateUserProjectDto,
   UpdateUserProjectDto,
   ProjectUserResponseDto,
+  UserProjectResponseDto,
 } from './dto';
 
 @Injectable()
@@ -29,7 +30,7 @@ export class UserProjectService {
     userId: string,
     queryProject?: FilterQuery<ProjectDocument>,
     queryRole?: FilterQuery<RoleDocument>,
-  ): Promise<UserProjectDocument[]> {
+  ): Promise<UserProjectResponseDto[]> {
     const objectUserId = new Types.ObjectId(userId);
     const matchProject = queryProject ?? {};
     const matchRole = queryRole ?? {};
@@ -49,7 +50,10 @@ export class UserProjectService {
           localField: 'project',
           foreignField: '_id',
           as: 'project',
-          pipeline: [{ $match: matchProject }, { $project: nameField }],
+          pipeline: [
+            { $match: matchProject },
+            { $project: { ...nameField, description: 1, shortId: 1 } },
+          ],
         },
       },
       {
@@ -71,11 +75,23 @@ export class UserProjectService {
         },
       },
       {
+        $lookup: {
+          from: 'stages',
+          localField: 'project._id',
+          foreignField: 'project',
+          as: 'stages',
+          pipeline: [
+            { $project: { ...nameField, description: 1, shortId: 1 } },
+          ],
+        },
+      },
+      {
         $project: {
           _id: 0,
           user: { $arrayElemAt: ['$user', 0] },
           project: { $arrayElemAt: ['$project', 0] },
           role: { $arrayElemAt: ['$role', 0] },
+          stages: '$stages',
         },
       },
       {
@@ -92,7 +108,7 @@ export class UserProjectService {
     userId: string,
     shortId: string,
     errorMessage?: string,
-  ): Promise<UserProjectDocument> {
+  ): Promise<UserProjectResponseDto> {
     const [userProject] = await this.findUserProjects(userId, {
       shortId,
     });

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PopulateOptions } from 'mongoose';
+import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { RoleName } from 'src/common/enums';
 import {
@@ -24,7 +24,7 @@ import { ActivitiesService } from '../../activities/activities.service';
 import {
   AddUpdateMemberDto,
   CreateProjectDto,
-  ProjectResponseDto,
+  ProjectResponseWithStagesDto,
   RemoveMemberRequest,
   UpdateProjectDto,
 } from '../dto';
@@ -50,9 +50,6 @@ export class ProjectsService {
       createdBy: userId,
       updatedBy: userId,
     };
-    const role = await this.rolesService.findOneRole({
-      name: RoleName.OWNER,
-    });
     const userProject = await this.projectsHelperService.findUserProject(
       userId,
       createProjectDto.name,
@@ -61,7 +58,15 @@ export class ProjectsService {
     if (userProject && userProject.project)
       throw new DocumentExistException('Project already exists.');
 
+    const role = await this.rolesService.findOneRole({
+      name: RoleName.OWNER,
+    });
+
+    console.log(payload);
     const project = await this.projectSchema.create(payload);
+
+    console.log(project);
+
     await this.userProjectService.addUserProject(
       { projectId: project._id, userId, roleId: role._id },
       userId,
@@ -69,22 +74,34 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async findAll(userId: string): Promise<ProjectResponseDto[]> {
-    const userProjects = await this.userProjectService.findProjectsByUserId(
-      userId,
-    );
-    return userProjects.map((userProject) => userProject.project);
+  async findAll(userId: string): Promise<ProjectResponseWithStagesDto[]> {
+    const userProjects = await this.userProjectService.findUserProjects(userId);
+    return userProjects.map((userProject) => ({
+      _id: userProject.project._id,
+      name: userProject.project.name,
+      description: userProject.project.description,
+      shortId: userProject.project.shortId,
+      role: userProject.role.name,
+      stages: userProject.stages,
+    }));
   }
 
-  async findOne(shortId: string): Promise<ProjectResponseDto> {
-    const populateOptions: PopulateOptions[] = [
-      { path: 'createdBy', select: '_id firstName lastName' },
-      { path: 'updatedBy', select: '_id firstName lastName' },
-    ];
-    return this.projectsHelperService.findProjectByShortId(
+  async findOne(
+    shortId: string,
+    userId: string,
+  ): Promise<ProjectResponseWithStagesDto> {
+    const userProject = await this.userProjectService.findUserProject(
+      userId,
       shortId,
-      populateOptions,
     );
+    return {
+      _id: userProject.project._id,
+      name: userProject.project.name,
+      description: userProject.project.description,
+      shortId: userProject.project.shortId,
+      role: userProject.role.name,
+      stages: userProject.stages,
+    };
   }
 
   async update(

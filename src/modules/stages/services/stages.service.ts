@@ -25,9 +25,9 @@ export class StagesService {
     userId: string,
     createStageDto: CreateStageDto,
   ): Promise<StatusMessageDto> {
-    const { projectShortId, ...payload } = createStageDto;
+    const { projectId, ...payload } = createStageDto;
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectShortId,
+      projectId,
     );
     await this.stagesHelperService.checkStageNameExist({
       name: payload.name,
@@ -50,9 +50,9 @@ export class StagesService {
     return { message: 'Success' };
   }
 
-  async findAll(projectShortId: string): Promise<StageResponseDto[]> {
+  async findAll(projectId: string): Promise<StageResponseDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectShortId,
+      projectId,
     );
     return this.stageSchema
       .find({ project: project._id })
@@ -60,13 +60,10 @@ export class StagesService {
       .select('-project -createdBy -updatedBy');
   }
 
-  async findOne(
-    shortId: string,
-    projectShortId: string,
-  ): Promise<StageResponseDto> {
+  async findOne(shortId: string, projectId: string): Promise<StageResponseDto> {
     return this.stagesHelperService.findStageByShortId(
       shortId,
-      projectShortId,
+      projectId,
       '-project -createdBy -updatedBy',
     );
   }
@@ -75,10 +72,10 @@ export class StagesService {
     shortId: string,
     updateStageDto: UpdateStageDto,
   ): Promise<StatusMessageDto> {
-    const { userId, projectShortId, ...payload } = updateStageDto;
+    const { userId, projectId, ...payload } = updateStageDto;
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
-      projectShortId,
+      projectId,
     );
     await this.stagesHelperService.checkStageNameExist({
       name: payload.name,
@@ -108,10 +105,10 @@ export class StagesService {
     shortIds: IStageShortId,
     userId: string,
   ): Promise<StatusMessageDto> {
-    const { projectShortId, stageShortId } = shortIds;
+    const { projectId, stageId } = shortIds;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
+      stageId,
+      projectId,
     );
     await stage.remove();
 
@@ -127,11 +124,11 @@ export class StagesService {
 
   async findStageActivities(
     shortId: string,
-    projectShortId: string,
+    projectId: string,
   ): Promise<ActivityResponseDto[]> {
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
-      projectShortId,
+      projectId,
     );
     return this.activitiesService.findActivitiesStage(
       stage.project._id,

@@ -17,6 +17,7 @@ import { StatusMessageDto } from 'src/common/dto';
 import {
   AddUpdateMemberDto,
   ProjectResponseDto,
+  ProjectResponseWithStagesDto,
   RemoveMemberRequest,
 } from './dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -41,69 +42,70 @@ export class ProjectsController {
   }
 
   @Get()
-  @ApiResProperty([ProjectResponseDto], 200)
+  @ApiResProperty([ProjectResponseWithStagesDto], 200)
   findAll(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-  ): Promise<ProjectResponseDto[]> {
+  ): Promise<ProjectResponseWithStagesDto[]> {
     const { id: userId } = jwtPayload;
     return this.projectsService.findAll(userId);
   }
 
-  @Get(':projectShortId')
+  @Get(':projectId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
-  @ApiResProperty(ProjectResponseDto, 200)
+  @ApiResProperty(ProjectResponseWithStagesDto, 200)
   findOne(
-    @Param('projectShortId') shortId: string,
-  ): Promise<ProjectResponseDto> {
-    return this.projectsService.findOne(shortId);
+    @Param('projectId') shortId: string,
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
+  ): Promise<ProjectResponseWithStagesDto> {
+    return this.projectsService.findOne(shortId, jwtPayload.id);
   }
 
-  @Get(':projectShortId/activities')
+  @Get(':projectId/activities')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
   ): Promise<ActivityResponseDto[]> {
     return this.projectsService.findActivities(shortId);
   }
 
-  @Put(':projectShortId')
+  @Put(':projectId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
     @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectsService.update(userId, shortId, updateProjectDto);
   }
 
-  @Delete(':projectShortId')
+  @Delete(':projectId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@Param('projectShortId') shortId: string): Promise<StatusMessageDto> {
+  remove(@Param('projectId') shortId: string): Promise<StatusMessageDto> {
     return this.projectsService.remove(shortId);
   }
 
-  @Post(':projectShortId/member')
+  @Post(':projectId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   getMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectsService.addMember(userId, shortId, addUpdateMemberDto);
   }
 
-  @Put(':projectShortId/member')
+  @Put(':projectId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
     @Body() addUpdateMemberDto: AddUpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
@@ -114,20 +116,20 @@ export class ProjectsController {
     );
   }
 
-  @Get(':projectShortId/member')
+  @Get(':projectId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
   addMember(
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
   ): Promise<ProjectUserResponseDto[]> {
     return this.projectsService.getMember(shortId);
   }
 
-  @Delete(':projectShortId/member')
+  @Delete(':projectId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   removeMember(
-    @Param('projectShortId') shortId: string,
+    @Param('projectId') shortId: string,
     @Body() removeMemberReq: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     return this.projectsService.removeMember(shortId, removeMemberReq);
