@@ -22,10 +22,11 @@ import { UserProjectService } from '../../user-project/user-project.service';
 import { UsersService } from '../../users/users.service';
 import { ActivitiesService } from '../../activities/activities.service';
 import {
-  AddUpdateMemberDto,
+  AddMemberDto,
   CreateProjectDto,
   ProjectResponseWithStagesDto,
   RemoveMemberRequest,
+  UpdateMemberDto,
   UpdateProjectDto,
 } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
@@ -61,11 +62,7 @@ export class ProjectsService {
     const role = await this.rolesService.findOneRole({
       name: RoleName.OWNER,
     });
-
-    console.log(payload);
     const project = await this.projectSchema.create(payload);
-
-    console.log(project);
 
     await this.userProjectService.addUserProject(
       { projectId: project._id, userId, roleId: role._id },
@@ -130,13 +127,13 @@ export class ProjectsService {
   async addMember(
     userCreatedId: string,
     shortId: string,
-    addUpdateMemberDto: AddUpdateMemberDto,
+    addMemberDto: AddMemberDto,
   ): Promise<StatusMessageDto> {
-    const { userId, roleName } = addUpdateMemberDto;
+    const { email, roleName } = addMemberDto;
     const project = await this.projectsHelperService.findProjectByShortId(
       shortId,
     );
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findByEmail(email);
     const role = await this.rolesService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
       projectId: project._id,
@@ -153,9 +150,9 @@ export class ProjectsService {
   async updateMember(
     userUpdatedId: string,
     shortId: string,
-    addUpdateMemberDto: AddUpdateMemberDto,
+    updateMemberDto: UpdateMemberDto,
   ): Promise<StatusMessageDto> {
-    const { userId, roleName } = addUpdateMemberDto;
+    const { userId, roleName } = updateMemberDto;
     const project = await this.projectsHelperService.findProjectByShortId(
       shortId,
     );
@@ -163,7 +160,7 @@ export class ProjectsService {
     const role = await this.rolesService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
       projectId: project._id,
-      ...addUpdateMemberDto,
+      ...updateMemberDto,
       userId: user._id,
       roleId: role._id,
     };

@@ -18,4 +18,12 @@ export class UsersService {
     }
     return user;
   }
+
+  async findByEmail(email: string): Promise<UserDocument> {
+    const user = await this.userSchema.findOne({ email }).exec();
+    if (!user) {
+      throw new DocumentNotFoundException('User not found');
+    }
+    return user;
+  }
 }

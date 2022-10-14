@@ -15,21 +15,25 @@ import { JwtPayloadReq } from '../auth/decorators';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
 import {
-  AddUpdateMemberDto,
-  ProjectResponseDto,
+  AddMemberDto,
   ProjectResponseWithStagesDto,
   RemoveMemberRequest,
+  UpdateMemberDto,
 } from './dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ProjectUserResponseDto } from '../user-project/dto';
 import { ActivityResponseDto } from '../activities/dto';
+import { UsersService } from '../users/users.service';
 
 @ApiTags('Projects')
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
   @ApiResProperty(StatusMessageDto, 201)
@@ -94,7 +98,7 @@ export class ProjectsController {
   getMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectId') shortId: string,
-    @Body() addUpdateMemberDto: AddUpdateMemberDto,
+    @Body() addUpdateMemberDto: AddMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectsService.addMember(userId, shortId, addUpdateMemberDto);
@@ -106,7 +110,7 @@ export class ProjectsController {
   updateMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectId') shortId: string,
-    @Body() addUpdateMemberDto: AddUpdateMemberDto,
+    @Body() addUpdateMemberDto: UpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectsService.updateMember(

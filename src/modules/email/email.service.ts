@@ -35,8 +35,8 @@ export class EmailService {
         subject: `[Tracka] - ${options.subject}`,
         html,
       });
-    } catch (error) {
-      console.log({ error });
+    } catch {
+      //
     }
   }
 }

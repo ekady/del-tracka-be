@@ -125,8 +125,8 @@ export class UserProjectService {
       .populate({
         path: 'project',
         populate: [
-          { path: 'createdBy', select: '_id firstName lastName' },
-          { path: 'updatedBy', select: '_id firstName lastName' },
+          { path: 'createdBy', select: '_id firstName lastName email picture' },
+          { path: 'updatedBy', select: '_id firstName lastName email picture' },
         ],
       })
       .sort({ createdAt: -1 })
@@ -139,11 +139,10 @@ export class UserProjectService {
   ): Promise<ProjectUserResponseDto[]> {
     const users = await this.userProjectSchema
       .find({ project: projectId })
-      .select('_id user role')
       .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'updatedBy', select: '_id firstName lastName' },
-        { path: 'user', select: '_id firstName lastName' },
+        { path: 'createdBy' },
+        { path: 'updatedBy' },
+        { path: 'user' },
         { path: 'role', select: '_id name' },
       ])
       .exec();
@@ -154,6 +153,10 @@ export class UserProjectService {
       role: user.role,
       createdBy: user.createdBy,
       updatedBy: user.updatedBy,
+      picture: user.user.picture,
+      email: user.user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     }));
   }
 

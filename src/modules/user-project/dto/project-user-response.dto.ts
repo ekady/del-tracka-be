@@ -1,4 +1,4 @@
-import { ApiResponseProperty, PickType } from '@nestjs/swagger';
+import { ApiResponseProperty } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/common/dto';
 import { User } from 'src/database/schema/user/user.schema';
 import { ProfileResponseDto } from 'src/modules/profile/dto/profile-response.dto';
@@ -7,16 +7,16 @@ import { RoleDto } from 'src/modules/roles/dto';
 import { StageResponseDto } from 'src/modules/stages/dto';
 
 export class ProjectUserResponseDto
-  extends PickType(ProfileResponseDto, ['firstName', 'lastName'])
+  extends ProfileResponseDto
   implements Omit<EntityResponseDto, 'createdAt' | 'updatedAt'>
 {
   @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
+    type: () => ProfileResponseDto,
   })
   createdBy: User;
 
   @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
+    type: () => ProfileResponseDto,
   })
   updatedBy: User;
 
@@ -28,20 +28,19 @@ export class UserProjectResponseDto
   implements Omit<EntityResponseDto, 'createdAt' | 'updatedAt'>
 {
   @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
+    type: () => ProfileResponseDto,
   })
   createdBy: User;
 
   @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
+    type: () => ProfileResponseDto,
   })
   updatedBy: User;
 
-  @ApiResponseProperty()
-  user: Pick<
-    ProfileResponseDto,
-    'firstName' | 'lastName' | '_id' | 'email' | 'picture'
-  >;
+  @ApiResponseProperty({
+    type: () => ProfileResponseDto,
+  })
+  user: ProfileResponseDto;
 
   @ApiResponseProperty()
   project: Pick<ProjectResponseDto, '_id' | 'name' | 'description' | 'shortId'>;
