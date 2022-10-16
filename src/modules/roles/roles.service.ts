@@ -8,6 +8,7 @@ import {
   PermissionDocument,
 } from 'src/database/schema/permission/permission.schema';
 import { Role, RoleDocument } from 'src/database/schema/role/role.schema';
+import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
 import { UserProjectService } from '../user-project/user-project.service';
 
 @Injectable()
@@ -38,12 +39,17 @@ export class RolesService {
     return permision;
   }
 
-  async findProjectOwner(projectId: string): Promise<string> {
+  async findProjectOwners(projectId: string): Promise<UserProjectDocument[]> {
     const roleOwner = await this.findOneRole({ name: RoleName.OWNER });
     const userProject = await this.userProjectService.findUserProjectsByRoleId(
       projectId,
       roleOwner._id,
     );
+    return userProject;
+  }
+
+  async findProjectOwner(projectId: string): Promise<string> {
+    const userProject = await this.findProjectOwners(projectId);
     return userProject?.[0].user?._id ?? '';
   }
 }

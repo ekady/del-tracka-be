@@ -1,11 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
-import {
-  DocumentExistException,
-  DocumentNotFoundException,
-} from 'src/common/http-exceptions/exceptions';
+import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { ProjectDocument } from 'src/database/schema/project/project.schema';
 import { RoleDocument } from 'src/database/schema/role/role.schema';
 import {
@@ -114,7 +111,7 @@ export class UserProjectService {
     });
     if (!userProject || !userProject.project) {
       const errmsg = errorMessage || 'Project not found';
-      throw new DocumentNotFoundException(errmsg);
+      throw new BadRequestException(errmsg);
     }
     return userProject;
   }
@@ -196,13 +193,23 @@ export class UserProjectService {
     userUpdatedId: string,
   ): Promise<UserProjectDocument> {
     const { userId, projectId, roleId } = updateUserProjectDto;
-    const userRole = await this.findUserProjectsByRoleId(projectId, roleId);
-    const isOwnerLimit =
-      userRole.length >= 2 && userRole[0].role.name === RoleName.OWNER;
-    if (isOwnerLimit) {
-      const errmsg = 'This project can only have two owners';
-      throw new DocumentNotFoundException(errmsg);
+    const userOwner = await this.findUserProjects(
+      userId,
+      { _id: projectId },
+      { name: RoleName.OWNER },
+    );
+    const owners = await this.findUserProjectsByRoleId(
+      projectId,
+      userOwner[0]?.role._id,
+    );
+
+    const isOwnerMinLimit =
+      userOwner.length && owners.length < 2 && roleId !== owners[0].role._id;
+    if (isOwnerMinLimit) {
+      const errmsg = 'This project must have at least one OWNER';
+      throw new BadRequestException(errmsg);
     }
+
     const userIdProjectId = { user: userId, project: projectId };
     const payload = {
       ...userIdProjectId,
@@ -213,7 +220,7 @@ export class UserProjectService {
       .findOneAndUpdate(userIdProjectId, payload, { new: true })
       .exec();
     if (!userProject)
-      throw new DocumentExistException('User not found on this project');
+      throw new BadRequestException('User not found on this project');
     return userProject;
   }
 
@@ -227,12 +234,12 @@ export class UserProjectService {
       .populate('role')
       .exec();
     if (!userProject)
-      throw new DocumentNotFoundException('User not found on this project');
+      throw new BadRequestException('User not found on this project');
 
     const { name: roleName, _id: roleId } = userProject.role;
     const userRole = await this.findUserProjectsByRoleId(projectId, roleId);
     if (roleName === RoleName.OWNER && userRole.length < 2) {
-      throw new DocumentNotFoundException(
+      throw new BadRequestException(
         'This user is the only owner of this project',
       );
     }
