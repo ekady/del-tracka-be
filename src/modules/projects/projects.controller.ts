@@ -138,4 +138,14 @@ export class ProjectsController {
   ): Promise<StatusMessageDto> {
     return this.projectsService.removeMember(shortId, removeMemberReq);
   }
+
+  @Put(':projectId/leave')
+  @ApiResProperty(StatusMessageDto, 200)
+  leaveProject(
+    @JwtPayloadReq() jwtPayload: IJwtPayload,
+    @Param('projectId') shortId: string,
+  ): Promise<StatusMessageDto> {
+    const { id: userId } = jwtPayload;
+    return this.projectsService.removeMember(shortId, { userId });
+  }
 }
