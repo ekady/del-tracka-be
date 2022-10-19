@@ -25,15 +25,11 @@ import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ProjectUserResponseDto } from '../user-project/dto';
 import { ActivityResponseDto } from '../activities/dto';
-import { UsersService } from '../users/users.service';
 
 @ApiTags('Projects')
 @Controller('projects')
 export class ProjectsController {
-  constructor(
-    private readonly projectsService: ProjectsService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
   @ApiResProperty(StatusMessageDto, 201)

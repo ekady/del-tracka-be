@@ -6,7 +6,6 @@ import {
   Project,
   ProjectDocument,
 } from 'src/database/schema/project/project.schema';
-import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
 import { UserProjectResponseDto } from 'src/modules/user-project/dto';
 import { UserProjectService } from '../../user-project/user-project.service';
 
