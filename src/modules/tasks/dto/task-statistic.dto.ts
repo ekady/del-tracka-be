@@ -15,5 +15,9 @@ export class TaskStageStatisticDto {
   @ApiResponseProperty()
   name: string;
   @ApiResponseProperty()
+  description: string;
+  @ApiResponseProperty()
+  shortId: string;
+  @ApiResponseProperty()
   tasks: TaskStatisticDto;
 }

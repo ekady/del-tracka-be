@@ -75,19 +75,26 @@ export class TasksStatisticService {
           foreignField: 'project',
           as: 'stage',
           pipeline: [
+            { $match: { isDeleted: { $ne: true } } },
             {
               $lookup: {
                 from: 'tasks',
                 localField: '_id',
                 foreignField: 'stage',
                 as: 'tasks',
-                pipeline: [taskGroup, { $sort: { name: 1 } }],
+                pipeline: [
+                  { $match: { isDeleted: { $ne: true } } },
+                  taskGroup,
+                  { $sort: { name: 1 } },
+                ],
               },
             },
             {
               $project: {
                 _id: 1,
                 name: 1,
+                shortId: 1,
+                description: 1,
                 tasks: { $arrayToObject: taskArrayToObject },
               },
             },
@@ -118,13 +125,17 @@ export class TasksStatisticService {
           foreignField: 'project',
           as: 'stage',
           pipeline: [
+            { $match: { isDeleted: { $ne: true } } },
             {
               $lookup: {
                 from: 'tasks',
                 localField: '_id',
                 foreignField: 'stage',
                 as: 'tasks',
-                pipeline: [match.task],
+                pipeline: [
+                  { $match: { isDeleted: { $ne: true } } },
+                  match.task,
+                ],
               },
             },
             { $unwind: '$tasks' },

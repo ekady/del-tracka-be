@@ -24,9 +24,16 @@ export class ProjectUserResponseDto
   _id: string;
 }
 
-export class UserProjectResponseDto
-  implements Omit<EntityResponseDto, 'createdAt' | 'updatedAt'>
-{
+export class UserProjectResponseDto implements EntityResponseDto {
+  @ApiResponseProperty()
+  _id?: string;
+
+  @ApiResponseProperty()
+  createdAt: Date;
+
+  @ApiResponseProperty()
+  updatedAt: Date;
+
   @ApiResponseProperty({
     type: () => ProfileResponseDto,
   })

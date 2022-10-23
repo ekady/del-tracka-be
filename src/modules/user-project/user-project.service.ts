@@ -31,7 +31,7 @@ export class UserProjectService {
     const objectUserId = new Types.ObjectId(userId);
     const matchProject = queryProject ?? {};
     const matchRole = queryRole ?? {};
-    const nameField = { _id: 1, name: 1 };
+    const nameField = { _id: 1, name: 1, createdAt: 1, updatedAt: 1 };
     const userFields = {
       _id: 1,
       firstName: 1,
@@ -48,6 +48,7 @@ export class UserProjectService {
           foreignField: '_id',
           as: 'project',
           pipeline: [
+            { $match: { isDeleted: { $ne: true } } },
             { $match: matchProject },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
@@ -68,7 +69,10 @@ export class UserProjectService {
           localField: 'user',
           foreignField: '_id',
           as: 'user',
-          pipeline: [{ $project: userFields }],
+          pipeline: [
+            { $match: { isDeleted: { $ne: true } } },
+            { $project: userFields },
+          ],
         },
       },
       {
@@ -78,6 +82,7 @@ export class UserProjectService {
           foreignField: 'project',
           as: 'stages',
           pipeline: [
+            { $match: { isDeleted: { $ne: true } } },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
         },
