@@ -42,7 +42,7 @@ export class ActivitiesService {
       .sort({ createdAt: -1 })
       .populate([
         { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description' },
+        { path: 'project', select: '_id name description shortId' },
       ]);
   }
 
@@ -66,7 +66,7 @@ export class ActivitiesService {
       .sort({ createdAt: -1 })
       .populate([
         { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description' },
+        { path: 'project', select: '_id name description shortId' },
       ]);
   }
 
@@ -102,7 +102,7 @@ export class ActivitiesService {
       .sort({ createdAt: -1 })
       .populate([
         { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description' },
+        { path: 'project', select: '_id name description shortId' },
       ]);
   }
 }
