@@ -7,14 +7,14 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
-import { ProfileService } from './profile.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
-import { JwtPayloadReq } from '../auth/decorators';
-import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { ApiResProperty } from 'src/common/decorators';
-import { ProfileResponseDto } from './dto/profile-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ProfileService } from '../services/profile.service';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { ApiResProperty } from 'src/common/decorators';
+import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { StatusMessageDto } from 'src/common/dto';
 
 @Controller('profile')

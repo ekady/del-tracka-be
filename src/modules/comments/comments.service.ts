@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
 import {
-  Comment,
+  CommentEntity,
   CommentDocument,
-} from 'src/database/schema/comment/comment.schema';
+} from 'src/modules/comments/schema/comment.schema';
 import { StagesHelperService } from '../stages/services';
 import { ITaskShortIds } from '../tasks/interfaces/taskShortIds.interface';
 import { TasksHelperService } from '../tasks/services';
@@ -19,7 +19,8 @@ import {
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectModel(Comment.name) private commentSchema: Model<CommentDocument>,
+    @InjectModel(CommentEntity.name)
+    private commentSchema: Model<CommentDocument>,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
   ) {}

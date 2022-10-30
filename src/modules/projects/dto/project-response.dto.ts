@@ -1,8 +1,6 @@
-import { ApiResponseProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiResponseProperty, PartialType } from '@nestjs/swagger';
 
-import { EntityResponseDto } from 'src/common/dto';
-import { User } from 'src/database/schema/user/user.schema';
-import { ProfileResponseDto } from 'src/modules/profile/dto/profile-response.dto';
+import { EntityResponseDto, UserResponse } from 'src/common/dto';
 import { StageResponseDto } from 'src/modules/stages/dto/stage-response.dto';
 import { CreateProjectDto } from './create-project.dto';
 
@@ -10,15 +8,11 @@ export class ProjectResponseDto
   extends PartialType(CreateProjectDto)
   implements EntityResponseDto
 {
-  @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
-  })
-  createdBy: User;
+  @ApiResponseProperty()
+  createdBy: UserResponse;
 
-  @ApiResponseProperty({
-    type: () => PickType(ProfileResponseDto, ['_id', 'firstName', 'lastName']),
-  })
-  updatedBy: User;
+  @ApiResponseProperty()
+  updatedBy: UserResponse;
 
   @ApiResponseProperty()
   _id?: string;
@@ -52,5 +46,5 @@ export class ProjectResponseWithStagesDto extends PartialType(
   role: string;
 
   @ApiResponseProperty()
-  stages: [Pick<StageResponseDto, 'name' | '_id' | 'description' | 'shortId'>];
+  stages: [StageResponseDto];
 }

@@ -7,14 +7,14 @@ import {
   Permission,
   PermissionDocument,
 } from 'src/database/schema/permission/permission.schema';
-import { Role, RoleDocument } from 'src/database/schema/role/role.schema';
+import { RoleEntity, RoleDocument } from 'src/modules/roles/schema/role.schema';
 import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
 import { UserProjectService } from '../user-project/user-project.service';
 
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectModel(Role.name)
+    @InjectModel(RoleEntity.name)
     private rolesServiceSchema: Model<RoleDocument>,
 
     @InjectModel(Permission.name)

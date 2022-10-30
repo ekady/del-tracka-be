@@ -5,46 +5,54 @@ import {
   PermissionDocument,
   PermissionSchema,
 } from '../schema/permission/permission.schema';
-import { Role, RoleDocument, RoleSchema } from '../schema/role/role.schema';
+import {
+  RoleEntity,
+  RoleDocument,
+  RoleSchema,
+} from 'src/modules/roles/schema/role.schema';
 import { RolePermissionsConstant } from './data/role-permission.contant';
 import { softDeletePlugin } from '../plugins';
 import {
-  Project,
+  ProjectEntity,
   ProjectDocument,
   ProjectSchema,
-} from '../schema/project/project.schema';
+} from 'src/modules/projects/schema/project.schema';
 import {
   UserProject,
   UserProjectDocument,
   UserProjectSchema,
 } from '../schema/user-project/user-project.schema';
 import {
-  Stage,
+  StageEntity,
   StageDocument,
   StageSchema,
-} from '../schema/stage/stage.schema';
-import { Task, TaskDocument, TaskSchema } from '../schema/task/task.schema';
+} from 'src/modules/stages/schema/stage.schema';
 import {
-  Comment,
+  TaskEntity,
+  TaskDocument,
+  TaskSchema,
+} from 'src/modules/tasks/schema/task.schema';
+import {
+  CommentEntity,
   CommentDocument,
   CommentSchema,
-} from '../schema/comment/comment.schema';
+} from 'src/modules/comments/schema/comment.schema';
 
 plugin(softDeletePlugin);
 
-const RoleModel = model<RoleDocument>(Role.name, RoleSchema);
+const RoleModel = model<RoleDocument>(RoleEntity.name, RoleSchema);
 const PermissionModel = model<PermissionDocument>(
   Permission.name,
   PermissionSchema,
 );
-const ProjectModel = model<ProjectDocument>(Project.name, ProjectSchema);
+const ProjectModel = model<ProjectDocument>(ProjectEntity.name, ProjectSchema);
 const UserProjectModel = model<UserProjectDocument>(
   UserProject.name,
   UserProjectSchema,
 );
-const StageModel = model<StageDocument>(Stage.name, StageSchema);
-const TaskModel = model<TaskDocument>(Task.name, TaskSchema);
-const CommentModel = model<CommentDocument>(Comment.name, CommentSchema);
+const StageModel = model<StageDocument>(StageEntity.name, StageSchema);
+const TaskModel = model<TaskDocument>(TaskEntity.name, TaskSchema);
+const CommentModel = model<CommentDocument>(CommentEntity.name, CommentSchema);
 
 dotenv.config({ path: './.env' });
 

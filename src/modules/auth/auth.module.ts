@@ -5,8 +5,9 @@ import { AuthController } from './auth.controller';
 import { AuthJwtGuard } from './guard';
 import { AccessTokenStrategy, RefreshTokenStrategy } from './strategy';
 import { EmailModule } from '../email/email.module';
-import { AuthService } from './auth.service';
-import { TokenService } from './token.service';
+import { AuthService } from './services//auth.service';
+import { TokenService } from './services/token.service';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [AuthController],
@@ -20,7 +21,7 @@ import { TokenService } from './token.service';
       useClass: AuthJwtGuard,
     },
   ],
-  imports: [JwtModule.register({}), EmailModule],
+  imports: [JwtModule.register({}), EmailModule, UsersModule],
   exports: [AuthService, TokenService],
 })
 export class AuthModule {}

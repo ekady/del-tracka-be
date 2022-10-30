@@ -1,16 +1,16 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { Task } from 'src/database/schema/task/task.schema';
-import { User } from 'src/database/schema/user/user.schema';
+import { TaskEntity } from 'src/modules/tasks/schema/task.schema';
+import { UserEntity } from 'src/modules/users/schema/user.schema';
 
 export class CommentResponse {
   @ApiResponseProperty()
   _id?: string;
 
   @ApiResponseProperty()
-  user: User;
+  user: UserEntity;
 
   @ApiResponseProperty()
-  task: Task;
+  task: TaskEntity;
 
   @ApiResponseProperty()
   comment: string;

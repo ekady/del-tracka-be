@@ -1,13 +1,13 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { TaskDocument } from '../task/task.schema';
-import { UserDocument } from '../user/user.schema';
-import { ProjectDocument } from '../project/project.schema';
-import { StageDocument } from '../stage/stage.schema';
+import { TaskDocument } from 'src/modules/tasks/schema/task.schema';
+import { UserDocument } from 'src/modules/users/schema/user.schema';
+import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
+import { StageDocument } from 'src/modules/stages/schema/stage.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Comment implements Timestamps {
+export class CommentEntity implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -30,11 +30,11 @@ export class Comment implements Timestamps {
   task: TaskDocument;
 }
 
-export type CommentDocument = Comment & Document;
+export type CommentDocument = CommentEntity & Document;
 
-export const CommentSchema = SchemaFactory.createForClass(Comment);
+export const CommentSchema = SchemaFactory.createForClass(CommentEntity);
 
 export const CommentFeature: ModelDefinition = {
-  name: Comment.name,
+  name: CommentEntity.name,
   schema: CommentSchema,
 };

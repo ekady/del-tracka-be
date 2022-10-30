@@ -8,9 +8,9 @@ import {
   DocumentNotFoundException,
 } from 'src/common/http-exceptions/exceptions';
 import {
-  Project,
+  ProjectEntity,
   ProjectDocument,
-} from 'src/database/schema/project/project.schema';
+} from 'src/modules/projects/schema/project.schema';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { RolesService } from '../../roles/roles.service';
 import {
@@ -19,7 +19,7 @@ import {
   CreateUserProjectDto,
 } from '../../user-project/dto';
 import { UserProjectService } from '../../user-project/user-project.service';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../users/services/users.service';
 import { ActivitiesService } from '../../activities/activities.service';
 import {
   AddMemberDto,
@@ -34,7 +34,8 @@ import { ProjectsHelperService } from './project-helper.service';
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectModel(Project.name) private projectSchema: Model<ProjectDocument>,
+    @InjectModel(ProjectEntity.name)
+    private projectSchema: Model<ProjectDocument>,
     private projectsHelperService: ProjectsHelperService,
     private userProjectService: UserProjectService,
     private userService: UsersService,

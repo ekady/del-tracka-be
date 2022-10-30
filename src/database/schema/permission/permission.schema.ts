@@ -1,7 +1,7 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectMenu } from 'src/common/enums';
-import { RoleDocument } from '../role/role.schema';
+import { RoleDocument } from '../../../modules/roles/schema/role.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class Permission {

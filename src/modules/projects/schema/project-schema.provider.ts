@@ -1,9 +1,13 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
-import { Project, ProjectDocument, ProjectSchema } from './project.schema';
+import {
+  ProjectEntity,
+  ProjectDocument,
+  ProjectSchema,
+} from './project.schema';
 import { generateShortId } from 'src/helpers';
 
 export const ProjectSchemaProvider: AsyncModelFactory = {
-  name: Project.name,
+  name: ProjectEntity.name,
   useFactory: () => {
     const schema = ProjectSchema;
 

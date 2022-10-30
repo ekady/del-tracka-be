@@ -1,6 +1,5 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { EntityResponseDto } from 'src/common/dto';
-import { UserDocument } from 'src/database/schema/user/user.schema';
+import { EntityResponseDto, UserResponse } from 'src/common/dto';
 import { CreateActivityDto } from './create-activity.dto';
 
 export class ActivityResponseDto
@@ -11,7 +10,7 @@ export class ActivityResponseDto
   _id?: string;
 
   @ApiResponseProperty()
-  createdBy?: UserDocument;
+  createdBy?: UserResponse;
 
   @ApiResponseProperty()
   createdAt: Date;

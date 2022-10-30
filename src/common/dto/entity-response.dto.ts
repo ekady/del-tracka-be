@@ -1,9 +1,8 @@
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { User } from 'src/database/schema/user/user.schema';
+import { UserResponse } from './user-response.dto';
 
 export interface EntityResponseDto extends Timestamps {
   _id?: string;
-
-  createdBy?: User;
-  updatedBy?: User;
+  createdBy?: UserResponse;
+  updatedBy?: UserResponse;
 }

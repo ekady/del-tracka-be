@@ -10,18 +10,18 @@ import {
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/common/http-exceptions/exceptions';
-import { User, UserDocument } from 'src/database/schema/user/user.schema';
+import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
 import { HashHelper } from 'src/helpers';
-import { TokensDto } from './dto';
-import { TokenJwtConfig } from './enum';
+import { TokensDto } from '../dto';
+import { TokenJwtConfig } from '../enum';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
-import { IJwtPayload } from './interfaces/jwt-payload.interface';
+import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Injectable()
 export class TokenService {
   constructor(
-    @InjectModel(User.name) private userSchema: Model<UserDocument>,
+    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {}

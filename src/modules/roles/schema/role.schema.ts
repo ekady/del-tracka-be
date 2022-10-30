@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Role {
+export class RoleEntity {
   @Prop({ required: true, enum: RoleName, unique: true })
   name: string;
 
@@ -14,11 +14,11 @@ export class Role {
   priority: number;
 }
 
-export type RoleDocument = Role & Document;
+export type RoleDocument = RoleEntity & Document;
 
-export const RoleSchema = SchemaFactory.createForClass(Role);
+export const RoleSchema = SchemaFactory.createForClass(RoleEntity);
 
 export const RoleFeature: ModelDefinition = {
-  name: Role.name,
+  name: RoleEntity.name,
   schema: RoleSchema,
 };

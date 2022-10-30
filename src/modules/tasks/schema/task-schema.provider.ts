@@ -1,9 +1,9 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
 import { generateShortId } from 'src/helpers';
-import { Task, TaskSchema } from './task.schema';
+import { TaskEntity, TaskSchema } from './task.schema';
 
 export const TaskSchemaProvider: AsyncModelFactory = {
-  name: Task.name,
+  name: TaskEntity.name,
   useFactory: () => {
     const schema = TaskSchema;
     schema.index({ status: 1 });

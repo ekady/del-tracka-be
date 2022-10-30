@@ -3,16 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, PopulateOptions } from 'mongoose';
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
 import {
-  Project,
+  ProjectEntity,
   ProjectDocument,
-} from 'src/database/schema/project/project.schema';
+} from 'src/modules/projects/schema/project.schema';
 import { UserProjectResponseDto } from 'src/modules/user-project/dto';
 import { UserProjectService } from '../../user-project/user-project.service';
 
 @Injectable()
 export class ProjectsHelperService {
   constructor(
-    @InjectModel(Project.name) private projectSchema: Model<ProjectDocument>,
+    @InjectModel(ProjectEntity.name)
+    private projectSchema: Model<ProjectDocument>,
     private userProjectService: UserProjectService,
   ) {}
 

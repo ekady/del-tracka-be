@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
-import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
+import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
 import { ActivitiesService } from 'src/modules/activities/activities.service';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
@@ -21,7 +21,7 @@ import { TasksHelperService } from './tasks-helper.service';
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
+    @InjectModel(TaskEntity.name) private taskSchema: Model<TaskDocument>,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
     private activitiesService: ActivitiesService,

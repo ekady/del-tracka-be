@@ -1,6 +1,6 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/common/dto';
-import { User } from 'src/database/schema/user/user.schema';
+import { UserEntity } from 'src/modules/users/schema/user.schema';
 import { CreateTaskRequestDto } from './create-task.dto';
 
 export class TaskResponseDto
@@ -19,10 +19,10 @@ export class TaskResponseDto
   updatedAt: Date;
 
   @ApiResponseProperty()
-  assignee: User;
+  assignee: UserEntity;
 
   @ApiResponseProperty()
-  reporter: User;
+  reporter: UserEntity;
 
   @ApiResponseProperty()
   images: string[];

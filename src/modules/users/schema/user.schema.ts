@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 
 @Schema({ timestamps: true, versionKey: false })
-export class User implements Timestamps {
+export class UserEntity implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -60,11 +60,11 @@ export class User implements Timestamps {
   passwordResetExpires: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(UserEntity);
 
-export type UserDocument = User & Document;
+export type UserDocument = UserEntity & Document;
 
 export const UserFeature: ModelDefinition = {
-  name: User.name,
+  name: UserEntity.name,
   schema: UserSchema,
 };

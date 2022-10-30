@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
+import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
 import { MyTaskResponseDto } from '../dto';
 
 @Injectable()
 export class MyTasksService {
   constructor(
-    @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
+    @InjectModel(TaskEntity.name) private taskSchema: Model<TaskDocument>,
   ) {}
 
   async findMyTasks(userId: string): Promise<MyTaskResponseDto[]> {

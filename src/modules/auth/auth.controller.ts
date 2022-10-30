@@ -19,7 +19,7 @@ import {
 } from './dto';
 import { AuthJwtRefreshGuard } from './guard';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { VerifyResetDto } from './dto/verify-reset-payload.dto';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
 

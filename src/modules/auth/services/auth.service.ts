@@ -7,7 +7,7 @@ import {
   EmailUsernameExistException,
   TokenInvalidException,
 } from 'src/common/http-exceptions/exceptions';
-import { User, UserDocument } from 'src/database/schema/user/user.schema';
+import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
 import { HashHelper } from 'src/helpers';
 import {
   ContinueProviderRequestDto,
@@ -16,7 +16,7 @@ import {
   SignInRequestDto,
   SignUpRequestDto,
   TokensDto,
-} from './dto';
+} from '../dto';
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/email.service';
@@ -24,7 +24,7 @@ import { EmailService } from 'src/modules/email/email.service';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userSchema: Model<UserDocument>,
+    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
     private tokenService: TokenService,
     private emailService: EmailService,
     private config: ConfigService,

@@ -2,12 +2,12 @@ import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { TaskPriority, TaskStatus } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { StageDocument } from '../stage/stage.schema';
-import { UserDocument } from '../user/user.schema';
-import { ProjectDocument } from '../project/project.schema';
+import { StageDocument } from 'src/modules/stages/schema/stage.schema';
+import { UserDocument } from 'src/modules/users/schema/user.schema';
+import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Task implements Timestamps {
+export class TaskEntity implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -54,11 +54,11 @@ export class Task implements Timestamps {
   shortId: string;
 }
 
-export type TaskDocument = Task & Document;
+export type TaskDocument = TaskEntity & Document;
 
-export const TaskSchema = SchemaFactory.createForClass(Task);
+export const TaskSchema = SchemaFactory.createForClass(TaskEntity);
 
 export const TaskFeature: ModelDefinition = {
-  name: Task.name,
+  name: TaskEntity.name,
   schema: TaskSchema,
 };

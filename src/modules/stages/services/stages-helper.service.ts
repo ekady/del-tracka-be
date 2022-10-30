@@ -5,7 +5,10 @@ import {
   DocumentExistException,
   DocumentNotFoundException,
 } from 'src/common/http-exceptions/exceptions';
-import { Stage, StageDocument } from 'src/database/schema/stage/stage.schema';
+import {
+  StageEntity,
+  StageDocument,
+} from 'src/modules/stages/schema/stage.schema';
 import { ActivitiesService } from 'src/modules/activities/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { ProjectsHelperService } from 'src/modules/projects/services';
@@ -13,7 +16,7 @@ import { ProjectsHelperService } from 'src/modules/projects/services';
 @Injectable()
 export class StagesHelperService {
   constructor(
-    @InjectModel(Stage.name)
+    @InjectModel(StageEntity.name)
     private stageSchema: Model<StageDocument>,
     private projectsHelperService: ProjectsHelperService,
     private activitiesService: ActivitiesService,

@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
-import { ProjectDocument } from 'src/database/schema/project/project.schema';
-import { RoleDocument } from 'src/database/schema/role/role.schema';
+import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
+import { RoleDocument } from 'src/modules/roles/schema/role.schema';
 import {
   UserProject,
   UserProjectDocument,
@@ -259,6 +259,6 @@ export class UserProjectService {
     const removeQuery = userProjects.map(async (userProject) =>
       userProject.remove(),
     );
-    Promise.all(removeQuery);
+    await Promise.all(removeQuery);
   }
 }

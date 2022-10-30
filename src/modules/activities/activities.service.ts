@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import {
-  Activity,
+  ActivityEntity,
   ActivityDocument,
-} from 'src/database/schema/activity/activity.schema';
+} from 'src/modules/activities/schema/activity.schema';
 import { ActivityProjection } from './constants';
 import { ActivityResponseDto } from './dto';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -13,7 +13,8 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 @Injectable()
 export class ActivitiesService {
   constructor(
-    @InjectModel(Activity.name) private activitySchema: Model<ActivityDocument>,
+    @InjectModel(ActivityEntity.name)
+    private activitySchema: Model<ActivityDocument>,
   ) {}
 
   async create(

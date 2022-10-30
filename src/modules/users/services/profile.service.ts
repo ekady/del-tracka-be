@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { User, UserDocument } from 'src/database/schema/user/user.schema';
-import { ProfileResponseDto } from './dto/profile-response.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
+import { ProfileResponseDto } from '../dto/profile-response.dto';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
 
 @Injectable()
 export class ProfileService {
   constructor(
-    @InjectModel(User.name) private userSchema: Model<UserDocument>,
+    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
   ) {}
 
   async findProfile(id: string): Promise<ProfileResponseDto> {

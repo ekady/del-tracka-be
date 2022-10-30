@@ -1,11 +1,11 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { ProjectDocument } from '../project/project.schema';
-import { User } from '../user/user.schema';
+import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
+import { UserEntity } from 'src/modules/users/schema/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Stage implements Timestamps {
+export class StageEntity implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -13,10 +13,10 @@ export class Stage implements Timestamps {
   updatedAt: Date;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
-  createdBy: User;
+  createdBy: UserEntity;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
-  updatedBy: User;
+  updatedBy: UserEntity;
 
   @Prop({ required: true })
   name: string;
@@ -31,11 +31,11 @@ export class Stage implements Timestamps {
   shortId: string;
 }
 
-export type StageDocument = Stage & Document;
+export type StageDocument = StageEntity & Document;
 
-export const StageSchema = SchemaFactory.createForClass(Stage);
+export const StageSchema = SchemaFactory.createForClass(StageEntity);
 
 export const StageFeature: ModelDefinition = {
-  name: Stage.name,
+  name: StageEntity.name,
   schema: StageSchema,
 };

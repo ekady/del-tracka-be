@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
-import { Stage, StageDocument } from 'src/database/schema/stage/stage.schema';
+import {
+  StageEntity,
+  StageDocument,
+} from 'src/modules/stages/schema/stage.schema';
 import { ActivitiesService } from 'src/modules/activities/activities.service';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { ProjectsHelperService } from 'src/modules/projects/services';
@@ -14,7 +17,7 @@ import { StagesHelperService } from './stages-helper.service';
 @Injectable()
 export class StagesService {
   constructor(
-    @InjectModel(Stage.name)
+    @InjectModel(StageEntity.name)
     private stageSchema: Model<StageDocument>,
     private stagesHelperService: StagesHelperService,
     private projectsHelperService: ProjectsHelperService,

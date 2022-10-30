@@ -3,8 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
-import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
-import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
+import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
 import { ActivitiesService } from 'src/modules/activities/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';
@@ -17,7 +16,7 @@ import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 @Injectable()
 export class TasksHelperService {
   constructor(
-    @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
+    @InjectModel(TaskEntity.name) private taskSchema: Model<TaskDocument>,
     private stagesHelperService: StagesHelperService,
     private userProjectService: UserProjectService,
     private activitiesService: ActivitiesService,

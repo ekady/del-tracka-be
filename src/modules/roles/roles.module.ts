@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UserProjectModule } from '../user-project/user-project.module';
 import { RolePermissionGuard } from './guard';
 import { RolesService } from './roles.service';
+import { RoleFeature } from './schema/role.schema';
 
 @Module({
   providers: [
@@ -13,6 +15,6 @@ import { RolesService } from './roles.service';
     },
   ],
   exports: [RolesService],
-  imports: [UserProjectModule],
+  imports: [UserProjectModule, MongooseModule.forFeature([RoleFeature])],
 })
 export class RolesModule {}
