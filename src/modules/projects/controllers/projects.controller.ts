@@ -7,11 +7,11 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ProjectsService } from './services';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { UpdateProjectDto } from './dto/update-project.dto';
+import { ProjectsService } from '../services';
+import { CreateProjectDto } from '../dto/create-project.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { JwtPayloadReq } from '../auth/decorators';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
 import {
@@ -19,12 +19,12 @@ import {
   ProjectResponseWithStagesDto,
   RemoveMemberRequest,
   UpdateMemberDto,
-} from './dto';
+} from '../dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
-import { ProjectUserResponseDto } from '../user-project/dto';
-import { ActivityResponseDto } from '../activities/dto';
+import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
+import { ActivityResponseDto } from 'src/modules/activities/dto';
 
 @ApiTags('Projects')
 @Controller('projects')

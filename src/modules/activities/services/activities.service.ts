@@ -6,9 +6,9 @@ import {
   ActivityEntity,
   ActivityDocument,
 } from 'src/modules/activities/schema/activity.schema';
-import { ActivityProjection } from './constants';
-import { ActivityResponseDto } from './dto';
-import { CreateActivityDto } from './dto/create-activity.dto';
+import { ActivityProjection } from '../constants';
+import { ActivityResponseDto } from '../dto';
+import { CreateActivityDto } from '../dto/create-activity.dto';
 
 @Injectable()
 export class ActivitiesService {

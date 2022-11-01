@@ -16,10 +16,12 @@ import { ActivitiesModule } from '../activities/activities.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TaskSchemaProvider } from './schema/task-schema.provider';
+import { TasksRepository } from './repositories/tasks.repository';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
   providers: [
+    TasksRepository,
     TasksHelperService,
     TasksService,
     MyTasksService,
@@ -32,6 +34,6 @@ import { TaskSchemaProvider } from './schema/task-schema.provider';
     ActivitiesModule,
     ProjectsModule,
   ],
-  exports: [TasksHelperService],
+  exports: [TasksRepository, TasksHelperService],
 })
 export class TasksModule {}

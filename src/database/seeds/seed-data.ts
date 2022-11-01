@@ -11,7 +11,6 @@ import {
   RoleSchema,
 } from 'src/modules/roles/schema/role.schema';
 import { RolePermissionsConstant } from './data/role-permission.contant';
-import { softDeletePlugin } from '../plugins';
 import {
   ProjectEntity,
   ProjectDocument,
@@ -37,8 +36,6 @@ import {
   CommentDocument,
   CommentSchema,
 } from 'src/modules/comments/schema/comment.schema';
-
-plugin(softDeletePlugin);
 
 const RoleModel = model<RoleDocument>(RoleEntity.name, RoleSchema);
 const PermissionModel = model<PermissionDocument>(

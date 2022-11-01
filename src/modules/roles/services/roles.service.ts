@@ -1,32 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
-import {
-  Permission,
-  PermissionDocument,
-} from 'src/modules/permissions/schema/permission.schema';
-import { RoleEntity, RoleDocument } from 'src/modules/roles/schema/role.schema';
+import { PermissionsRepository } from 'src/modules/permissions/repositories/permissions.repository';
+import { PermissionDocument } from 'src/modules/permissions/schema/permission.schema';
+import { RoleDocument } from 'src/modules/roles/schema/role.schema';
 import { UserProjectDocument } from 'src/modules/user-project/schema/user-project.schema';
-import { UserProjectService } from '../user-project/user-project.service';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { RolesRepository } from '../repositories/roles.repository';
 
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectModel(RoleEntity.name)
-    private rolesServiceSchema: Model<RoleDocument>,
-
-    @InjectModel(Permission.name)
-    private permissionSchema: Model<PermissionDocument>,
-
+    private rolesRepository: RolesRepository,
+    private permissionsRepository: PermissionsRepository,
     private userProjectService: UserProjectService,
   ) {}
 
   async findOneRole(
     queryOptions: FilterQuery<RoleDocument>,
   ): Promise<RoleDocument> {
-    const role = await this.rolesServiceSchema.findOne(queryOptions).exec();
+    const role = await this.rolesRepository.findOne(queryOptions);
     if (!role) throw new DocumentNotFoundException('Role not found');
     return role;
   }
@@ -34,7 +28,7 @@ export class RolesService {
   async findOnePermission(
     queryOptions: FilterQuery<PermissionDocument>,
   ): Promise<PermissionDocument> {
-    const permision = await this.permissionSchema.findOne(queryOptions).exec();
+    const permision = await this.permissionsRepository.findOne(queryOptions);
     if (!permision) throw new DocumentNotFoundException('Permission not found');
     return permision;
   }

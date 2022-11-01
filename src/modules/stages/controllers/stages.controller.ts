@@ -7,23 +7,23 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { StagesService } from './services';
+import { StagesService } from '../services';
 import {
   CreateStageDto,
   CreateStageRequestDto,
   StageResponseDto,
   UpdateStageDto,
   UpdateStageRequestDto,
-} from './dto';
-import { JwtPayloadReq } from '../auth/decorators';
+} from '../dto';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ApiTags } from '@nestjs/swagger';
-import { ActivityResponseDto } from '../activities/dto';
-import { IStageShortId } from './interfaces/stageShortIds.interface';
+import { ActivityResponseDto } from 'src/modules/activities/dto';
+import { IStageShortId } from '../interfaces/stageShortIds.interface';
 
 @ApiTags('Stages')
 @Controller('projects/:projectId/stages')

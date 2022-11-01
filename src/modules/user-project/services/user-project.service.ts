@@ -14,14 +14,12 @@ import {
   UpdateUserProjectDto,
   ProjectUserResponseDto,
   UserProjectResponseDto,
-} from './dto';
+} from '../dto';
+import { UserProjectRepository } from '../repositories/user-project.repository';
 
 @Injectable()
 export class UserProjectService {
-  constructor(
-    @InjectModel(UserProjectEntity.name)
-    private userProjectSchema: Model<UserProjectDocument>,
-  ) {}
+  constructor(private userProjectRepository: UserProjectRepository) {}
 
   async findUserProjects(
     userId: string,
@@ -39,7 +37,7 @@ export class UserProjectService {
       email: 1,
       picture: 1,
     };
-    return this.userProjectSchema.aggregate([
+    return this.userProjectRepository.aggregate([
       { $match: { user: objectUserId } },
       {
         $lookup: {
@@ -122,32 +120,15 @@ export class UserProjectService {
   }
 
   async findProjectsByUserId(userId: string): Promise<UserProjectDocument[]> {
-    return this.userProjectSchema
-      .find({ user: userId })
-      .populate({
-        path: 'project',
-        populate: [
-          { path: 'createdBy', select: '_id firstName lastName email picture' },
-          { path: 'updatedBy', select: '_id firstName lastName email picture' },
-        ],
-      })
-      .sort({ createdAt: -1 })
-      .select('project')
-      .exec();
+    return this.userProjectRepository.findAll({ user: userId });
   }
 
   async findUsersByProjectId(
     projectId: string,
   ): Promise<ProjectUserResponseDto[]> {
-    const users = await this.userProjectSchema
-      .find({ project: projectId })
-      .populate([
-        { path: 'createdBy' },
-        { path: 'updatedBy' },
-        { path: 'user' },
-        { path: 'role', select: '_id name' },
-      ])
-      .exec();
+    const users = await this.userProjectRepository.findAll({
+      project: projectId,
+    });
     return users.map((user) => ({
       _id: user.user._id,
       firstName: user.user.firstName,
@@ -166,10 +147,10 @@ export class UserProjectService {
     projectId: string,
     roleId: string,
   ): Promise<UserProjectDocument[]> {
-    return this.userProjectSchema
-      .find({ project: projectId, role: roleId })
-      .populate(['user', 'role'])
-      .exec();
+    return this.userProjectRepository.findAll({
+      project: projectId,
+      role: roleId,
+    });
   }
 
   async addUserProject(
@@ -178,9 +159,9 @@ export class UserProjectService {
   ): Promise<UserProjectDocument> {
     const { userId, projectId, roleId } = createUserProjectDto;
     const userIdProjectId = { user: userId, project: projectId };
-    const userProject = await this.userProjectSchema
-      .findOne(userIdProjectId)
-      .exec();
+    const userProject = await this.userProjectRepository.findOne(
+      userIdProjectId,
+    );
     if (userProject)
       throw new DocumentExistException('User already exist on this project');
 
@@ -190,7 +171,7 @@ export class UserProjectService {
       createdBy: userCreatedId,
       updatedBy: userCreatedId,
     };
-    return this.userProjectSchema.create(payload);
+    return this.userProjectRepository.create(payload);
   }
 
   async updateUserProject(
@@ -221,9 +202,10 @@ export class UserProjectService {
       role: roleId,
       updatedBy: userUpdatedId,
     };
-    const userProject = await this.userProjectSchema
-      .findOneAndUpdate(userIdProjectId, payload, { new: true })
-      .exec();
+    const userProject = await this.userProjectRepository.updateOne(
+      userIdProjectId,
+      payload,
+    );
     if (!userProject)
       throw new BadRequestException('User not found on this project');
     return userProject;
@@ -233,11 +215,11 @@ export class UserProjectService {
     updateUserProjectDto: UpdateUserProjectDto,
   ): Promise<UserProjectDocument> {
     const { userId, projectId } = updateUserProjectDto;
-    const userProject = await this.userProjectSchema
-      .findOne({ user: userId, project: projectId })
-      .select('_id role')
-      .populate('role')
-      .exec();
+    const userProject = await this.userProjectRepository.findOne({
+      user: userId,
+      project: projectId,
+    });
+
     if (!userProject)
       throw new BadRequestException('User not found on this project');
 
@@ -248,17 +230,20 @@ export class UserProjectService {
         'This user is the only owner of this project',
       );
     }
-    await userProject.remove();
+    await this.userProjectRepository.softDeleteOne({
+      user: userId,
+      project: projectId,
+    });
     return userProject;
   }
 
   async deleteAllUserProjects(projectId: string): Promise<void> {
-    const userProjects = await this.userProjectSchema
-      .find({ project: projectId })
-      .exec();
-    const removeQuery = userProjects.map(async (userProject) =>
-      userProject.remove(),
-    );
-    await Promise.all(removeQuery);
+    const userProjects = await this.userProjectRepository.findAll({
+      project: projectId,
+    });
+    // const removeQuery = userProjects.map(async (userProject) =>
+    //   userProject.remove(),
+    // );
+    // await Promise.all(removeQuery);
   }
 }

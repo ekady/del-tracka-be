@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { RoleName } from 'src/common/enums';
 import {
   DocumentExistException,
   DocumentNotFoundException,
 } from 'src/common/http-exceptions/exceptions';
-import {
-  ProjectEntity,
-  ProjectDocument,
-} from 'src/modules/projects/schema/project.schema';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
-import { RolesService } from '../../roles/roles.service';
+import { RolesService } from 'src/modules/roles/services/roles.service';
 import {
   ProjectUserResponseDto,
   UpdateUserProjectDto,
   CreateUserProjectDto,
-} from '../../user-project/dto';
-import { UserProjectService } from '../../user-project/user-project.service';
-import { UsersService } from '../../users/services/users.service';
-import { ActivitiesService } from '../../activities/activities.service';
+} from 'src/modules/user-project/dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { UsersService } from 'src/modules/users/services/users.service';
+import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import {
   AddMemberDto,
   CreateProjectDto,
@@ -30,12 +24,12 @@ import {
   UpdateProjectDto,
 } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
+import { ProjectsRepository } from '../repositories/projects.repository';
 
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectModel(ProjectEntity.name)
-    private projectSchema: Model<ProjectDocument>,
+    private projectsRepository: ProjectsRepository,
     private projectsHelperService: ProjectsHelperService,
     private userProjectService: UserProjectService,
     private userService: UsersService,
@@ -63,7 +57,7 @@ export class ProjectsService {
     const role = await this.rolesService.findOneRole({
       name: RoleName.OWNER,
     });
-    const project = await this.projectSchema.create(payload);
+    const project = await this.projectsRepository.create(payload);
 
     await this.userProjectService.addUserProject(
       { projectId: project._id, userId, roleId: role._id },
@@ -108,9 +102,11 @@ export class ProjectsService {
     updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const payload = { ...updateProjectDto, updatedBy: userId };
-    const project = await this.projectSchema
-      .findOneAndUpdate({ shortId }, payload, { new: true })
-      .exec();
+    const project = await this.projectsRepository.updateOne(
+      { shortId },
+      payload,
+    );
+
     if (!project) throw new DocumentNotFoundException('Project not found');
 
     return { message: 'Success' };

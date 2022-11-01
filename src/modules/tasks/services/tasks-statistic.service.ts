@@ -1,18 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage } from 'mongoose';
-import {
-  UserProjectEntity,
-  UserProjectDocument,
-} from 'src/modules/user-project/schema/user-project.schema';
+import { PipelineStage } from 'mongoose';
 import { ProjectsHelperService } from 'src/modules/projects/services';
 import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
+import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
 
 @Injectable()
 export class TasksStatisticService {
   constructor(
-    @InjectModel(UserProjectEntity.name)
-    private userProjectSchema: Model<UserProjectDocument>,
+    private userProjectRepository: UserProjectRepository,
     private projectsHelperService: ProjectsHelperService,
   ) {}
 
@@ -66,7 +61,7 @@ export class TasksStatisticService {
         in: { k: '$$el._id', v: '$$el.count' },
       },
     };
-    return this.userProjectSchema.aggregate([
+    return this.userProjectRepository.aggregate([
       match,
       {
         $lookup: {
@@ -116,7 +111,7 @@ export class TasksStatisticService {
       userProject: userProjectMatch,
       task: taskMatch || { $match: {} },
     };
-    return this.userProjectSchema.aggregate([
+    return this.userProjectRepository.aggregate([
       match.userProject,
       {
         $lookup: {

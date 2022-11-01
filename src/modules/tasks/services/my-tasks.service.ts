@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
+import { Types } from 'mongoose';
 import { MyTaskResponseDto } from '../dto';
+import { TasksRepository } from '../repositories/tasks.repository';
 
 @Injectable()
 export class MyTasksService {
-  constructor(
-    @InjectModel(TaskEntity.name) private taskSchema: Model<TaskDocument>,
-  ) {}
+  constructor(private tasksRepository: TasksRepository) {}
 
   async findMyTasks(userId: string): Promise<MyTaskResponseDto[]> {
     const user = new Types.ObjectId(userId);
@@ -66,7 +63,7 @@ export class MyTasksService {
       as: 'stage',
       pipeline: [{ $lookup: lookupProject }, { $unwind: '$project' }],
     };
-    return this.taskSchema.aggregate([
+    return this.tasksRepository.aggregate([
       { $match: { $or: [{ assignee: user }, { reporter: user }] } },
       { $lookup: lookupStage },
       { $unwind: '$stage' },

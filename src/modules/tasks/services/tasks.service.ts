@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
-import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
-import { ActivitiesService } from 'src/modules/activities/activities.service';
+import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
 import { StagesHelperService } from 'src/modules/stages/services';
@@ -17,11 +14,12 @@ import {
 } from '../dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TasksHelperService } from './tasks-helper.service';
+import { TasksRepository } from '../repositories/tasks.repository';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(TaskEntity.name) private taskSchema: Model<TaskDocument>,
+    private tasksRepository: TasksRepository,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
     private activitiesService: ActivitiesService,
@@ -63,7 +61,7 @@ export class TasksService {
       images: images?.map((image) => image.originalname),
       project: stage.project._id,
     };
-    const task = await this.taskSchema.create(payload);
+    const task = await this.tasksRepository.create(payload);
 
     await this.tasksHelperService.createTaskActivity({
       type: ActivityName.CREATE_TASK,
@@ -86,19 +84,11 @@ export class TasksService {
       stageId,
       projectId,
     );
-    return this.taskSchema
-      .find({ stage: stage._id })
-      .populate(['reporter', 'assignee'])
-      .sort({ createdAt: -1 })
-      .select('-createdBy -updatedBy -stage -project')
-      .exec();
+    return this.tasksRepository.findOne({ stage: stage._id });
   }
 
   async findOne(ids: ITaskShortIds): Promise<TaskResponseDto> {
-    return this.tasksHelperService.findTaskByShortId(
-      ids,
-      '-createdBy -updatedBy',
-    );
+    return this.tasksHelperService.findTaskByShortId(ids);
   }
 
   async findTaskActivities(ids: ITaskShortIds): Promise<ActivityResponseDto[]> {

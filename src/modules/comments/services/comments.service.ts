@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
-import {
-  CommentEntity,
-  CommentDocument,
-} from 'src/modules/comments/schema/comment.schema';
-import { StagesHelperService } from '../stages/services';
-import { ITaskShortIds } from '../tasks/interfaces/taskShortIds.interface';
-import { TasksHelperService } from '../tasks/services';
+import { CommentsRepository } from '../repository/comments.repository';
+import { StagesHelperService } from 'src/modules/stages/services';
+import { ITaskShortIds } from 'src/modules/tasks/interfaces/taskShortIds.interface';
+import { TasksHelperService } from 'src/modules/tasks/services';
 import {
   CommentResponse,
   CreateCommentDto,
   CreateCommentRequestDto,
-} from './dto';
+} from '../dto';
 
 @Injectable()
 export class CommentsService {
   constructor(
-    @InjectModel(CommentEntity.name)
-    private commentSchema: Model<CommentDocument>,
+    private commentsRespository: CommentsRepository,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
   ) {}
@@ -42,7 +36,7 @@ export class CommentsService {
       stage: stage._id,
       project: stage.project._id,
     };
-    await this.commentSchema.create(payload);
+    await this.commentsRespository.create(payload);
 
     await this.tasksHelperService.createTaskActivity({
       type: ActivityName.CREATE_COMMENT,
@@ -60,10 +54,6 @@ export class CommentsService {
 
   async findAll(ids: ITaskShortIds): Promise<CommentResponse[]> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
-    return this.commentSchema
-      .find({ task: task._id })
-      .populate({ path: 'user', select: '_id firstName lastName picture' })
-      .select('-task')
-      .exec();
+    return this.commentsRespository.findOne({ task: task._id });
   }
 }

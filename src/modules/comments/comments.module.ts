@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
-import { CommentsService } from './comments.service';
-import { CommentsController } from './comments.controller';
+import { CommentsService } from './services/comments.service';
+import { CommentsController } from './controllers/comments.controller';
 import { TasksModule } from '../tasks/tasks.module';
 import { StagesModule } from '../stages/stages.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentFeature } from './schema/comment.schema';
+import { CommentsRepository } from './repository/comments.repository';
 
 @Module({
   controllers: [CommentsController],
-  providers: [CommentsService],
+  providers: [CommentsRepository, CommentsService],
+  exports: [CommentsRepository],
   imports: [
     StagesModule,
     TasksModule,
