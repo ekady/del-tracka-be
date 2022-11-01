@@ -1,10 +1,10 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectMenu } from 'src/common/enums';
-import { RoleDocument } from '../../../modules/roles/schema/role.schema';
+import { RoleDocument } from '../../roles/schema/role.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class Permission {
+export class PermissionEntity {
   @Prop({ required: true, enum: ProjectMenu })
   menu: string;
 
@@ -24,11 +24,11 @@ export class Permission {
   role: RoleDocument;
 }
 
-export type PermissionDocument = Permission & Document;
+export type PermissionDocument = PermissionEntity & Document;
 
-export const PermissionSchema = SchemaFactory.createForClass(Permission);
+export const PermissionSchema = SchemaFactory.createForClass(PermissionEntity);
 
 export const PermissionFeature: ModelDefinition = {
-  name: Permission.name,
+  name: PermissionEntity.name,
   schema: PermissionSchema,
 };

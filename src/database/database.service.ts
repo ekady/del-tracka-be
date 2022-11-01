@@ -5,7 +5,6 @@ import {
   MongooseOptionsFactory,
 } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { softDeletePlugin } from './plugins';
 
 @Injectable()
 export class MongooseConfigService implements MongooseOptionsFactory {
@@ -15,7 +14,6 @@ export class MongooseConfigService implements MongooseOptionsFactory {
     return {
       uri: this.config.get<string>('DATABASE_LOCAL'),
       connectionFactory(connection: Connection) {
-        connection.plugin(softDeletePlugin);
         return connection;
       },
     };

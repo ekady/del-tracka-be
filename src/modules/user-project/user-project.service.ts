@@ -6,9 +6,9 @@ import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
 import { RoleDocument } from 'src/modules/roles/schema/role.schema';
 import {
-  UserProject,
+  UserProjectEntity,
   UserProjectDocument,
-} from 'src/database/schema/user-project/user-project.schema';
+} from 'src/modules/user-project/schema/user-project.schema';
 import {
   CreateUserProjectDto,
   UpdateUserProjectDto,
@@ -19,7 +19,7 @@ import {
 @Injectable()
 export class UserProjectService {
   constructor(
-    @InjectModel(UserProject.name)
+    @InjectModel(UserProjectEntity.name)
     private userProjectSchema: Model<UserProjectDocument>,
   ) {}
 

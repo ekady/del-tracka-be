@@ -6,9 +6,9 @@ import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions
 import {
   Permission,
   PermissionDocument,
-} from 'src/database/schema/permission/permission.schema';
+} from 'src/modules/permissions/schema/permission.schema';
 import { RoleEntity, RoleDocument } from 'src/modules/roles/schema/role.schema';
-import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
+import { UserProjectDocument } from 'src/modules/user-project/schema/user-project.schema';
 import { UserProjectService } from '../user-project/user-project.service';
 
 @Injectable()

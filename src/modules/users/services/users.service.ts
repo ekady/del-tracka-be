@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
-import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
+import { UserDocument } from 'src/modules/users/schema/user.schema';
+import { UsersRepository } from '../repositories/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
-  ) {}
+  constructor(private usersRespository: UsersRepository) {}
 
   async findOne(id: string, notFoundError?: string): Promise<UserDocument> {
-    const user = await this.userSchema.findById(id).exec();
+    const user = await this.usersRespository.findOneById(id);
     if (!user) {
       const errorMessage = notFoundError || 'User not found';
       throw new DocumentNotFoundException(errorMessage);
@@ -20,10 +18,9 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<UserDocument> {
-    const user = await this.userSchema.findOne({ email }).exec();
-    if (!user) {
-      throw new DocumentNotFoundException('User not found');
-    }
+    const user = await this.usersRespository.findOne({ email });
+    if (!user) throw new DocumentNotFoundException('User not found');
+
     return user;
   }
 }

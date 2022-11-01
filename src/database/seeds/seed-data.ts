@@ -1,10 +1,10 @@
 import { connect, model, plugin } from 'mongoose';
 import * as dotenv from 'dotenv';
 import {
-  Permission,
+  PermissionEntity,
   PermissionDocument,
   PermissionSchema,
-} from '../schema/permission/permission.schema';
+} from '../../modules/permissions/schema/permission.schema';
 import {
   RoleEntity,
   RoleDocument,
@@ -18,10 +18,10 @@ import {
   ProjectSchema,
 } from 'src/modules/projects/schema/project.schema';
 import {
-  UserProject,
+  UserProjectEntity,
   UserProjectDocument,
   UserProjectSchema,
-} from '../schema/user-project/user-project.schema';
+} from 'src/modules/user-project/schema/user-project.schema';
 import {
   StageEntity,
   StageDocument,
@@ -42,12 +42,12 @@ plugin(softDeletePlugin);
 
 const RoleModel = model<RoleDocument>(RoleEntity.name, RoleSchema);
 const PermissionModel = model<PermissionDocument>(
-  Permission.name,
+  PermissionEntity.name,
   PermissionSchema,
 );
 const ProjectModel = model<ProjectDocument>(ProjectEntity.name, ProjectSchema);
 const UserProjectModel = model<UserProjectDocument>(
-  UserProject.name,
+  UserProjectEntity.name,
   UserProjectSchema,
 );
 const StageModel = model<StageDocument>(StageEntity.name, StageSchema);

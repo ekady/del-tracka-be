@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PipelineStage } from 'mongoose';
 import {
-  UserProject,
+  UserProjectEntity,
   UserProjectDocument,
-} from 'src/database/schema/user-project/user-project.schema';
+} from 'src/modules/user-project/schema/user-project.schema';
 import { ProjectsHelperService } from 'src/modules/projects/services';
 import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
 
 @Injectable()
 export class TasksStatisticService {
   constructor(
-    @InjectModel(UserProject.name)
+    @InjectModel(UserProjectEntity.name)
     private userProjectSchema: Model<UserProjectDocument>,
     private projectsHelperService: ProjectsHelperService,
   ) {}

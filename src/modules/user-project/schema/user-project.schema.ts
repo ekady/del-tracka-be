@@ -1,15 +1,12 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { RoleDocument } from '../../../modules/roles/schema/role.schema';
+import { RoleDocument } from 'src/modules/roles/schema/role.schema';
 import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
-import {
-  UserEntity,
-  UserDocument,
-} from '../../../modules/users/schema/user.schema';
+import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
-export class UserProject implements Timestamps {
+export class UserProjectEntity implements Timestamps {
   @Prop()
   createdAt: Date;
 
@@ -32,11 +29,12 @@ export class UserProject implements Timestamps {
   role: RoleDocument;
 }
 
-export type UserProjectDocument = UserProject & Document;
+export type UserProjectDocument = UserProjectEntity & Document;
 
-export const UserProjectSchema = SchemaFactory.createForClass(UserProject);
+export const UserProjectSchema =
+  SchemaFactory.createForClass(UserProjectEntity);
 
 export const UserProjectFeature: ModelDefinition = {
-  name: UserProject.name,
+  name: UserProjectEntity.name,
   schema: UserProjectSchema,
 };

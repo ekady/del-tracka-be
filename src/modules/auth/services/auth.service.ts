@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
 import {
   CredentialInvalidException,
   EmailUsernameExistException,
   TokenInvalidException,
 } from 'src/common/http-exceptions/exceptions';
-import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
 import { HashHelper } from 'src/helpers';
 import {
   ContinueProviderRequestDto,
@@ -20,21 +17,22 @@ import {
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/email.service';
+import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
+    private usersRepository: UsersRepository,
     private tokenService: TokenService,
     private emailService: EmailService,
     private config: ConfigService,
   ) {}
 
   async signIn(signInDto: SignInRequestDto): Promise<TokensDto> {
-    const user = await this.userSchema
-      .findOne({ email: signInDto.email })
-      .select('+password')
-      .exec();
+    const user = await this.usersRepository.findOne(
+      { email: signInDto.email },
+      { select: { password: 1 } },
+    );
 
     const userHashedPassword = user ? user.password : '';
     const isPasswordCorrect = await HashHelper.compare(
@@ -60,10 +58,10 @@ export class AuthService {
     if (!userJwt || !userJwt.email || !userJwt.given_name)
       throw new TokenInvalidException();
 
-    let user = await this.userSchema.findOne({ email: userJwt.email }).exec();
+    let user = await this.usersRepository.findOne({ email: userJwt.email });
 
     if (!user) {
-      user = await this.userSchema.create({
+      user = await this.usersRepository.create({
         email: userJwt.email,
         firstName: userJwt.given_name,
         lastName: userJwt.family_name,
@@ -82,12 +80,10 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
-    const user = await this.userSchema
-      .findOne({ email: signUpDto.email })
-      .exec();
+    const user = await this.usersRepository.findOne({ email: signUpDto.email });
     if (user) throw new EmailUsernameExistException();
 
-    const newUser = await this.userSchema.create({
+    const newUser = await this.usersRepository.create({
       ...signUpDto,
       isViaProvider: false,
     });
@@ -103,17 +99,16 @@ export class AuthService {
   }
 
   async signOut(userId: string): Promise<StatusMessageDto> {
-    await this.userSchema
-      .findByIdAndUpdate(userId, { hashedRefreshToken: null })
-      .exec();
+    await this.usersRepository.updateOneById(userId, {
+      hashedRefreshToken: null,
+    });
     return { message: 'Success' } as StatusMessageDto;
   }
 
   async refreshToken(userId: string, refreshToken: string): Promise<TokensDto> {
-    const user = await this.userSchema
-      .findById(userId)
-      .select('+hashedRefreshToken')
-      .exec();
+    const user = await this.usersRepository.findOneById(userId, {
+      select: { hashedRefreshToken: 1 },
+    });
     if (!user || !user.hashedRefreshToken) throw new TokenInvalidException();
 
     const isRefreshTokenMatch = await HashHelper.compare(
@@ -129,15 +124,13 @@ export class AuthService {
     forgotPasswordDto: ForgotPasswordDto,
   ): Promise<StatusMessageDto> {
     const resetToken = this.tokenService.generateResetPasswordToken();
-    const user = await this.userSchema
-      .findOneAndUpdate(
-        { email: forgotPasswordDto.email },
-        {
-          passwordResetToken: resetToken.hashedResetToken,
-          passwordResetExpires: resetToken.expiresToken,
-        },
-      )
-      .exec();
+    const user = await this.usersRepository.updateOne(
+      { email: forgotPasswordDto.email },
+      {
+        passwordResetToken: resetToken.hashedResetToken,
+        passwordResetExpires: resetToken.expiresToken,
+      },
+    );
     if (user) {
       this.emailService.sendMail({
         to: user.email,

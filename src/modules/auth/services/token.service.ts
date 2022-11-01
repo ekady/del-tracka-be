@@ -2,26 +2,25 @@ import * as crypto from 'crypto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import {
   AccessTokenExpiredException,
   CredentialInvalidException,
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/common/http-exceptions/exceptions';
-import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
+import { UserDocument } from 'src/modules/users/schema/user.schema';
 import { HashHelper } from 'src/helpers';
 import { TokensDto } from '../dto';
 import { TokenJwtConfig } from '../enum';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
+import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 
 @Injectable()
 export class TokenService {
   constructor(
-    @InjectModel(UserEntity.name) private userSchema: Model<UserDocument>,
+    private usersRepository: UsersRepository,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {}
@@ -42,9 +41,9 @@ export class TokenService {
     const hashedRefreshToken = await HashHelper.encrypt(refreshToken);
 
     try {
-      await this.userSchema
-        .findByIdAndUpdate(payload.id, { hashedRefreshToken })
-        .exec();
+      await this.usersRepository.updateOneById(payload.id, {
+        hashedRefreshToken,
+      });
     } catch (_) {
       throw new CredentialInvalidException();
     }
@@ -57,7 +56,7 @@ export class TokenService {
   }
 
   async validateTokenUser(payload: IJwtPayload): Promise<IJwtPayload> {
-    const user = await this.userSchema.findById(payload.id).exec();
+    const user = await this.usersRepository.findOneById(payload.id);
     if (!user) throw new UnauthorizedException();
 
     payload.id = user._id;
@@ -105,7 +104,7 @@ export class TokenService {
         .createHash('sha256')
         .update(token)
         .digest('hex');
-      return this.userSchema.findOne({
+      return this.usersRepository.findOne({
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() },
       });
