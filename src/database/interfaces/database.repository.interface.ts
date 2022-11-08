@@ -1,4 +1,4 @@
-import { PipelineStage } from 'mongoose';
+import { Document, PipelineStage } from 'mongoose';
 import {
   DatabaseCreateOptions,
   DatabaseSoftDeleteOptions,
@@ -12,23 +12,23 @@ import {
   DatabaseAggregateOptions,
 } from './database.interface';
 
-export interface DatabaseRepositoryAbstract<T> {
-  findAll<Y = T>(
+export interface DatabaseRepositoryAbstract<T extends Document> {
+  findAll(
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
-  ): Promise<Y[]>;
+  ): Promise<T[]>;
 
   findAllAggregate<N>(
     pipeline: PipelineStage[],
     options?: DatabaseFindAllAggregateOptions,
   ): Promise<N[]>;
 
-  findOne<Y = T>(
+  findOne(
     find: Record<string, any>,
     options?: DatabaseFindOneOptions,
-  ): Promise<Y>;
+  ): Promise<T>;
 
-  findOneById<Y = T>(_id: string, options?: DatabaseFindOneOptions): Promise<Y>;
+  findOneById(_id: string, options?: DatabaseFindOneOptions): Promise<T>;
 
   findOneAggregate<N>(
     pipeline: PipelineStage[],

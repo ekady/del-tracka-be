@@ -1,5 +1,5 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { RoleDocument } from 'src/modules/roles/schema/role.schema';
 import { ProjectDocument } from 'src/modules/projects/schema/project.schema';

@@ -1,5 +1,5 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { ProjectEntity } from 'src/modules/projects/schema/project.schema';

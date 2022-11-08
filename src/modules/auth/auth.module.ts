@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from './auth.controller';
+import { AuthController } from './controllers/auth.controller';
 import { AuthJwtGuard } from './guard';
 import { AccessTokenStrategy, RefreshTokenStrategy } from './strategy';
 import { EmailModule } from '../email/email.module';

@@ -1,4 +1,10 @@
-import { Model, PipelineStage, PopulateOptions, Types } from 'mongoose';
+import {
+  Document,
+  Model,
+  PipelineStage,
+  PopulateOptions,
+  Types,
+} from 'mongoose';
 import {
   DatabaseCreateOptions,
   DatabaseSoftDeleteOptions,
@@ -13,7 +19,7 @@ import {
 } from '../interfaces/database.interface';
 import { DatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
 
-export abstract class DatabaseMongoRepositoryAbstract<T>
+export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   implements DatabaseRepositoryAbstract<T>
 {
   protected _repository: Model<T>;
@@ -27,10 +33,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
     this._populateOnFind = populateOnFind;
   }
 
-  async findAll<Y = T>(
+  async findAll(
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
-  ): Promise<Y[]> {
+  ): Promise<T[]> {
     const findAll = this._repository.find(find);
 
     if (options && options.withDeleted) findAll.where('deletedAt').exists(true);
@@ -48,7 +54,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
 
     if (options && options.session) findAll.session(options.session);
 
-    return findAll.lean();
+    return findAll.exec();
   }
 
   async findAllAggregate<N>(
@@ -84,10 +90,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
     return aggregate;
   }
 
-  async findOne<Y = T>(
+  async findOne(
     find: Record<string, any>,
     options?: DatabaseFindOneOptions,
-  ): Promise<Y> {
+  ): Promise<T> {
     const findOne = this._repository.findOne(find);
 
     if (options && options.withDeleted) findOne.where('deletedAt').exists(true);
@@ -101,13 +107,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
 
     if (options && options.sort) findOne.sort(options.sort);
 
-    return findOne.lean();
+    return findOne.exec();
   }
 
-  async findOneById<Y = T>(
-    _id: string,
-    options?: DatabaseFindOneOptions,
-  ): Promise<Y> {
+  async findOneById(_id: string, options?: DatabaseFindOneOptions): Promise<T> {
     const findOne = this._repository.findById(_id);
 
     if (options && options.withDeleted) findOne.where('deletedAt').exists(true);
@@ -121,7 +124,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
 
     if (options && options.sort) findOne.sort(options.sort);
 
-    return findOne.lean();
+    return findOne.exec();
   }
 
   async findOneAggregate<N>(
@@ -147,7 +150,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
     const aggregate = this._repository.aggregate<N>(pipeline);
     if (options && options.session) aggregate.session(options.session);
 
-    const findOne = await aggregate;
+    const findOne = await aggregate.exec();
     return findOne && findOne.length > 0 ? findOne[0] : undefined;
   }
 
@@ -196,7 +199,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
     const aggregate = this._repository.aggregate(pipeline);
     if (options && options.session) aggregate.session(options.session);
 
-    const count = await aggregate;
+    const count = await aggregate.exec();
     return count && count.length > 0 ? count[0].count : 0;
   }
 
@@ -218,7 +221,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
 
     if (options && options.populate) exist.populate(this._populateOnFind);
 
-    const result = await exist;
+    const result = await exist.exec();
     return result ? true : false;
   }
 
@@ -349,7 +352,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T>
 
     if (options && options.session) del.session(options.session);
 
-    return del;
+    return del.exec();
   }
 
   async softDeleteOne(

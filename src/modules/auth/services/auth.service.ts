@@ -31,7 +31,7 @@ export class AuthService {
   async signIn(signInDto: SignInRequestDto): Promise<TokensDto> {
     const user = await this.usersRepository.findOne(
       { email: signInDto.email },
-      { select: { password: 1 } },
+      { select: { password: 1, email: 1, picture: 1 } },
     );
 
     const userHashedPassword = user ? user.password : '';
@@ -95,19 +95,19 @@ export class AuthService {
       url: this.config.get('URL_CLIENT'),
     });
 
-    return { message: 'Success' } as StatusMessageDto;
+    return { message: 'Success' };
   }
 
   async signOut(userId: string): Promise<StatusMessageDto> {
     await this.usersRepository.updateOneById(userId, {
       hashedRefreshToken: null,
     });
-    return { message: 'Success' } as StatusMessageDto;
+    return { message: 'Success' };
   }
 
   async refreshToken(userId: string, refreshToken: string): Promise<TokensDto> {
     const user = await this.usersRepository.findOneById(userId, {
-      select: { hashedRefreshToken: 1 },
+      select: { email: 1, hashedRefreshToken: 1 },
     });
     if (!user || !user.hashedRefreshToken) throw new TokenInvalidException();
 
@@ -149,7 +149,7 @@ export class AuthService {
     const user = await this.tokenService.verifyResetPasswordToken(token);
     if (!user) throw new TokenInvalidException();
 
-    return { message: 'Success' } as StatusMessageDto;
+    return { message: 'Success' };
   }
 
   async resetPassword(

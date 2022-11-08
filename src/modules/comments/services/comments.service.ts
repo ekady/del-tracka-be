@@ -54,6 +54,13 @@ export class CommentsService {
 
   async findAll(ids: ITaskShortIds): Promise<CommentResponse[]> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
-    return this.commentsRespository.findOne({ task: task._id });
+    const comments = await this.commentsRespository.findAll({ task: task._id });
+    return comments.map((comment) => ({
+      comment: comment.comment,
+      createdAt: comment.createdAt,
+      task: comment.task,
+      user: comment.user,
+      _id: comment._id,
+    }));
   }
 }

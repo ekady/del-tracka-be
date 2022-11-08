@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ApiResProperty } from 'src/common/decorators/api-res-property.decorator';
 import { StatusMessageDto } from 'src/common/dto';
-import { JwtPayloadReq, SkipAuth } from './decorators';
+import { JwtPayloadReq, SkipAuth } from '../decorators';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
@@ -16,12 +16,12 @@ import {
   SignInRequestDto,
   SignUpRequestDto,
   TokensDto,
-} from './dto';
-import { AuthJwtRefreshGuard } from './guard';
+} from '../dto';
+import { AuthJwtRefreshGuard } from '../guard';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthService } from './services/auth.service';
-import { VerifyResetDto } from './dto/verify-reset-payload.dto';
-import { IJwtPayload } from './interfaces/jwt-payload.interface';
+import { AuthService } from '../services/auth.service';
+import { VerifyResetDto } from '../dto/verify-reset-payload.dto';
+import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Controller('auth')
 @ApiTags('Auth')

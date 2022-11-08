@@ -84,7 +84,20 @@ export class TasksService {
       stageId,
       projectId,
     );
-    return this.tasksRepository.findOne({ stage: stage._id });
+    const tasks = await this.tasksRepository.findAll({ stage: stage._id });
+    return tasks.map((task) => ({
+      assignee: task.assignee,
+      createdAt: task.createdAt,
+      images: task.images,
+      reporter: task.reporter,
+      updatedAt: task.updatedAt,
+      _id: task._id,
+      detail: task.detail,
+      feature: task.feature,
+      priority: task.priority,
+      status: task.status,
+      title: task.title,
+    }));
   }
 
   async findOne(ids: ITaskShortIds): Promise<TaskResponseDto> {

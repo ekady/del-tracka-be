@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { UserEntity, UserDocument } from 'src/modules/users/schema/user.schema';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { UsersRepository } from '../repositories/users.repository';
@@ -12,7 +9,16 @@ export class ProfileService {
   constructor(private usersRepository: UsersRepository) {}
 
   async findProfile(id: string): Promise<ProfileResponseDto> {
-    return this.usersRepository.findOneById(id);
+    const user = await this.usersRepository.findOneById(id);
+    return {
+      _id: user._id,
+      createdAt: user.createdAt,
+      picture: user.picture,
+      updatedAt: user.updatedAt,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
   }
 
   async updateProfile(
