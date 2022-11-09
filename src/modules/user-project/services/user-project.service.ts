@@ -1,25 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
 import { RoleDocument } from 'src/modules/roles/schema/role.schema';
-import {
-  UserProjectEntity,
-  UserProjectDocument,
-} from 'src/modules/user-project/schema/user-project.schema';
+import { UserProjectDocument } from 'src/modules/user-project/schema/user-project.schema';
 import {
   CreateUserProjectDto,
   UpdateUserProjectDto,
   ProjectUserResponseDto,
   UserProjectResponseDto,
 } from '../dto';
+import { UserProjectBulkRepository } from '../repositories/user-project.bulk.repository';
 import { UserProjectRepository } from '../repositories/user-project.repository';
 
 @Injectable()
 export class UserProjectService {
-  constructor(private userProjectRepository: UserProjectRepository) {}
+  constructor(
+    private userProjectRepository: UserProjectRepository,
+    private userProjectBulkRepository: UserProjectBulkRepository,
+  ) {}
 
   async findUserProjects(
     userId: string,
@@ -37,24 +37,23 @@ export class UserProjectService {
       email: 1,
       picture: 1,
     };
-    return this.userProjectRepository.aggregate([
+    return this.userProjectRepository.aggregate<UserProjectResponseDto>([
       { $match: { user: objectUserId } },
       {
         $lookup: {
-          from: 'projects',
+          from: 'projectentities',
           localField: 'project',
           foreignField: '_id',
           as: 'project',
           pipeline: [
-            { $match: { isDeleted: { $ne: true } } },
-            { $match: matchProject },
+            { $match: { deletedAt: { $exists: false }, ...matchProject } },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
         },
       },
       {
         $lookup: {
-          from: 'roles',
+          from: 'roleentities',
           localField: 'role',
           foreignField: '_id',
           as: 'role',
@@ -63,24 +62,24 @@ export class UserProjectService {
       },
       {
         $lookup: {
-          from: 'users',
+          from: 'userentities',
           localField: 'user',
           foreignField: '_id',
           as: 'user',
           pipeline: [
-            { $match: { isDeleted: { $ne: true } } },
+            { $match: { deletedAt: { $exists: false } } },
             { $project: userFields },
           ],
         },
       },
       {
         $lookup: {
-          from: 'stages',
+          from: 'stageentities',
           localField: 'project._id',
           foreignField: 'project',
           as: 'stages',
           pipeline: [
-            { $match: { isDeleted: { $ne: true } } },
+            { $match: { deletedAt: { $exists: false } } },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
         },
@@ -119,6 +118,16 @@ export class UserProjectService {
     return userProject;
   }
 
+  async findUserProjectByName(
+    userId: string,
+    projectName: string,
+  ): Promise<UserProjectResponseDto> {
+    const [userProject] = await this.findUserProjects(userId, {
+      name: projectName,
+    });
+    return userProject;
+  }
+
   async findProjectsByUserId(userId: string): Promise<UserProjectDocument[]> {
     return this.userProjectRepository.findAll({ user: userId });
   }
@@ -126,9 +135,10 @@ export class UserProjectService {
   async findUsersByProjectId(
     projectId: string,
   ): Promise<ProjectUserResponseDto[]> {
-    const users = await this.userProjectRepository.findAll({
-      project: projectId,
-    });
+    const users = await this.userProjectRepository.findAll(
+      { project: projectId },
+      { populate: true, limit: undefined, skip: undefined },
+    );
     return users.map((user) => ({
       _id: user.user._id,
       firstName: user.user.firstName,
@@ -241,9 +251,7 @@ export class UserProjectService {
     const userProjects = await this.userProjectRepository.findAll({
       project: projectId,
     });
-    // const removeQuery = userProjects.map(async (userProject) =>
-    //   userProject.remove(),
-    // );
-    // await Promise.all(removeQuery);
+    const ids: string[] = userProjects.map((userProject) => userProject._id);
+    await this.userProjectBulkRepository.softDeleteManyById(ids);
   }
 }

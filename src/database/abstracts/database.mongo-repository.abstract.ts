@@ -62,16 +62,12 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     options?: DatabaseFindAllAggregateOptions,
   ): Promise<N[]> {
     if (options && options.withDeleted) {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: true },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: true } },
       });
     } else {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: false },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: false } },
       });
     }
 
@@ -87,7 +83,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     const aggregate = this._repository.aggregate<N>(pipeline);
     if (options && options.session) aggregate.session(options.session);
 
-    return aggregate;
+    return aggregate.exec();
   }
 
   async findOne(
@@ -132,16 +128,12 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     options?: DatabaseAggregateOptions,
   ): Promise<N> {
     if (options && options.withDeleted) {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: true },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: true } },
       });
     } else {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: false },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: false } },
       });
     }
 
@@ -174,16 +166,12 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     options?: DatabaseGetTotalAggregateOptions,
   ): Promise<number> {
     if (options && options.withDeleted) {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: true },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: true } },
       });
     } else {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: false },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: false } },
       });
     }
 
@@ -230,16 +218,12 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     options?: DatabaseAggregateOptions,
   ): Promise<N[]> {
     if (options && options.withDeleted) {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: true },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: true } },
       });
     } else {
-      pipeline.push({
-        $match: {
-          deletedAt: { $exists: false },
-        },
+      pipeline.unshift({
+        $match: { deletedAt: { $exists: false } },
       });
     }
 

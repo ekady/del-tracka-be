@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserProjectBulkRepository } from './repositories/user-project.bulk.repository';
 import { UserProjectRepository } from './repositories/user-project.repository';
 import { UserProjectFeature } from './schema/user-project.schema';
 import { UserProjectService } from './services/user-project.service';
 
 @Module({
-  providers: [UserProjectRepository, UserProjectService],
+  providers: [
+    UserProjectRepository,
+    UserProjectBulkRepository,
+    UserProjectService,
+  ],
   exports: [UserProjectRepository, UserProjectService],
   imports: [MongooseModule.forFeature([UserProjectFeature])],
 })
