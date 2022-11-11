@@ -8,6 +8,7 @@ export interface DatabaseFindOneOptions
   populate?: boolean;
   session?: ClientSession;
   withDeleted?: boolean;
+  projection?: Record<string, string | number | boolean>;
 }
 
 export type DatabaseOptions = Pick<

@@ -1,21 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import {
-  ActivityEntity,
-  ActivityDocument,
-} from 'src/modules/activities/schema/activity.schema';
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';
+import { ActivitiesRepository } from '../repositories/activities.repository';
 
 @Injectable()
 export class ActivitiesService {
-  constructor(
-    @InjectModel(ActivityEntity.name)
-    private activitySchema: Model<ActivityDocument>,
-  ) {}
+  constructor(private activitiesRepository: ActivitiesRepository) {}
 
   async create(
     createActivityDto: CreateActivityDto,
@@ -26,7 +19,8 @@ export class ActivitiesService {
       project: new Types.ObjectId(project),
       ...createDto,
     };
-    await this.activitySchema.create(payload);
+
+    await this.activitiesRepository.create(payload);
     return {
       message: 'Success',
     };
@@ -35,40 +29,67 @@ export class ActivitiesService {
   async findActivitiesByProjectId(
     projectId: string,
   ): Promise<ActivityResponseDto[]> {
-    return this.activitySchema
-      .find(
-        { project: new Types.ObjectId(projectId) },
-        { ...ActivityProjection },
-      )
-      .sort({ createdAt: -1 })
-      .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description shortId' },
-      ]);
+    const activities = await this.activitiesRepository.findAll(
+      { project: new Types.ObjectId(projectId) },
+      {
+        populate: true,
+        sort: { createdAt: -1 },
+        limit: undefined,
+        skip: undefined,
+        projection: ActivityProjection,
+      },
+    );
+
+    return activities.map((activity) => ({
+      _id: activity._id,
+      createdAt: activity.createdAt,
+      updatedAt: activity.updatedAt,
+      comment: activity.comment,
+      createdBy: activity.createdBy,
+      project: activity.project.name,
+      stageAfter: activity.stageAfter,
+      stageBefore: activity.stageBefore,
+      taskAfter: activity.taskAfter,
+      taskBefore: activity.taskBefore,
+      type: activity.type,
+    }));
   }
 
-  async findActivitiesStage(
+  async findStageActivities(
     projectId: string,
     stageId: string,
   ): Promise<ActivityResponseDto[]> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
-    return this.activitySchema
-      .find(
-        {
-          project: objectProjectId,
-          $or: [
-            { 'stageAfter._id': objectStageId },
-            { 'stageBefore._id': objectStageId },
-          ],
-        },
-        { ...ActivityProjection },
-      )
-      .sort({ createdAt: -1 })
-      .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description shortId' },
-      ]);
+    const activities = await this.activitiesRepository.findAll(
+      {
+        project: objectProjectId,
+        $or: [
+          { 'stageAfter._id': objectStageId },
+          { 'stageBefore._id': objectStageId },
+        ],
+      },
+      {
+        populate: true,
+        sort: { createdAt: -1 },
+        limit: undefined,
+        skip: undefined,
+        projection: ActivityProjection,
+      },
+    );
+    return activities.map((activity) => ({
+      _id: activity._id,
+      createdAt: activity.createdAt,
+      updatedAt: activity.updatedAt,
+      comment: activity.comment,
+      createdBy: activity.createdBy,
+      project: activity.project.name,
+      stageAfter: activity.stageAfter,
+      stageBefore: activity.stageBefore,
+      taskAfter: activity.taskAfter,
+      taskBefore: activity.taskBefore,
+      type: activity.type,
+    }));
   }
 
   async findActivitiesTask(
@@ -79,31 +100,45 @@ export class ActivitiesService {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
     const objectTaskId = new Types.ObjectId(taskId);
-    return this.activitySchema
-      .find(
-        {
-          project: objectProjectId,
-          $and: [
-            {
-              $or: [
-                { 'stageAfter._id': objectStageId },
-                { 'stageBefore._id': objectStageId },
-              ],
-            },
-            {
-              $or: [
-                { 'taskAfter._id': objectTaskId },
-                { 'taskBefore._id': objectTaskId },
-              ],
-            },
-          ],
-        },
-        { ...ActivityProjection },
-      )
-      .sort({ createdAt: -1 })
-      .populate([
-        { path: 'createdBy', select: '_id firstName lastName' },
-        { path: 'project', select: '_id name description shortId' },
-      ]);
+    const activities = await this.activitiesRepository.findAll(
+      {
+        project: objectProjectId,
+        $and: [
+          {
+            $or: [
+              { 'stageAfter._id': objectStageId },
+              { 'stageBefore._id': objectStageId },
+            ],
+          },
+          {
+            $or: [
+              { 'taskAfter._id': objectTaskId },
+              { 'taskBefore._id': objectTaskId },
+            ],
+          },
+        ],
+      },
+      {
+        populate: true,
+        sort: { createdAt: -1 },
+        limit: undefined,
+        skip: undefined,
+        projection: ActivityProjection,
+      },
+    );
+
+    return activities.map((activity) => ({
+      _id: activity._id,
+      createdAt: activity.createdAt,
+      updatedAt: activity.updatedAt,
+      comment: activity.comment,
+      createdBy: activity.createdBy,
+      project: activity.project.name,
+      stageAfter: activity.stageAfter,
+      stageBefore: activity.stageBefore,
+      taskAfter: activity.taskAfter,
+      taskBefore: activity.taskBefore,
+      type: activity.type,
+    }));
   }
 }

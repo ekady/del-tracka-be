@@ -14,16 +14,16 @@ export class CommentEntity implements Timestamps {
   @Prop()
   updatedAt: Date;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
   user: UserDocument;
 
   @Prop({ required: true, type: String })
   comment: string;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Project' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'ProjectEntity' })
   project: ProjectDocument;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Stage' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'StageEntity' })
   stage: StageDocument;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Task' })

@@ -14,16 +14,16 @@ export class TaskEntity implements Timestamps {
   @Prop()
   updatedAt: Date;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
   createdBy: UserDocument;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
   updatedBy: UserDocument;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Project' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'ProjectEntity' })
   project: ProjectDocument;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Stage' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'StageEntity' })
   stage: StageDocument;
 
   @Prop({ required: true, type: String })
@@ -38,10 +38,10 @@ export class TaskEntity implements Timestamps {
   @Prop({ required: true, enum: TaskPriority })
   priority: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
   assignee: UserDocument;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
   reporter: UserDocument;
 
   @Prop({ required: true, enum: TaskStatus })

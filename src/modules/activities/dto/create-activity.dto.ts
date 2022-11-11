@@ -1,10 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ActivityName } from 'src/common/enums';
-import {
-  StageEntity,
-  StageDocument,
-} from 'src/modules/stages/schema/stage.schema';
-import { TaskEntity, TaskDocument } from 'src/modules/tasks/schema/task.schema';
+import { StageEntity } from 'src/modules/stages/schema/stage.schema';
+import { TaskEntity } from 'src/modules/tasks/schema/task.schema';
 
 export class CreateActivityDto {
   @ApiProperty()
@@ -17,16 +14,16 @@ export class CreateActivityDto {
   project: string;
 
   @ApiProperty({ type: StageEntity })
-  stageBefore: StageDocument;
+  stageBefore: StageEntity;
 
   @ApiProperty({ type: StageEntity })
-  stageAfter: StageDocument;
+  stageAfter: StageEntity;
 
   @ApiProperty({ type: TaskEntity })
-  taskBefore?: TaskDocument;
+  taskBefore?: TaskEntity;
 
   @ApiProperty({ type: TaskEntity })
-  taskAfter?: TaskDocument;
+  taskAfter?: TaskEntity;
 
   @ApiProperty({ type: String })
   comment?: string;

@@ -4,6 +4,8 @@ import { RoleName } from 'src/common/enums';
 
 @Schema({ timestamps: true, versionKey: false })
 export class RoleEntity {
+  _id: string;
+
   @Prop({ required: true, enum: RoleName, unique: true })
   name: string;
 

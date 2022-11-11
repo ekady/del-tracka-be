@@ -4,10 +4,10 @@ import { ActivityName } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 import { ProjectEntity } from 'src/modules/projects/schema/project.schema';
 import {
-  StageDocument,
+  StageEntity,
   StageSchema,
 } from 'src/modules/stages/schema/stage.schema';
-import { TaskDocument, TaskSchema } from 'src/modules/tasks/schema/task.schema';
+import { TaskEntity, TaskSchema } from 'src/modules/tasks/schema/task.schema';
 import { UserEntity } from 'src/modules/users/schema/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
@@ -18,26 +18,26 @@ export class ActivityEntity implements Timestamps {
   @Prop()
   updatedAt: Date;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
   createdBy: UserEntity;
 
   @Prop({ required: true, type: String, enum: ActivityName })
   type: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Project', select: false })
+  @Prop({ type: Types.ObjectId, ref: 'ProjectEntity', select: false })
   project: ProjectEntity;
 
   @Prop({ type: StageSchema })
-  stageBefore: StageDocument;
+  stageBefore: StageEntity;
 
   @Prop({ type: StageSchema })
-  stageAfter: StageDocument;
+  stageAfter: StageEntity;
 
   @Prop({ type: TaskSchema })
-  taskBefore: TaskDocument;
+  taskBefore: TaskEntity;
 
   @Prop({ type: TaskSchema })
-  taskAfter: TaskDocument;
+  taskAfter: TaskEntity;
 
   @Prop({ type: String })
   comment: string;

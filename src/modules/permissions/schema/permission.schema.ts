@@ -20,7 +20,7 @@ export class PermissionEntity {
   @Prop({ required: true })
   delete: boolean;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Role' })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'RoleEntity' })
   role: RoleDocument;
 }
 

@@ -19,17 +19,22 @@ export class StagesHelperService {
   ) {}
 
   async checkStageNameExist(query: FilterQuery<StageDocument>): Promise<void> {
-    const stage = await this.stagesRepository.findOne(query);
+    const stage = await this.stagesRepository.findOne(query, {
+      populate: true,
+    });
 
     if (stage) throw new DocumentExistException('Stage already exists');
   }
 
   async findStageById(id: string, projectId: string): Promise<StageDocument> {
     const project = await this.projectsHelperService.findProjectById(projectId);
-    const stage = await this.stagesRepository.findOne({
-      _id: new Types.ObjectId(id),
-      project: project._id,
-    });
+    const stage = await this.stagesRepository.findOne(
+      {
+        _id: new Types.ObjectId(id),
+        project: project._id,
+      },
+      { populate: true },
+    );
     if (!stage) throw new DocumentNotFoundException('Stage not found');
     return stage;
   }
@@ -41,10 +46,13 @@ export class StagesHelperService {
     const project = await this.projectsHelperService.findProjectByShortId(
       projectId,
     );
-    const stage = await this.stagesRepository.findOne({
-      project: project._id,
-      shortId: stageId,
-    });
+    const stage = await this.stagesRepository.findOne(
+      {
+        project: project._id,
+        shortId: stageId,
+      },
+      { populate: true },
+    );
 
     if (!stage) throw new DocumentNotFoundException('Stage not found');
     return stage;

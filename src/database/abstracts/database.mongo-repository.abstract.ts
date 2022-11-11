@@ -54,6 +54,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     if (options && options.session) findAll.session(options.session);
 
+    if (options && options.projection) findAll.projection(options.projection);
+
     return findAll.exec();
   }
 
@@ -103,6 +105,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     if (options && options.sort) findOne.sort(options.sort);
 
+    if (options && options.projection) findOne.projection(options.projection);
+
     return findOne.exec();
   }
 
@@ -119,6 +123,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     if (options && options.session) findOne.session(options.session);
 
     if (options && options.sort) findOne.sort(options.sort);
+
+    if (options && options.projection) findOne.projection(options.projection);
 
     return findOne.exec();
   }

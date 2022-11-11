@@ -5,6 +5,8 @@ import { UserEntity } from 'src/modules/users/schema/user.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class ProjectEntity implements Timestamps {
+  _id: string;
+
   @Prop()
   createdAt: Date;
 
@@ -17,10 +19,10 @@ export class ProjectEntity implements Timestamps {
   @Prop()
   description: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
   createdBy: UserEntity;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
   updatedBy: UserEntity;
 
   @Prop({ type: String, unique: true })

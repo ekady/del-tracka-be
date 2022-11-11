@@ -4,6 +4,8 @@ import { Timestamps } from 'src/database/interfaces/timestamps.interface';
 
 @Schema({ timestamps: true, versionKey: false })
 export class UserEntity implements Timestamps {
+  _id: string;
+
   @Prop()
   createdAt: Date;
 

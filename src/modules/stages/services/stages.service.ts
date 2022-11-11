@@ -8,6 +8,7 @@ import { CreateStageDto, StageResponseDto, UpdateStageDto } from '../dto';
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
+import { StageEntity } from '../schema/stage.schema';
 
 @Injectable()
 export class StagesService {
@@ -26,6 +27,7 @@ export class StagesService {
     const project = await this.projectsHelperService.findProjectByShortId(
       projectId,
     );
+
     await this.stagesHelperService.checkStageNameExist({
       name: payload.name,
       project: project._id,
@@ -40,7 +42,7 @@ export class StagesService {
     await this.stagesHelperService.createStageActivity({
       type: ActivityName.CREATE_STAGE,
       stageBefore: null,
-      stageAfter: stage,
+      stageAfter: stage as StageEntity,
       createdBy: userId,
       project: project._id,
     });
@@ -51,11 +53,34 @@ export class StagesService {
     const project = await this.projectsHelperService.findProjectByShortId(
       projectId,
     );
-    return this.stagesRepository.findAll({ project: project._id });
+    const stages = await this.stagesRepository.findAll(
+      { project: project._id },
+      { populate: true, limit: undefined, skip: undefined },
+    );
+
+    return stages.map((stage) => ({
+      _id: stage._id,
+      shortId: stage.shortId,
+      createdAt: stage.createdAt,
+      description: stage.description,
+      name: stage.name,
+      updatedAt: stage.updatedAt,
+    }));
   }
 
   async findOne(shortId: string, projectId: string): Promise<StageResponseDto> {
-    return this.stagesHelperService.findStageByShortId(shortId, projectId);
+    const stage = await this.stagesHelperService.findStageByShortId(
+      shortId,
+      projectId,
+    );
+    return {
+      _id: stage._id,
+      shortId: stage.shortId,
+      createdAt: stage.createdAt,
+      description: stage.description,
+      name: stage.name,
+      updatedAt: stage.updatedAt,
+    };
   }
 
   async update(
@@ -97,7 +122,8 @@ export class StagesService {
       stageId,
       projectId,
     );
-    await stage.remove();
+
+    await this.stagesRepository.softDeleteOneById(stage._id);
 
     await this.stagesHelperService.createStageActivity({
       type: ActivityName.DELETE_STAGE,
@@ -117,7 +143,7 @@ export class StagesService {
       shortId,
       projectId,
     );
-    return this.activitiesService.findActivitiesStage(
+    return this.activitiesService.findStageActivities(
       stage.project._id,
       stage._id,
     );
