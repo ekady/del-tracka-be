@@ -8,6 +8,8 @@ import { StageDocument } from 'src/modules/stages/schema/stage.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class CommentEntity implements Timestamps {
+  _id: string;
+
   @Prop()
   createdAt: Date;
 

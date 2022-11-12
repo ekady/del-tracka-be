@@ -31,10 +31,13 @@ export class TasksHelperService {
       stageId,
       projectId,
     );
-    const task = await this.tasksRepository.findOne({
-      ...query,
-      stage: stage._id,
-    });
+    const task = await this.tasksRepository.findOne(
+      {
+        ...query,
+        stage: stage._id,
+      },
+      { populate: true },
+    );
 
     if (task) {
       throw new DocumentExistException('Task already exists.');
@@ -47,10 +50,13 @@ export class TasksHelperService {
       stageId,
       projectId,
     );
-    const task = await this.tasksRepository.findOne({
-      _id: new Types.ObjectId(taskId),
-      stage: stage._id,
-    });
+    const task = await this.tasksRepository.findOne(
+      {
+        _id: new Types.ObjectId(taskId),
+        stage: stage._id,
+      },
+      { populate: true },
+    );
 
     if (!task) throw new DocumentExistException('Task not found');
     return task;
@@ -62,10 +68,13 @@ export class TasksHelperService {
       stageId,
       projectId,
     );
-    const task = await this.tasksRepository.findOne({
-      shortId: taskId,
-      stage: stage._id,
-    });
+    const task = await this.tasksRepository.findOne(
+      {
+        shortId: taskId,
+        stage: stage._id,
+      },
+      { populate: true },
+    );
 
     if (!task) throw new DocumentExistException('Task not found');
     return task;
@@ -124,6 +133,7 @@ export class TasksHelperService {
     const taskUpdate = await this.tasksRepository.updateOne(
       { _id: taskFound._id, stage: stage._id },
       payload,
+      { populate: true },
     );
 
     await this.createTaskActivity({
@@ -131,7 +141,7 @@ export class TasksHelperService {
       createdBy: taskUpdate.updatedBy._id,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
-      stageAfter: taskUpdate.stage.depopulate(),
+      stageAfter: taskUpdate.stage,
       taskBefore: taskFound.depopulate(),
       taskAfter: taskUpdate.depopulate(),
     });

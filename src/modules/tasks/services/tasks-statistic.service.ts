@@ -11,6 +11,52 @@ export class TasksStatisticService {
     private projectsHelperService: ProjectsHelperService,
   ) {}
 
+  async getTasksStatisticByStatus(
+    userProjectMatch: PipelineStage.Match,
+    taskMatch?: PipelineStage.Match,
+  ): Promise<TaskStatisticDto[]> {
+    const match = {
+      userProject: userProjectMatch,
+      task: taskMatch || { $match: {} },
+    };
+    return this.userProjectRepository.aggregate([
+      match.userProject,
+      {
+        $lookup: {
+          from: 'stageentities',
+          localField: 'project',
+          foreignField: 'project',
+          as: 'stage',
+          pipeline: [
+            { $match: { deletedAt: { $exists: false } } },
+            {
+              $lookup: {
+                from: 'taskentities',
+                localField: '_id',
+                foreignField: 'stage',
+                as: 'tasks',
+                pipeline: [
+                  { $match: { deletedAt: { $exists: false } } },
+                  match.task,
+                ],
+              },
+            },
+            { $unwind: '$tasks' },
+          ],
+        },
+      },
+      { $unwind: '$stage' },
+      {
+        $group: {
+          _id: '$stage.tasks.status',
+          name: { $first: '$stage.tasks.status' },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { name: 1 } },
+    ]);
+  }
+
   async getTasksStatisticAll(userId: string): Promise<TaskStatisticDto[]> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
     return this.getTasksStatisticByStatus(userProject);
@@ -65,20 +111,20 @@ export class TasksStatisticService {
       match,
       {
         $lookup: {
-          from: 'stages',
+          from: 'stageentities',
           localField: 'project',
           foreignField: 'project',
           as: 'stage',
           pipeline: [
-            { $match: { isDeleted: { $ne: true } } },
+            { $match: { deletedAt: { $exists: false } } },
             {
               $lookup: {
-                from: 'tasks',
+                from: 'taskentities',
                 localField: '_id',
                 foreignField: 'stage',
                 as: 'tasks',
                 pipeline: [
-                  { $match: { isDeleted: { $ne: true } } },
+                  { $match: { deletedAt: { $exists: false } } },
                   taskGroup,
                   { $sort: { name: 1 } },
                 ],
@@ -100,52 +146,6 @@ export class TasksStatisticService {
       { $project: { _id: 0, stage: '$stage' } },
       { $sort: { 'stage.createdAt': 1 } },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$stage'] } } },
-    ]);
-  }
-
-  async getTasksStatisticByStatus(
-    userProjectMatch: PipelineStage.Match,
-    taskMatch?: PipelineStage.Match,
-  ): Promise<TaskStatisticDto[]> {
-    const match = {
-      userProject: userProjectMatch,
-      task: taskMatch || { $match: {} },
-    };
-    return this.userProjectRepository.aggregate([
-      match.userProject,
-      {
-        $lookup: {
-          from: 'stages',
-          localField: 'project',
-          foreignField: 'project',
-          as: 'stage',
-          pipeline: [
-            { $match: { isDeleted: { $ne: true } } },
-            {
-              $lookup: {
-                from: 'tasks',
-                localField: '_id',
-                foreignField: 'stage',
-                as: 'tasks',
-                pipeline: [
-                  { $match: { isDeleted: { $ne: true } } },
-                  match.task,
-                ],
-              },
-            },
-            { $unwind: '$tasks' },
-          ],
-        },
-      },
-      { $unwind: '$stage' },
-      {
-        $group: {
-          _id: '$stage.tasks.status',
-          name: { $first: '$stage.tasks.status' },
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { name: 1 } },
     ]);
   }
 }

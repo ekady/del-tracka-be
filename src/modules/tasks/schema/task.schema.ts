@@ -2,12 +2,14 @@ import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { TaskPriority, TaskStatus } from 'src/common/enums';
 import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { StageDocument } from 'src/modules/stages/schema/stage.schema';
-import { UserDocument } from 'src/modules/users/schema/user.schema';
-import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
+import { StageEntity } from 'src/modules/stages/schema/stage.schema';
+import { UserEntity } from 'src/modules/users/schema/user.schema';
+import { ProjectEntity } from 'src/modules/projects/schema/project.schema';
 
 @Schema({ timestamps: true, versionKey: false })
 export class TaskEntity implements Timestamps {
+  _id: string;
+
   @Prop()
   createdAt: Date;
 
@@ -15,16 +17,16 @@ export class TaskEntity implements Timestamps {
   updatedAt: Date;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
-  createdBy: UserDocument;
+  createdBy: UserEntity;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
-  updatedBy: UserDocument;
+  updatedBy: UserEntity;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'ProjectEntity' })
-  project: ProjectDocument;
+  project: ProjectEntity;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'StageEntity' })
-  stage: StageDocument;
+  stage: StageEntity;
 
   @Prop({ required: true, type: String })
   feature: string;
@@ -39,10 +41,10 @@ export class TaskEntity implements Timestamps {
   priority: string;
 
   @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
-  assignee: UserDocument;
+  assignee: UserEntity;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'UserEntity' })
-  reporter: UserDocument;
+  reporter: UserEntity;
 
   @Prop({ required: true, enum: TaskStatus })
   status: string;

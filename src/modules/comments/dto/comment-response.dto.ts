@@ -7,10 +7,16 @@ export class CommentResponse {
   _id?: string;
 
   @ApiResponseProperty()
-  user: UserEntity;
+  user: Pick<
+    UserEntity,
+    '_id' | 'email' | 'firstName' | 'lastName' | 'picture'
+  >;
 
   @ApiResponseProperty()
-  task: TaskEntity;
+  task: Pick<
+    TaskEntity,
+    '_id' | 'detail' | 'feature' | 'priority' | 'shortId' | 'status' | 'title'
+  >;
 
   @ApiResponseProperty()
   comment: string;

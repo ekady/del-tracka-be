@@ -75,16 +75,16 @@ export class TasksService {
     return { message: 'Success' };
   }
 
-  async findAll(
-    ids: IStageShortId,
-    userId: string,
-  ): Promise<TaskResponseDto[]> {
+  async findAll(ids: IStageShortId): Promise<TaskResponseDto[]> {
     const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
       stageId,
       projectId,
     );
-    const tasks = await this.tasksRepository.findAll({ stage: stage._id });
+    const tasks = await this.tasksRepository.findAll(
+      { stage: stage._id },
+      { populate: true, limit: undefined, skip: undefined },
+    );
     return tasks.map((task) => ({
       assignee: task.assignee,
       createdAt: task.createdAt,
@@ -97,11 +97,38 @@ export class TasksService {
       priority: task.priority,
       status: task.status,
       title: task.title,
+      shortId: task.shortId,
     }));
   }
 
   async findOne(ids: ITaskShortIds): Promise<TaskResponseDto> {
-    return this.tasksHelperService.findTaskByShortId(ids);
+    const task = await this.tasksHelperService.findTaskByShortId(ids);
+    return {
+      assignee: task.assignee,
+      createdAt: task.createdAt,
+      images: task.images,
+      reporter: task.reporter,
+      updatedAt: task.updatedAt,
+      _id: task._id,
+      detail: task.detail,
+      feature: task.feature,
+      priority: task.priority,
+      status: task.status,
+      title: task.title,
+      shortId: task.shortId,
+      project: {
+        _id: task.project._id,
+        description: task.project.description,
+        name: task.project.name,
+        shortId: task.project.shortId,
+      },
+      stage: {
+        _id: task.stage._id,
+        description: task.stage.description,
+        name: task.stage.name,
+        shortId: task.stage.shortId,
+      },
+    };
   }
 
   async findTaskActivities(ids: ITaskShortIds): Promise<ActivityResponseDto[]> {
@@ -149,7 +176,7 @@ export class TasksService {
       ids.projectId,
     );
     const task = await this.tasksHelperService.findTaskByShortId(ids);
-    await task.remove();
+    await this.tasksRepository.softDeleteOneById(task._id);
 
     await this.tasksHelperService.createTaskActivity({
       type: ActivityName.DELETE_TASK,
