@@ -45,8 +45,8 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
     const del = this._repository.deleteMany({ _id: { $in: map } });
 
-    if (options && options.withDeleted) del.where('deletedAt').exists(true);
-    else del.where('deletedAt').exists(false);
+    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    else del.where('deletedAt').equals(null);
 
     if (options && options.session) del.session(options.session);
 
@@ -66,8 +66,8 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   ): Promise<boolean> {
     const del = this._repository.deleteMany(find);
 
-    if (options && options.withDeleted) del.where('deletedAt').exists(true);
-    else del.where('deletedAt').exists(false);
+    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    else del.where('deletedAt').equals(null);
 
     if (options && options.session) del.session(options.session);
 
@@ -90,7 +90,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
     const softDel = this._repository
       .updateMany({ _id: { $in: map } }, { $set: { deletedAt: new Date() } })
       .where('deletedAt')
-      .exists(false);
+      .equals(null);
 
     if (options && options.session) softDel.session(options.session);
 
@@ -111,7 +111,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
     const softDel = this._repository
       .updateMany(find, { $set: { deletedAt: new Date() } })
       .where('deletedAt')
-      .exists(false);
+      .equals(null);
 
     if (options && options.session) softDel.session(options.session);
 
@@ -132,7 +132,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
     const map: Types.ObjectId[] = _id.map((val) => new Types.ObjectId(val));
 
     const rest = this._repository
-      .updateMany({ _id: { $in: map } }, { $set: { deletedAt: undefined } })
+      .updateMany({ _id: { $in: map } }, { $set: { deletedAt: null } })
       .where('deletedAt')
       .exists(true);
 
@@ -155,8 +155,8 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   ): Promise<boolean> {
     const update = this._repository.updateMany(find, { $set: data });
 
-    if (options && options.withDeleted) update.where('deletedAt').exists(true);
-    else update.where('deletedAt').exists(false);
+    if (options && options.withDeleted) update.where('deletedAt').ne(null);
+    else update.where('deletedAt').equals(null);
 
     if (options && options.session) update.session(options.session);
 

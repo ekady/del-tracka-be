@@ -23,4 +23,7 @@ export class ProfileResponseDto
 
   @ApiResponseProperty()
   updatedAt: Date;
+
+  @ApiResponseProperty()
+  deletedAt: Date;
 }

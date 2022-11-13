@@ -1,16 +1,12 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Timestamps } from 'src/database/interfaces/timestamps.interface';
+import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 
-@Schema({ timestamps: true, versionKey: false })
-export class UserEntity implements Timestamps {
+export const UserDatabaseName = 'users';
+
+@Schema({ timestamps: true, versionKey: false, collection: UserDatabaseName })
+export class UserEntity extends DatabaseTimestampsAbstract {
   _id: string;
-
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
 
   @Prop({ required: true, trim: true })
   firstName: string;
@@ -20,6 +16,9 @@ export class UserEntity implements Timestamps {
 
   @Prop({ required: true, trim: true })
   email: string;
+
+  @Prop({ default: null })
+  picture: string;
 
   @Prop({
     required: function () {
@@ -45,9 +44,6 @@ export class UserEntity implements Timestamps {
 
   @Prop({ select: false })
   passwordChangedAt: Date;
-
-  @Prop()
-  picture: string;
 
   @Prop({ select: false })
   hashedRefreshToken: string;

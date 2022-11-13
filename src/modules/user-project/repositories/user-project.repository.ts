@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DatabaseMongoRepositoryAbstract } from 'src/database/abstracts/database.mongo-repository.abstract';
-import { ProjectEntity } from 'src/modules/projects/schema/project.schema';
-import { RoleEntity } from 'src/modules/roles/schema/role.schema';
-import { UserEntity } from 'src/modules/users/schema/user.schema';
+import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
+import { RoleEntity } from 'src/modules/roles/entities/role.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   UserProjectDocument,
   UserProjectEntity,
-} from '../schema/user-project.schema';
+} from '../entities/user-project.entity';
 
 @Injectable()
 export class UserProjectRepository extends DatabaseMongoRepositoryAbstract<UserProjectDocument> {

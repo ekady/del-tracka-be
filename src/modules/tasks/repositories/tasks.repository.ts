@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DatabaseMongoRepositoryAbstract } from 'src/database/abstracts/database.mongo-repository.abstract';
-import { ProjectEntity } from 'src/modules/projects/schema/project.schema';
-import { StageEntity } from 'src/modules/stages/schema/stage.schema';
-import { UserEntity } from 'src/modules/users/schema/user.schema';
-import { TaskDocument, TaskEntity } from '../schema/task.schema';
+import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
+import { StageEntity } from 'src/modules/stages/entities/stage.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { TaskDocument, TaskEntity } from '../entities/task.entity';
 
 @Injectable()
 export class TasksRepository extends DatabaseMongoRepositoryAbstract<TaskDocument> {

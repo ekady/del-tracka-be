@@ -1,9 +1,12 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { RoleName } from 'src/common/enums';
+import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 
-@Schema({ timestamps: true, versionKey: false })
-export class RoleEntity {
+export const RoleDatabaseName = 'roles';
+
+@Schema({ timestamps: true, versionKey: false, collection: RoleDatabaseName })
+export class RoleEntity extends DatabaseTimestampsAbstract {
   _id: string;
 
   @Prop({ required: true, enum: RoleName, unique: true })

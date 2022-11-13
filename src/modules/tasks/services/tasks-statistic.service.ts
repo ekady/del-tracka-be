@@ -3,6 +3,8 @@ import { PipelineStage } from 'mongoose';
 import { ProjectsHelperService } from 'src/modules/projects/services';
 import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
 import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
+import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
+import { TaskDatabaseName } from '../entities/task.entity';
 
 @Injectable()
 export class TasksStatisticService {
@@ -23,20 +25,20 @@ export class TasksStatisticService {
       match.userProject,
       {
         $lookup: {
-          from: 'stageentities',
+          from: StageDatabaseName,
           localField: 'project',
           foreignField: 'project',
           as: 'stage',
           pipeline: [
-            { $match: { deletedAt: { $exists: false } } },
+            { $match: { deletedAt: { $eq: null } } },
             {
               $lookup: {
-                from: 'taskentities',
+                from: TaskDatabaseName,
                 localField: '_id',
                 foreignField: 'stage',
                 as: 'tasks',
                 pipeline: [
-                  { $match: { deletedAt: { $exists: false } } },
+                  { $match: { deletedAt: { $eq: null } } },
                   match.task,
                 ],
               },
@@ -111,20 +113,20 @@ export class TasksStatisticService {
       match,
       {
         $lookup: {
-          from: 'stageentities',
+          from: StageDatabaseName,
           localField: 'project',
           foreignField: 'project',
           as: 'stage',
           pipeline: [
-            { $match: { deletedAt: { $exists: false } } },
+            { $match: { deletedAt: { $eq: null } } },
             {
               $lookup: {
-                from: 'taskentities',
+                from: TaskDatabaseName,
                 localField: '_id',
                 foreignField: 'stage',
                 as: 'tasks',
                 pipeline: [
-                  { $match: { deletedAt: { $exists: false } } },
+                  { $match: { deletedAt: { $eq: null } } },
                   taskGroup,
                   { $sort: { name: 1 } },
                 ],

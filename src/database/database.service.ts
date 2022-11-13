@@ -15,10 +15,6 @@ export class MongooseConfigService implements MongooseOptionsFactory {
       uri: this.config.get<string>('DATABASE_LOCAL'),
       connectionFactory(connection: Connection) {
         connection.plugin((schema) => {
-          schema.add({
-            deletedAt: { type: Date, default: undefined, select: false },
-          });
-
           schema.index({ deletedAt: -1 });
         });
         return connection;

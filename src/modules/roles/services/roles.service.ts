@@ -3,9 +3,9 @@ import { FilterQuery } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
 import { PermissionsRepository } from 'src/modules/permissions/repositories/permissions.repository';
-import { PermissionDocument } from 'src/modules/permissions/schema/permission.schema';
-import { RoleDocument } from 'src/modules/roles/schema/role.schema';
-import { UserProjectDocument } from 'src/modules/user-project/schema/user-project.schema';
+import { PermissionDocument } from 'src/modules/permissions/entities/permission.entity';
+import { RoleDocument } from 'src/modules/roles/entities/role.entity';
+import { UserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import { RolesRepository } from '../repositories/roles.repository';
 

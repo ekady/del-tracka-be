@@ -39,8 +39,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<T[]> {
     const findAll = this._repository.find(find);
 
-    if (options && options.withDeleted) findAll.where('deletedAt').exists(true);
-    else findAll.where('deletedAt').exists(false);
+    if (options && options.withDeleted) findAll.where('deletedAt').ne(null);
+    else findAll.where('deletedAt').equals(null);
 
     if (options && options.select) findAll.select(options.select);
 
@@ -65,11 +65,11 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<N[]> {
     if (options && options.withDeleted) {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: true } },
+        $match: { deletedAt: { $ne: null } },
       });
     } else {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: false } },
+        $match: { deletedAt: { $eq: null } },
       });
     }
 
@@ -94,8 +94,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<T> {
     const findOne = this._repository.findOne(find);
 
-    if (options && options.withDeleted) findOne.where('deletedAt').exists(true);
-    else findOne.where('deletedAt').exists(false);
+    if (options && options.withDeleted) findOne.where('deletedAt').ne(null);
+    else findOne.where('deletedAt').equals(null);
 
     if (options && options.select) findOne.select(options.select);
 
@@ -113,8 +113,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async findOneById(_id: string, options?: DatabaseFindOneOptions): Promise<T> {
     const findOne = this._repository.findById(_id);
 
-    if (options && options.withDeleted) findOne.where('deletedAt').exists(true);
-    else findOne.where('deletedAt').exists(false);
+    if (options && options.withDeleted) findOne.where('deletedAt').ne(null);
+    else findOne.where('deletedAt').equals(null);
 
     if (options && options.select) findOne.select(options.select);
 
@@ -135,11 +135,11 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<N> {
     if (options && options.withDeleted) {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: true } },
+        $match: { deletedAt: { $ne: null } },
       });
     } else {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: false } },
+        $match: { deletedAt: { $eq: null } },
       });
     }
 
@@ -158,8 +158,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<number> {
     const count = this._repository.countDocuments(find);
 
-    if (options && options.withDeleted) count.where('deletedAt').exists(true);
-    else count.where('deletedAt').exists(false);
+    if (options && options.withDeleted) count.where('deletedAt').ne(null);
+    else count.where('deletedAt').equals(null);
 
     if (options && options.session) count.session(options.session);
 
@@ -173,11 +173,11 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<number> {
     if (options && options.withDeleted) {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: true } },
+        $match: { deletedAt: { $ne: null } },
       });
     } else {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: false } },
+        $match: { deletedAt: { $eq: null } },
       });
     }
 
@@ -208,8 +208,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       },
     });
 
-    if (options && options.withDeleted) exist.where('deletedAt').exists(true);
-    else exist.where('deletedAt').exists(false);
+    if (options && options.withDeleted) exist.where('deletedAt').ne(null);
+    else exist.where('deletedAt').equals(null);
 
     if (options && options.session) exist.session(options.session);
 
@@ -225,11 +225,11 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<N[]> {
     if (options && options.withDeleted) {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: true } },
+        $match: { deletedAt: { $ne: null } },
       });
     } else {
       pipeline.unshift({
-        $match: { deletedAt: { $exists: false } },
+        $match: { deletedAt: { $eq: null } },
       });
     }
 
@@ -265,8 +265,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       { new: true },
     );
 
-    if (options && options.withDeleted) update.where('deletedAt').exists(true);
-    else update.where('deletedAt').exists(false);
+    if (options && options.withDeleted) update.where('deletedAt').ne(null);
+    else update.where('deletedAt').equals(null);
 
     if (options && options.populate) update.populate(this._populateOnFind);
 
@@ -286,8 +286,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       { new: true },
     );
 
-    if (options && options.withDeleted) update.where('deletedAt').exists(true);
-    else update.where('deletedAt').exists(false);
+    if (options && options.withDeleted) update.where('deletedAt').ne(null);
+    else update.where('deletedAt').equals(null);
 
     if (options && options.populate) update.populate(this._populateOnFind);
 
@@ -302,8 +302,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   ): Promise<T> {
     const del = this._repository.findOneAndDelete(find, { new: true });
 
-    if (options && options.withDeleted) del.where('deletedAt').exists(true);
-    else del.where('deletedAt').exists(false);
+    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    else del.where('deletedAt').equals(null);
 
     if (options && options.populate) del.populate(this._populateOnFind);
 
@@ -315,8 +315,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async deleteOneById(_id: string, options?: DatabaseOptions): Promise<T> {
     const del = this._repository.findByIdAndDelete(_id, { new: true });
 
-    if (options && options.withDeleted) del.where('deletedAt').exists(true);
-    else del.where('deletedAt').exists(false);
+    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    else del.where('deletedAt').equals(null);
 
     if (options && options.populate) del.populate(this._populateOnFind);
 
@@ -336,7 +336,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
         { new: true },
       )
       .where('deletedAt')
-      .exists(false);
+      .equals(null);
 
     if (options && options.populate) del.populate(this._populateOnFind);
 
@@ -356,7 +356,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
         { new: true },
       )
       .where('deletedAt')
-      .exists(false);
+      .equals(null);
 
     if (options && options.populate) del.populate(this._populateOnFind);
 
@@ -367,7 +367,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async restore(_id: string, options?: DatabaseRestoreOptions): Promise<T> {
     const rest = this._repository
-      .findByIdAndUpdate(_id, { $set: { deletedAt: undefined } }, { new: true })
+      .findByIdAndUpdate(_id, { $set: { deletedAt: null } }, { new: true })
       .where('deletedAt')
       .exists(true);
 

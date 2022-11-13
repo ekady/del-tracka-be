@@ -4,7 +4,7 @@ import {
   DocumentExistException,
   DocumentNotFoundException,
 } from 'src/common/http-exceptions/exceptions';
-import { StageDocument } from 'src/modules/stages/schema/stage.schema';
+import { StageDocument } from 'src/modules/stages/entities/stage.entity';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { ProjectsHelperService } from 'src/modules/projects/services';

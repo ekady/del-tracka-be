@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { ProjectDatabaseName } from 'src/modules/projects/schema/project.entity';
+import { RoleDatabaseName } from 'src/modules/roles/entities/role.entity';
+import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
+import { UserProjectDatabaseName } from 'src/modules/user-project/entities/user-project.entity';
+import { UserDatabaseName } from 'src/modules/users/entities/user.entity';
 import { MyTaskResponseDto } from '../dto';
 import { TasksRepository } from '../repositories/tasks.repository';
 
@@ -18,28 +23,28 @@ export class MyTasksService {
     };
     const nameField = { _id: 1, name: 1 };
     const lookupReporter = {
-      from: 'userentities',
+      from: UserDatabaseName,
       localField: 'reporter',
       foreignField: '_id',
       as: 'reporter',
       pipeline: [{ $project: userField }],
     };
     const lookupAssignee = {
-      from: 'userentities',
+      from: UserDatabaseName,
       localField: 'assignee',
       foreignField: '_id',
       as: 'assignee',
       pipeline: [{ $project: userField }],
     };
     const lookupRole = {
-      from: 'roleentities',
+      from: RoleDatabaseName,
       localField: 'role',
       foreignField: '_id',
       as: 'role',
       pipeline: [{ $project: nameField }],
     };
     const lookupUserProject = {
-      from: 'userprojectentities',
+      from: UserProjectDatabaseName,
       localField: '_id',
       foreignField: 'project',
       as: 'userproject',
@@ -50,14 +55,14 @@ export class MyTasksService {
       ],
     };
     const lookupProject = {
-      from: 'projectentities',
+      from: ProjectDatabaseName,
       localField: 'project',
       foreignField: '_id',
       as: 'project',
       pipeline: [{ $lookup: lookupUserProject }, { $unwind: '$userproject' }],
     };
     const lookupStage = {
-      from: 'stageentities',
+      from: StageDatabaseName,
       localField: 'stage',
       foreignField: '_id',
       as: 'stage',

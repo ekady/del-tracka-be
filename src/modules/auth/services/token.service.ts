@@ -8,7 +8,7 @@ import {
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/common/http-exceptions/exceptions';
-import { UserDocument } from 'src/modules/users/schema/user.schema';
+import { UserDocument } from 'src/modules/users/entities/user.entity';
 import { HashHelper } from 'src/helpers';
 import { TokensDto } from '../dto';
 import { TokenJwtConfig } from '../enum';

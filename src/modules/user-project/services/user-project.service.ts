@@ -2,9 +2,17 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
-import { ProjectDocument } from 'src/modules/projects/schema/project.schema';
-import { RoleDocument } from 'src/modules/roles/schema/role.schema';
-import { UserProjectDocument } from 'src/modules/user-project/schema/user-project.schema';
+import {
+  ProjectDatabaseName,
+  ProjectDocument,
+} from 'src/modules/projects/schema/project.entity';
+import {
+  RoleDatabaseName,
+  RoleDocument,
+} from 'src/modules/roles/entities/role.entity';
+import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
+import { UserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
+import { UserDatabaseName } from 'src/modules/users/entities/user.entity';
 import {
   CreateUserProjectDto,
   UpdateUserProjectDto,
@@ -41,19 +49,19 @@ export class UserProjectService {
       { $match: { user: objectUserId } },
       {
         $lookup: {
-          from: 'projectentities',
+          from: ProjectDatabaseName,
           localField: 'project',
           foreignField: '_id',
           as: 'project',
           pipeline: [
-            { $match: { deletedAt: { $exists: false }, ...matchProject } },
+            { $match: { deletedAt: { $eq: null }, ...matchProject } },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
         },
       },
       {
         $lookup: {
-          from: 'roleentities',
+          from: RoleDatabaseName,
           localField: 'role',
           foreignField: '_id',
           as: 'role',
@@ -62,24 +70,24 @@ export class UserProjectService {
       },
       {
         $lookup: {
-          from: 'userentities',
+          from: UserDatabaseName,
           localField: 'user',
           foreignField: '_id',
           as: 'user',
           pipeline: [
-            { $match: { deletedAt: { $exists: false } } },
+            { $match: { deletedAt: { $eq: null } } },
             { $project: userFields },
           ],
         },
       },
       {
         $lookup: {
-          from: 'stageentities',
+          from: StageDatabaseName,
           localField: 'project._id',
           foreignField: 'project',
           as: 'stages',
           pipeline: [
-            { $match: { deletedAt: { $exists: false } } },
+            { $match: { deletedAt: { $eq: null } } },
             { $project: { ...nameField, description: 1, shortId: 1 } },
           ],
         },
@@ -150,6 +158,7 @@ export class UserProjectService {
       email: user.user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
     }));
   }
 

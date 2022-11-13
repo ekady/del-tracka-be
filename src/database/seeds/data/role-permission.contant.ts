@@ -1,4 +1,4 @@
-import { ProjectMenu, RoleName } from '../../../common/enums';
+import { ProjectMenu, RoleName } from 'src/common/enums';
 
 export const RolePermissionsConstant = [
   {

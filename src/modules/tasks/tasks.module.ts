@@ -15,7 +15,7 @@ import {
 import { ActivitiesModule } from '../activities/activities.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TaskSchemaProvider } from './schema/task-schema.provider';
+import { TaskSchemaProvider } from './entities/task-entity.provider';
 import { TasksRepository } from './repositories/tasks.repository';
 
 @Module({

@@ -4,7 +4,7 @@ import { CommentsController } from './controllers/comments.controller';
 import { TasksModule } from '../tasks/tasks.module';
 import { StagesModule } from '../stages/stages.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CommentFeature } from './schema/comment.schema';
+import { CommentFeature } from './entities/comment.entity';
 import { CommentsRepository } from './repository/comments.repository';
 
 @Module({

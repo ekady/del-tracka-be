@@ -1,28 +1,28 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Timestamps } from 'src/database/interfaces/timestamps.interface';
-import { UserEntity } from 'src/modules/users/schema/user.schema';
+import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
 
-@Schema({ timestamps: true, versionKey: false })
-export class ProjectEntity implements Timestamps {
+export const ProjectDatabaseName = 'projects';
+
+@Schema({
+  timestamps: true,
+  versionKey: false,
+  collection: ProjectDatabaseName,
+})
+export class ProjectEntity extends DatabaseTimestampsAbstract {
   _id: string;
-
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
 
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ default: null })
   description: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
+  @Prop({ type: Types.ObjectId, ref: UserEntity.name, default: null })
   createdBy: UserEntity;
 
-  @Prop({ type: Types.ObjectId, ref: 'UserEntity' })
+  @Prop({ type: Types.ObjectId, ref: UserEntity.name, default: null })
   updatedBy: UserEntity;
 
   @Prop({ type: String, unique: true })

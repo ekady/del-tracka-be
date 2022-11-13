@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
-import { TaskDocument } from 'src/modules/tasks/schema/task.schema';
+import { TaskDocument } from 'src/modules/tasks/entities/task.entity';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';

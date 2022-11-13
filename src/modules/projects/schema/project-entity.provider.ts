@@ -3,7 +3,7 @@ import {
   ProjectEntity,
   ProjectDocument,
   ProjectSchema,
-} from './project.schema';
+} from './project.entity';
 import { generateShortId } from 'src/helpers';
 
 export const ProjectSchemaProvider: AsyncModelFactory = {

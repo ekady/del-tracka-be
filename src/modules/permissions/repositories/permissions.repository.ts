@@ -5,7 +5,7 @@ import { DatabaseMongoRepositoryAbstract } from 'src/database/abstracts/database
 import {
   PermissionDocument,
   PermissionEntity,
-} from '../schema/permission.schema';
+} from '../entities/permission.entity';
 
 @Injectable()
 export class PermissionsRepository extends DatabaseMongoRepositoryAbstract<PermissionDocument> {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PermissionsRepository } from './repositories/permissions.repository';
-import { PermissionFeature } from './schema/permission.schema';
+import { PermissionFeature } from './entities/permission.entity';
 
 @Module({
   providers: [PermissionsRepository],

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
-import { UserDocument } from 'src/modules/users/schema/user.schema';
+import { UserDocument } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from '../repositories/users.repository';
 
 @Injectable()

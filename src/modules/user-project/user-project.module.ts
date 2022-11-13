@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProjectBulkRepository } from './repositories/user-project.bulk.repository';
 import { UserProjectRepository } from './repositories/user-project.repository';
-import { UserProjectFeature } from './schema/user-project.schema';
+import { UserProjectFeature } from './entities/user-project.entity';
 import { UserProjectService } from './services/user-project.service';
 
 @Module({

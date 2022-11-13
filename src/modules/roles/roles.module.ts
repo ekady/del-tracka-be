@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserProjectModule } from '../user-project/user-project.module';
 import { RolePermissionGuard } from './guard';
 import { RolesService } from './services/roles.service';
-import { RoleFeature } from './schema/role.schema';
+import { RoleFeature } from './entities/role.entity';
 import { RolesRepository } from './repositories/roles.repository';
 import { PermissionsModule } from '../permissions/permission.module';
 

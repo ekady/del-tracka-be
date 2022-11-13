@@ -4,7 +4,7 @@ import { ProjectsModule } from '../projects/projects.module';
 import { ActivitiesModule } from '../activities/activities.module';
 import { StagesHelperService, StagesService } from './services';
 import { MongooseModule } from '@nestjs/mongoose';
-import { StageSchemaProvider } from './schema/stage-schema.provider';
+import { StageSchemaProvider } from './entities/stage-entity.provider';
 import { StagesRepository } from './repositories/stages.repository';
 
 @Module({

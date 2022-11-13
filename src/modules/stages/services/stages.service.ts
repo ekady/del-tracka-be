@@ -8,7 +8,7 @@ import { CreateStageDto, StageResponseDto, UpdateStageDto } from '../dto';
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
-import { StageEntity } from '../schema/stage.schema';
+import { StageEntity } from '../entities/stage.entity';
 
 @Injectable()
 export class StagesService {

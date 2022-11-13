@@ -18,6 +18,7 @@ export class ProfileService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      deletedAt: user.deletedAt,
     };
   }
 
@@ -40,6 +41,7 @@ export class ProfileService {
       createdAt: user.createdAt,
       picture: user.picture,
       updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,

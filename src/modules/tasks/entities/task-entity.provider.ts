@@ -1,6 +1,6 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
 import { generateShortId } from 'src/helpers';
-import { TaskEntity, TaskSchema } from './task.schema';
+import { TaskEntity, TaskSchema } from './task.entity';
 
 export const TaskSchemaProvider: AsyncModelFactory = {
   name: TaskEntity.name,
