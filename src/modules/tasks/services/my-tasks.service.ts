@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
+import { Types } from 'mongoose';
 import { MyTaskResponseDto } from '../dto';
+import { TasksRepository } from '../repositories/tasks.repository';
 
 @Injectable()
 export class MyTasksService {
-  constructor(
-    @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
-  ) {}
+  constructor(private tasksRepository: TasksRepository) {}
 
   async findMyTasks(userId: string): Promise<MyTaskResponseDto[]> {
     const user = new Types.ObjectId(userId);
@@ -21,28 +18,28 @@ export class MyTasksService {
     };
     const nameField = { _id: 1, name: 1 };
     const lookupReporter = {
-      from: 'users',
+      from: 'userentities',
       localField: 'reporter',
       foreignField: '_id',
       as: 'reporter',
       pipeline: [{ $project: userField }],
     };
     const lookupAssignee = {
-      from: 'users',
+      from: 'userentities',
       localField: 'assignee',
       foreignField: '_id',
       as: 'assignee',
       pipeline: [{ $project: userField }],
     };
     const lookupRole = {
-      from: 'roles',
+      from: 'roleentities',
       localField: 'role',
       foreignField: '_id',
       as: 'role',
       pipeline: [{ $project: nameField }],
     };
     const lookupUserProject = {
-      from: 'userprojects',
+      from: 'userprojectentities',
       localField: '_id',
       foreignField: 'project',
       as: 'userproject',
@@ -53,20 +50,20 @@ export class MyTasksService {
       ],
     };
     const lookupProject = {
-      from: 'projects',
+      from: 'projectentities',
       localField: 'project',
       foreignField: '_id',
       as: 'project',
       pipeline: [{ $lookup: lookupUserProject }, { $unwind: '$userproject' }],
     };
     const lookupStage = {
-      from: 'stages',
+      from: 'stageentities',
       localField: 'stage',
       foreignField: '_id',
       as: 'stage',
       pipeline: [{ $lookup: lookupProject }, { $unwind: '$project' }],
     };
-    return this.taskSchema.aggregate([
+    return this.tasksRepository.aggregate([
       { $match: { $or: [{ assignee: user }, { reporter: user }] } },
       { $lookup: lookupStage },
       { $unwind: '$stage' },

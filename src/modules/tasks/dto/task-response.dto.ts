@@ -1,6 +1,8 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/common/dto';
-import { User } from 'src/database/schema/user/user.schema';
+import { ProjectEntity } from 'src/modules/projects/schema/project.schema';
+import { StageEntity } from 'src/modules/stages/schema/stage.schema';
+import { UserEntity } from 'src/modules/users/schema/user.schema';
 import { CreateTaskRequestDto } from './create-task.dto';
 
 export class TaskResponseDto
@@ -19,11 +21,20 @@ export class TaskResponseDto
   updatedAt: Date;
 
   @ApiResponseProperty()
-  assignee: User;
+  assignee: UserEntity;
 
   @ApiResponseProperty()
-  reporter: User;
+  reporter: UserEntity;
 
   @ApiResponseProperty()
   images: string[];
+
+  @ApiResponseProperty()
+  shortId: string;
+
+  @ApiResponseProperty()
+  stage?: Pick<StageEntity, '_id' | 'shortId' | 'name' | 'description'>;
+
+  @ApiResponseProperty()
+  project?: Pick<ProjectEntity, '_id' | 'shortId' | 'name' | 'description'>;
 }

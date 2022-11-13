@@ -1,23 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, PopulateOptions, Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
-import { Task, TaskDocument } from 'src/database/schema/task/task.schema';
-import { UserProjectDocument } from 'src/database/schema/user-project/user-project.schema';
-import { ActivitiesService } from 'src/modules/activities/activities.service';
+import { TaskDocument } from 'src/modules/tasks/schema/task.schema';
+import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { CreateActivityDto } from 'src/modules/activities/dto';
 import { StagesHelperService } from 'src/modules/stages/services';
 import { UserProjectResponseDto } from 'src/modules/user-project/dto';
-import { UserProjectService } from 'src/modules/user-project/user-project.service';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import { UpdateTaskDto, UpdateTaskRequestDto } from '../dto';
 import { ITaskIds } from '../interfaces/taskIds.interface';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
+import { TasksRepository } from '../repositories/tasks.repository';
 
 @Injectable()
 export class TasksHelperService {
   constructor(
-    @InjectModel(Task.name) private taskSchema: Model<TaskDocument>,
+    private tasksRepository: TasksRepository,
     private stagesHelperService: StagesHelperService,
     private userProjectService: UserProjectService,
     private activitiesService: ActivitiesService,
@@ -26,18 +25,19 @@ export class TasksHelperService {
   async checkTaskExist(
     ids: Pick<ITaskIds, 'projectId' | 'stageId'>,
     query: FilterQuery<TaskDocument>,
-    populateOptions?: PopulateOptions[],
   ): Promise<void> {
     const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageById(
       stageId,
       projectId,
     );
-    const populate = populateOptions ? populateOptions : [];
-    const task = await this.taskSchema
-      .findOne({ ...query, stage: stage._id })
-      .populate([{ path: 'stage' }, ...populate])
-      .exec();
+    const task = await this.tasksRepository.findOne(
+      {
+        ...query,
+        stage: stage._id,
+      },
+      { populate: true },
+    );
 
     if (task) {
       throw new DocumentExistException('Task already exists.');
@@ -50,40 +50,31 @@ export class TasksHelperService {
       stageId,
       projectId,
     );
-    const task = await this.taskSchema
-      .findOne({
+    const task = await this.tasksRepository.findOne(
+      {
         _id: new Types.ObjectId(taskId),
         stage: stage._id,
-      })
-      .populate('stage reporter assignee project')
-      .populate({ path: 'stage', select: 'shortId name description' })
-      .populate({ path: 'project', select: 'shortId name description' })
-      .select(select)
-      .exec();
+      },
+      { populate: true },
+    );
 
     if (!task) throw new DocumentExistException('Task not found');
     return task;
   }
 
-  async findTaskByShortId(
-    ids: ITaskShortIds,
-    select?: string,
-  ): Promise<TaskDocument> {
+  async findTaskByShortId(ids: ITaskShortIds): Promise<TaskDocument> {
     const { taskId, projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
       stageId,
       projectId,
     );
-    const task = await this.taskSchema
-      .findOne({
+    const task = await this.tasksRepository.findOne(
+      {
         shortId: taskId,
         stage: stage._id,
-      })
-      .populate('stage reporter assignee project')
-      .populate({ path: 'stage', select: 'shortId name description' })
-      .populate({ path: 'project', select: 'shortId name description' })
-      .select(select)
-      .exec();
+      },
+      { populate: true },
+    );
 
     if (!task) throw new DocumentExistException('Task not found');
     return task;
@@ -139,20 +130,18 @@ export class TasksHelperService {
       assignee: userAssignee?.user._id,
       images: images?.map((image) => image.originalname),
     };
-    const taskUpdate = await this.taskSchema
-      .findOneAndUpdate({ _id: taskFound._id, stage: stage._id }, payload, {
-        new: true,
-      })
-      .populate(['stage', 'updatedBy'])
-      .populate({ path: 'stage.project' })
-      .exec();
+    const taskUpdate = await this.tasksRepository.updateOne(
+      { _id: taskFound._id, stage: stage._id },
+      payload,
+      { populate: true },
+    );
 
     await this.createTaskActivity({
       type,
       createdBy: taskUpdate.updatedBy._id,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
-      stageAfter: taskUpdate.stage.depopulate(),
+      stageAfter: taskUpdate.stage,
       taskBefore: taskFound.depopulate(),
       taskAfter: taskUpdate.depopulate(),
     });

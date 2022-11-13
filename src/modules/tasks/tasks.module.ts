@@ -14,16 +14,26 @@ import {
 } from './controllers';
 import { ActivitiesModule } from '../activities/activities.module';
 import { ProjectsModule } from '../projects/projects.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TaskSchemaProvider } from './schema/task-schema.provider';
+import { TasksRepository } from './repositories/tasks.repository';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
   providers: [
+    TasksRepository,
     TasksHelperService,
     TasksService,
     MyTasksService,
     TasksStatisticService,
   ],
-  imports: [StagesModule, UserProjectModule, ActivitiesModule, ProjectsModule],
-  exports: [TasksHelperService],
+  imports: [
+    MongooseModule.forFeatureAsync([TaskSchemaProvider]),
+    StagesModule,
+    UserProjectModule,
+    ActivitiesModule,
+    ProjectsModule,
+  ],
+  exports: [TasksRepository, TasksHelperService],
 })
 export class TasksModule {}

@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { ProfileModule } from './modules/profile/profile.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
 import { ProjectsModule } from './modules/projects/projects.module';
@@ -14,6 +13,7 @@ import { StagesModule } from './modules/stages/stages.module';
 import { TasksModule } from './modules/tasks/tasks.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
+import { PermissionsModule } from './modules/permissions/permission.module';
 
 @Module({
   imports: [
@@ -21,7 +21,6 @@ import { ActivitiesModule } from './modules/activities/activities.module';
     DatabaseModule,
     UsersModule,
     AuthModule,
-    ProfileModule,
     UserProjectModule,
     EmailModule,
     ProjectsModule,
@@ -30,6 +29,7 @@ import { ActivitiesModule } from './modules/activities/activities.module';
     TasksModule,
     CommentsModule,
     ActivitiesModule,
+    PermissionsModule,
   ],
 })
 export class AppModule {
