@@ -36,14 +36,6 @@ export class ProjectsService {
       createdBy: userId,
       updatedBy: userId,
     };
-    const userProject = await this.userProjectService.findUserProjectByName(
-      userId,
-      createProjectDto.name,
-    );
-
-    if (userProject && userProject.project)
-      throw new DocumentExistException('Project already exists.');
-
     const role = await this.rolesService.findOneRole({
       name: RoleName.OWNER,
     });
