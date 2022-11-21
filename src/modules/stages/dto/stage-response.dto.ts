@@ -1,5 +1,6 @@
-import { ApiResponseProperty } from '@nestjs/swagger';
+import { ApiResponseProperty, OmitType } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/common/dto';
+import { ProjectDto } from 'src/modules/projects/dto';
 
 export class StageResponseDto implements EntityResponseDto {
   @ApiResponseProperty()
@@ -19,4 +20,11 @@ export class StageResponseDto implements EntityResponseDto {
 
   @ApiResponseProperty()
   shortId: string;
+
+  @ApiResponseProperty({ type: () => ProjectDto })
+  project: ProjectDto;
 }
+
+export class StageResponseWithoutProjectDto extends OmitType(StageResponseDto, [
+  'project',
+]) {}

@@ -4,7 +4,12 @@ import { ActivityName } from 'src/common/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { ProjectsHelperService } from 'src/modules/projects/services';
-import { CreateStageDto, StageResponseDto, UpdateStageDto } from '../dto';
+import {
+  CreateStageDto,
+  StageResponseDto,
+  StageResponseWithoutProjectDto,
+  UpdateStageDto,
+} from '../dto';
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
@@ -49,7 +54,7 @@ export class StagesService {
     return { message: 'Success' };
   }
 
-  async findAll(projectId: string): Promise<StageResponseDto[]> {
+  async findAll(projectId: string): Promise<StageResponseWithoutProjectDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
       projectId,
     );
@@ -80,6 +85,12 @@ export class StagesService {
       description: stage.description,
       name: stage.name,
       updatedAt: stage.updatedAt,
+      project: {
+        _id: stage.project._id,
+        shortId: stage.project.shortId,
+        name: stage.project.name,
+        description: stage.project.description,
+      },
     };
   }
 

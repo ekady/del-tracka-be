@@ -12,6 +12,7 @@ import {
   CreateStageDto,
   CreateStageRequestDto,
   StageResponseDto,
+  StageResponseWithoutProjectDto,
   UpdateStageDto,
   UpdateStageRequestDto,
 } from '../dto';
@@ -48,7 +49,9 @@ export class StagesController {
   @Get()
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
-  findAll(@Param('projectId') projectId: string): Promise<StageResponseDto[]> {
+  findAll(
+    @Param('projectId') projectId: string,
+  ): Promise<StageResponseWithoutProjectDto[]> {
     return this.stagesService.findAll(projectId);
   }
 
