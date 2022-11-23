@@ -15,6 +15,7 @@ import {
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TasksHelperService } from './tasks-helper.service';
 import { TasksRepository } from '../repositories/tasks.repository';
+import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 
 @Injectable()
 export class TasksService {
@@ -75,15 +76,32 @@ export class TasksService {
     return { message: 'Success' };
   }
 
-  async findAll(ids: IStageShortId): Promise<TaskResponseDto[]> {
+  async findAll(
+    ids: IStageShortId,
+    queries: Record<string, string> & PaginationOptions,
+  ): Promise<TaskResponseDto[]> {
     const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
       stageId,
       projectId,
     );
+    if (queries.sortBy) {
+      const [field, order] = queries.sortBy.split('-');
+      queries.sort = { [field]: Number(order) };
+      delete queries.sortBy;
+    } else queries.sort = undefined;
+
+    // Sorting
+    const { limit, page, sort } = queries;
+
+    // Filter by Priority and Status
+    const filter: { status?: string; priority?: string } = {};
+    if (queries.priority) filter.priority = queries.priority;
+    if (queries.status) filter.status = queries.status;
+
     const tasks = await this.tasksRepository.findAll(
-      { stage: stage._id },
-      { populate: true, limit: undefined, skip: undefined },
+      { stage: stage._id, ...filter },
+      { populate: true, limit, page, sort, search: queries.search },
     );
     return tasks.map((task) => ({
       assignee: task.assignee,

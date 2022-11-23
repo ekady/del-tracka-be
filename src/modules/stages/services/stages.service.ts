@@ -60,7 +60,7 @@ export class StagesService {
     );
     const stages = await this.stagesRepository.findAll(
       { project: project._id },
-      { populate: true, limit: undefined, skip: undefined },
+      { populate: true, limit: undefined, page: undefined },
     );
 
     return stages.map((stage) => ({

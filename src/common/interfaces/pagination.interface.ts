@@ -7,7 +7,8 @@ export type PaginationSort = Record<
 
 export interface PaginationOptions {
   limit: number;
-  skip: number;
+  page: number;
+  search?: string;
   sort?: PaginationSort;
 }
 

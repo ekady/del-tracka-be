@@ -56,7 +56,7 @@ export class CommentsService {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const comments = await this.commentsRespository.findAll(
       { task: task._id },
-      { populate: true, limit: undefined, skip: undefined },
+      { populate: true, limit: undefined, page: undefined },
     );
     return comments.map((comment) => ({
       comment: comment.comment,

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/common/dto';
 import { RoleName } from 'src/common/enums';
-import {
-  DocumentExistException,
-  DocumentNotFoundException,
-} from 'src/common/http-exceptions/exceptions';
+import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { RolesService } from 'src/modules/roles/services/roles.service';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';

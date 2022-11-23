@@ -7,6 +7,7 @@ export const TaskSchemaProvider: AsyncModelFactory = {
   useFactory: () => {
     const schema = TaskSchema;
     schema.index({ status: 1 });
+    schema.index({ feature: 'text', title: 'text' });
 
     schema.pre('save', async function () {
       if (this.isNew) {

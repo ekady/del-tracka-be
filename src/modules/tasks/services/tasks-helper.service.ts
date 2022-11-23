@@ -126,7 +126,7 @@ export class TasksHelperService {
     const payload: UpdateTaskDto = {
       ...taskValues,
       updatedBy: userId,
-      reporter: userReporter?.user._id ?? userId,
+      reporter: userReporter?.user._id,
       assignee: userAssignee?.user._id,
       images: images?.map((image) => image.originalname),
     };

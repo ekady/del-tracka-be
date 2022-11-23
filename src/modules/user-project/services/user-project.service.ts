@@ -145,7 +145,7 @@ export class UserProjectService {
   ): Promise<ProjectUserResponseDto[]> {
     const users = await this.userProjectRepository.findAll(
       { project: projectId },
-      { populate: true, limit: undefined, skip: undefined },
+      { populate: true, limit: undefined, page: undefined },
     );
     return users.map((user) => ({
       _id: user.user._id,

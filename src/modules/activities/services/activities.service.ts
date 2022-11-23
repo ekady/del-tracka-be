@@ -35,7 +35,7 @@ export class ActivitiesService {
         populate: true,
         sort: { createdAt: -1 },
         limit: undefined,
-        skip: undefined,
+        page: undefined,
         projection: ActivityProjection,
       },
     );
@@ -73,7 +73,7 @@ export class ActivitiesService {
         populate: true,
         sort: { createdAt: -1 },
         limit: undefined,
-        skip: undefined,
+        page: undefined,
         projection: ActivityProjection,
       },
     );
@@ -122,7 +122,7 @@ export class ActivitiesService {
         populate: true,
         sort: { createdAt: -1 },
         limit: undefined,
-        skip: undefined,
+        page: undefined,
         projection: ActivityProjection,
       },
     );

@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { TasksService } from '../services';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -27,6 +28,7 @@ import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectId/stages/:stageId/tasks')
@@ -59,9 +61,10 @@ export class TasksController {
   findAll(
     @Param('projectId') projectId: string,
     @Param('stageId') stageId: string,
+    @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<TaskResponseDto[]> {
     const ids: IStageShortId = { projectId, stageId };
-    return this.tasksService.findAll(ids);
+    return this.tasksService.findAll(ids, queries);
   }
 
   @Get(':id')

@@ -37,6 +37,13 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
   ): Promise<T[]> {
+    if (options && options.search) {
+      find.$text = {
+        $search: `"${options.search}"`,
+        $diacriticSensitive: true,
+      };
+    }
+
     const findAll = this._repository.find(find);
 
     if (options && options.withDeleted) findAll.where('deletedAt').ne(null);
@@ -44,8 +51,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     if (options && options.select) findAll.select(options.select);
 
-    if (options && options.limit !== undefined && options.skip !== undefined) {
-      findAll.limit(options.limit).skip(options.skip);
+    if (options && options.limit !== undefined && options.page !== undefined) {
+      findAll.limit(options.limit).skip(options.page);
     }
 
     if (options && options.sort) findAll.sort(options.sort);
@@ -56,7 +63,11 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     if (options && options.projection) findAll.projection(options.projection);
 
-    return findAll.exec();
+    const data = await findAll.exec();
+    const count = await this._repository.find(find).count().exec();
+    console.log(count);
+
+    return data;
   }
 
   async findAllAggregate<N>(
@@ -73,8 +84,12 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       });
     }
 
-    if (options && options.limit !== undefined && options.skip !== undefined) {
-      pipeline.push({ $skip: options.skip });
+    if (options.search) {
+      pipeline.push({ $match: { $text: { $search: options.search } } });
+    }
+
+    if (options && options.limit !== undefined && options.page !== undefined) {
+      pipeline.push({ $skip: options.page });
       pipeline.push({ $limit: options.limit });
     }
 
