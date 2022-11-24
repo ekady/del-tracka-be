@@ -32,7 +32,9 @@ export interface DatabaseGetTotalAggregateOptions extends DatabaseOptions {
 // find
 export interface DatabaseFindAllOptions
   extends PaginationOptions,
-    Omit<DatabaseFindOneOptions, 'sort'> {}
+    Omit<DatabaseFindOneOptions, 'sort'> {
+  searchField?: string[];
+}
 
 // create
 

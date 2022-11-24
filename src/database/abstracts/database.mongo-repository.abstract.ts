@@ -39,11 +39,15 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
   ): Promise<PaginationResponse<T[]>> {
-    if (options && options.search) {
-      find.$text = {
-        $search: `"${options.search}"`,
-        $diacriticSensitive: true,
-      };
+    if (
+      options &&
+      options.search &&
+      options.searchField &&
+      options.searchField.length
+    ) {
+      find.$or = options.searchField.map((field) => ({
+        [field]: { $regex: options.search, $options: 'ig' },
+      }));
     }
 
     const findAll = this._repository.find(find);

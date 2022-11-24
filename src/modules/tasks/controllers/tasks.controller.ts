@@ -93,13 +93,14 @@ export class TasksController {
     @Param('projectId') projectId: string,
     @Param('stageId') stageId: string,
     @Param('id') id: string,
+    @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<ActivityResponseDto[]> {
     const ids: ITaskShortIds = {
       taskId: id,
       stageId,
       projectId,
     };
-    return this.tasksService.findTaskActivities(ids);
+    return this.tasksService.findTaskActivities(ids, queries);
   }
 
   @Put(':id')

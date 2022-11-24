@@ -13,6 +13,7 @@ import {
 } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
 import { ProjectsRepository } from '../repositories/projects.repository';
+import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 
 @Injectable()
 export class ProjectsService {
@@ -97,10 +98,16 @@ export class ProjectsService {
     return { message: 'Success' };
   }
 
-  async findActivities(shortId: string): Promise<ActivityResponseDto[]> {
+  async findActivities(
+    shortId: string,
+    queries?: Record<string, string> & PaginationOptions,
+  ): Promise<ActivityResponseDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
       shortId,
     );
-    return this.activitiesService.findActivitiesByProjectId(project._id);
+    return this.activitiesService.findActivitiesByProjectId(
+      project._id,
+      queries,
+    );
   }
 }

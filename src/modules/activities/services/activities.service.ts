@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
+import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';
@@ -28,16 +29,17 @@ export class ActivitiesService {
 
   async findActivitiesByProjectId(
     projectId: string,
+    queries?: Record<string, string> & PaginationOptions,
   ): Promise<ActivityResponseDto[]> {
     const activities = await this.activitiesRepository.findAll(
       { project: new Types.ObjectId(projectId) },
       {
         populate: true,
         sort: { createdAt: -1 },
-        limit: undefined,
-        page: undefined,
+        limit: queries.limit,
+        page: queries.page,
         projection: ActivityProjection,
-        disablePagination: true,
+        disablePagination: Boolean(queries.disablePagination),
       },
     );
 
@@ -59,6 +61,7 @@ export class ActivitiesService {
   async findStageActivities(
     projectId: string,
     stageId: string,
+    queries?: Record<string, string> & PaginationOptions,
   ): Promise<ActivityResponseDto[]> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
@@ -73,10 +76,10 @@ export class ActivitiesService {
       {
         populate: true,
         sort: { createdAt: -1 },
-        limit: undefined,
-        page: undefined,
+        limit: queries.limit,
+        page: queries.page,
         projection: ActivityProjection,
-        disablePagination: true,
+        disablePagination: Boolean(queries.disablePagination),
       },
     );
     return activities.data.map((activity) => ({
@@ -98,6 +101,7 @@ export class ActivitiesService {
     projectId: string,
     stageId: string,
     taskId: string,
+    queries?: Record<string, string> & PaginationOptions,
   ): Promise<ActivityResponseDto[]> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
@@ -123,10 +127,10 @@ export class ActivitiesService {
       {
         populate: true,
         sort: { createdAt: -1 },
-        limit: undefined,
-        page: undefined,
+        limit: queries.limit,
+        page: queries.page,
         projection: ActivityProjection,
-        disablePagination: true,
+        disablePagination: Boolean(queries.disablePagination),
       },
     );
 

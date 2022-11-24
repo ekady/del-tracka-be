@@ -89,7 +89,7 @@ export class TasksService {
       projectId,
     );
     if (queries.sortBy) {
-      const [field, order] = queries.sortBy.split('-');
+      const [field, order] = queries.sortBy.split('|');
       queries.sort = { [field]: Number(order) };
       delete queries.sortBy;
     } else queries.sort = undefined;
@@ -104,7 +104,14 @@ export class TasksService {
 
     const tasks = await this.tasksRepository.findAll(
       { stage: stage._id, ...filter },
-      { populate: true, limit, page, sort, search: queries.search },
+      {
+        populate: true,
+        limit,
+        page,
+        sort,
+        search: queries.search,
+        searchField: ['feature', 'title'],
+      },
     );
     return {
       data: tasks.data.map((task) => ({
@@ -155,7 +162,10 @@ export class TasksService {
     };
   }
 
-  async findTaskActivities(ids: ITaskShortIds): Promise<ActivityResponseDto[]> {
+  async findTaskActivities(
+    ids: ITaskShortIds,
+    queries?: Record<string, string> & PaginationOptions,
+  ): Promise<ActivityResponseDto[]> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const stage = await this.stagesHelperService.findStageByShortId(
       ids.stageId,
@@ -165,6 +175,7 @@ export class TasksService {
       stage.project._id,
       task.stage._id,
       task._id,
+      queries,
     );
   }
 
