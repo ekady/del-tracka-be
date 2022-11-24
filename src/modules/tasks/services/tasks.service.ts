@@ -15,7 +15,10 @@ import {
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TasksHelperService } from './tasks-helper.service';
 import { TasksRepository } from '../repositories/tasks.repository';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 
 @Injectable()
 export class TasksService {
@@ -79,7 +82,7 @@ export class TasksService {
   async findAll(
     ids: IStageShortId,
     queries: Record<string, string> & PaginationOptions,
-  ): Promise<TaskResponseDto[]> {
+  ): Promise<PaginationResponse<TaskResponseDto[]>> {
     const { projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
       stageId,
@@ -103,20 +106,23 @@ export class TasksService {
       { stage: stage._id, ...filter },
       { populate: true, limit, page, sort, search: queries.search },
     );
-    return tasks.map((task) => ({
-      assignee: task.assignee,
-      createdAt: task.createdAt,
-      images: task.images,
-      reporter: task.reporter,
-      updatedAt: task.updatedAt,
-      _id: task._id,
-      detail: task.detail,
-      feature: task.feature,
-      priority: task.priority,
-      status: task.status,
-      title: task.title,
-      shortId: task.shortId,
-    }));
+    return {
+      data: tasks.data.map((task) => ({
+        assignee: task.assignee,
+        createdAt: task.createdAt,
+        images: task.images,
+        reporter: task.reporter,
+        updatedAt: task.updatedAt,
+        _id: task._id,
+        detail: task.detail,
+        feature: task.feature,
+        priority: task.priority,
+        status: task.status,
+        title: task.title,
+        shortId: task.shortId,
+      })),
+      pagination: tasks.pagination,
+    };
   }
 
   async findOne(ids: ITaskShortIds): Promise<TaskResponseDto> {

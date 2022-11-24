@@ -37,10 +37,11 @@ export class ActivitiesService {
         limit: undefined,
         page: undefined,
         projection: ActivityProjection,
+        disablePagination: true,
       },
     );
 
-    return activities.map((activity) => ({
+    return activities.data.map((activity) => ({
       _id: activity._id,
       createdAt: activity.createdAt,
       updatedAt: activity.updatedAt,
@@ -75,9 +76,10 @@ export class ActivitiesService {
         limit: undefined,
         page: undefined,
         projection: ActivityProjection,
+        disablePagination: true,
       },
     );
-    return activities.map((activity) => ({
+    return activities.data.map((activity) => ({
       _id: activity._id,
       createdAt: activity.createdAt,
       updatedAt: activity.updatedAt,
@@ -124,10 +126,11 @@ export class ActivitiesService {
         limit: undefined,
         page: undefined,
         projection: ActivityProjection,
+        disablePagination: true,
       },
     );
 
-    return activities.map((activity) => ({
+    return activities.data.map((activity) => ({
       _id: activity._id,
       createdAt: activity.createdAt,
       updatedAt: activity.updatedAt,

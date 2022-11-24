@@ -60,10 +60,15 @@ export class StagesService {
     );
     const stages = await this.stagesRepository.findAll(
       { project: project._id },
-      { populate: true, limit: undefined, page: undefined },
+      {
+        populate: true,
+        limit: undefined,
+        page: undefined,
+        disablePagination: true,
+      },
     );
 
-    return stages.map((stage) => ({
+    return stages.data.map((stage) => ({
       _id: stage._id,
       shortId: stage.shortId,
       createdAt: stage.createdAt,

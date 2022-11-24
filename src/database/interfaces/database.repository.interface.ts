@@ -1,4 +1,5 @@
 import { Document, PipelineStage } from 'mongoose';
+import { PaginationResponse } from 'src/common/interfaces/pagination.interface';
 import {
   DatabaseCreateOptions,
   DatabaseSoftDeleteOptions,
@@ -16,7 +17,7 @@ export interface DatabaseRepositoryAbstract<T extends Document> {
   findAll(
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
-  ): Promise<T[]>;
+  ): Promise<PaginationResponse<T[]>>;
 
   findAllAggregate<N>(
     pipeline: PipelineStage[],

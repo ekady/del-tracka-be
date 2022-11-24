@@ -137,7 +137,11 @@ export class UserProjectService {
   }
 
   async findProjectsByUserId(userId: string): Promise<UserProjectDocument[]> {
-    return this.userProjectRepository.findAll({ user: userId });
+    const projects = await this.userProjectRepository.findAll(
+      { user: userId },
+      { limit: undefined, page: undefined, disablePagination: true },
+    );
+    return projects.data;
   }
 
   async findUsersByProjectId(
@@ -145,9 +149,14 @@ export class UserProjectService {
   ): Promise<ProjectUserResponseDto[]> {
     const users = await this.userProjectRepository.findAll(
       { project: projectId },
-      { populate: true, limit: undefined, page: undefined },
+      {
+        populate: true,
+        limit: undefined,
+        page: undefined,
+        disablePagination: true,
+      },
     );
-    return users.map((user) => ({
+    return users.data.map((user) => ({
       _id: user.user._id,
       firstName: user.user.firstName,
       lastName: user.user.lastName,
@@ -166,10 +175,14 @@ export class UserProjectService {
     projectId: string,
     roleId: string,
   ): Promise<UserProjectDocument[]> {
-    return this.userProjectRepository.findAll({
-      project: projectId,
-      role: roleId,
-    });
+    const data = await this.userProjectRepository.findAll(
+      {
+        project: projectId,
+        role: roleId,
+      },
+      { limit: undefined, page: undefined, disablePagination: true },
+    );
+    return data.data;
   }
 
   async addUserProject(
@@ -260,7 +273,9 @@ export class UserProjectService {
     const userProjects = await this.userProjectRepository.findAll({
       project: projectId,
     });
-    const ids: string[] = userProjects.map((userProject) => userProject._id);
+    const ids: string[] = userProjects.data.map(
+      (userProject) => userProject._id,
+    );
     await this.userProjectBulkRepository.softDeleteManyById(ids);
   }
 }

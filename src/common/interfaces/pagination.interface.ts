@@ -10,6 +10,17 @@ export interface PaginationOptions {
   page: number;
   search?: string;
   sort?: PaginationSort;
+  disablePagination?: boolean;
+}
+
+export interface PaginationResponse<T> {
+  data: T;
+  pagination: {
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface PaginationFilterOptions {

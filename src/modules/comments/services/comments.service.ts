@@ -56,9 +56,14 @@ export class CommentsService {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const comments = await this.commentsRespository.findAll(
       { task: task._id },
-      { populate: true, limit: undefined, page: undefined },
+      {
+        populate: true,
+        limit: undefined,
+        page: undefined,
+        disablePagination: true,
+      },
     );
-    return comments.map((comment) => ({
+    return comments.data.map((comment) => ({
       comment: comment.comment,
       createdAt: comment.createdAt,
       task: {

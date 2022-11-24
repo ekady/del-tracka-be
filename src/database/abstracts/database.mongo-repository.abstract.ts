@@ -5,6 +5,8 @@ import {
   PopulateOptions,
   Types,
 } from 'mongoose';
+import { PaginationResponse } from 'src/common/interfaces/pagination.interface';
+import { DatabasePaginationOptionDefault } from '../enums/database.enum';
 import {
   DatabaseCreateOptions,
   DatabaseSoftDeleteOptions,
@@ -36,7 +38,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async findAll(
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
-  ): Promise<T[]> {
+  ): Promise<PaginationResponse<T[]>> {
     if (options && options.search) {
       find.$text = {
         $search: `"${options.search}"`,
@@ -45,14 +47,24 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     }
 
     const findAll = this._repository.find(find);
+    let limit: number, skip: number;
 
     if (options && options.withDeleted) findAll.where('deletedAt').ne(null);
     else findAll.where('deletedAt').equals(null);
 
     if (options && options.select) findAll.select(options.select);
 
-    if (options && options.limit !== undefined && options.page !== undefined) {
-      findAll.limit(options.limit).skip(options.page);
+    if (!options.disablePagination) {
+      limit =
+        options.limit !== undefined
+          ? options.limit
+          : DatabasePaginationOptionDefault.Limit;
+      skip =
+        options.page !== undefined
+          ? Number(options.page)
+          : DatabasePaginationOptionDefault.Page;
+
+      findAll.limit(limit).skip((skip - 1 >= 0 ? skip - 1 : 0) * limit);
     }
 
     if (options && options.sort) findAll.sort(options.sort);
@@ -65,9 +77,19 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     const data = await findAll.exec();
     const count = await this._repository.find(find).count().exec();
-    console.log(count);
 
-    return data;
+    return {
+      data,
+      pagination: {
+        limit: options.disablePagination ? count : limit,
+        page: options.disablePagination ? 1 : skip,
+        total: count,
+        totalPages:
+          options.disablePagination || count / limit <= 1
+            ? 1
+            : Math.ceil(count / limit),
+      },
+    };
   }
 
   async findAllAggregate<N>(
