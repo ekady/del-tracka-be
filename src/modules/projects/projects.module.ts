@@ -13,6 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectSchemaProvider } from './schema/project-entity.provider';
 import { ProjectsRepository } from './repositories/projects.repository';
 import { ProjectMemberController } from './controllers/project-member.controller';
+import { PermissionsModule } from '../permissions/permission.module';
 
 @Module({
   controllers: [ProjectsController, ProjectMemberController],
@@ -27,6 +28,7 @@ import { ProjectMemberController } from './controllers/project-member.controller
     UsersModule,
     UserProjectModule,
     RolesModule,
+    PermissionsModule,
     ActivitiesModule,
   ],
   exports: [ProjectsRepository, ProjectsHelperService],

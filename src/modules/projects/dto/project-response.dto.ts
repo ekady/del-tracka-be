@@ -3,6 +3,7 @@ import { ApiResponseProperty, PartialType } from '@nestjs/swagger';
 import { EntityResponseDto, UserResponse } from 'src/common/dto';
 import { StageResponseDto } from 'src/modules/stages/dto/stage-response.dto';
 import { CreateProjectDto } from './create-project.dto';
+import { ProjectPermissionResponseDto } from './project-permission.dto';
 
 export class ProjectDto {
   @ApiResponseProperty()
@@ -23,10 +24,10 @@ export class ProjectResponseDto
   implements EntityResponseDto
 {
   @ApiResponseProperty()
-  createdBy: UserResponse;
+  createdBy?: UserResponse;
 
   @ApiResponseProperty()
-  updatedBy: UserResponse;
+  updatedBy?: UserResponse;
 
   @ApiResponseProperty()
   _id?: string;
@@ -39,6 +40,9 @@ export class ProjectResponseDto
 
   @ApiResponseProperty()
   role: string;
+
+  @ApiResponseProperty({ type: () => [ProjectPermissionResponseDto] })
+  rolePermissions?: ProjectPermissionResponseDto[];
 
   @ApiResponseProperty()
   shortId: string;
@@ -55,6 +59,9 @@ export class ProjectResponseWithStagesDto extends PartialType(
 
   @ApiResponseProperty()
   role: string;
+
+  @ApiResponseProperty({ type: () => [ProjectPermissionResponseDto] })
+  rolePermissions?: ProjectPermissionResponseDto[];
 
   @ApiResponseProperty()
   stages: [StageResponseDto];

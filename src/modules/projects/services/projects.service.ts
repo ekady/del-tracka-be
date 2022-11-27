@@ -8,12 +8,14 @@ import { UserProjectService } from 'src/modules/user-project/services/user-proje
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import {
   CreateProjectDto,
+  ProjectResponseDto,
   ProjectResponseWithStagesDto,
   UpdateProjectDto,
 } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
 import { ProjectsRepository } from '../repositories/projects.repository';
 import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
 
 @Injectable()
 export class ProjectsService {
@@ -23,6 +25,7 @@ export class ProjectsService {
     private userProjectService: UserProjectService,
     private rolesService: RolesService,
     private activitiesService: ActivitiesService,
+    private permissionsService: PermissionsService,
   ) {}
 
   async create(
@@ -58,21 +61,29 @@ export class ProjectsService {
     }));
   }
 
-  async findOne(
-    shortId: string,
-    userId: string,
-  ): Promise<ProjectResponseWithStagesDto> {
+  async findOne(shortId: string, userId: string): Promise<ProjectResponseDto> {
     const userProject = await this.userProjectService.findUserProject(
       userId,
       shortId,
     );
+    const rolePermissions = await this.permissionsService.findAll({
+      role: userProject.role._id,
+    });
     return {
       _id: userProject.project._id,
+      createdAt: userProject.project.createdAt,
+      updatedAt: userProject.project.updatedAt,
       name: userProject.project.name,
       description: userProject.project.description,
       shortId: userProject.project.shortId,
       role: userProject.role.name,
-      stages: userProject.stages,
+      rolePermissions: rolePermissions.map((permission) => ({
+        menu: permission.menu,
+        create: permission.create,
+        read: permission.read,
+        update: permission.update,
+        delete: permission.delete,
+      })),
     };
   }
 

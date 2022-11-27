@@ -58,7 +58,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     if (options && options.select) findAll.select(options.select);
 
-    if (!options.disablePagination) {
+    if (options && !options.disablePagination) {
       limit =
         options.limit !== undefined
           ? options.limit

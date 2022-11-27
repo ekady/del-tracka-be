@@ -15,7 +15,7 @@ import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { ApiResProperty } from 'src/common/decorators';
 import { StatusMessageDto } from 'src/common/dto';
-import { ProjectResponseWithStagesDto } from '../dto';
+import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
@@ -52,7 +52,7 @@ export class ProjectsController {
   findOne(
     @Param('projectId') shortId: string,
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-  ): Promise<ProjectResponseWithStagesDto> {
+  ): Promise<ProjectResponseDto> {
     return this.projectsService.findOne(shortId, jwtPayload.id);
   }
 
