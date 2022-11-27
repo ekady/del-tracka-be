@@ -1,14 +1,14 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { RolesService } from '../services/roles.service';
 
 @Injectable()
 export class RolePermissionGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private userProjectService: UserProjectService,
-    private rolesService: RolesService,
+    private permissionsService: PermissionsService,
   ) {}
 
   async matchingPermission(
@@ -21,7 +21,7 @@ export class RolePermissionGuard implements CanActivate {
       userId,
       shortId,
     );
-    const rolePermission = await this.rolesService.findOnePermission({
+    const rolePermission = await this.permissionsService.findOne({
       menu,
       role: userProject.role._id,
     });
