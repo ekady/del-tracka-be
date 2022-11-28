@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
 import { RoleName } from 'src/common/enums';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
 import {
   ProjectDatabaseName,
   ProjectDocument,
@@ -65,7 +66,18 @@ export class UserProjectService {
           localField: 'role',
           foreignField: '_id',
           as: 'role',
-          pipeline: [{ $match: matchRole }, { $project: nameField }],
+          pipeline: [
+            { $match: matchRole },
+            { $project: nameField },
+            {
+              $lookup: {
+                from: PermissionDatabaseName,
+                localField: '_id',
+                foreignField: 'role',
+                as: 'permissions',
+              },
+            },
+          ],
         },
       },
       {

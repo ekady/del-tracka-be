@@ -4,6 +4,7 @@ import { ProfileResponseDto } from 'src/modules/users/dto/profile-response.dto';
 import { ProjectResponseDto } from 'src/modules/projects/dto';
 import { RoleDto } from 'src/modules/roles/dto';
 import { StageResponseDto } from 'src/modules/stages/dto';
+import { ProjectPermissionResponseDto } from 'src/modules/projects/dto/project-permission.dto';
 
 export class ProjectUserResponseDto
   extends ProfileResponseDto
@@ -47,5 +48,5 @@ export class UserProjectResponseDto implements EntityResponseDto {
   stages: [StageResponseDto];
 
   @ApiResponseProperty()
-  role: RoleDto;
+  role: RoleDto & { permissions: ProjectPermissionResponseDto[] };
 }
