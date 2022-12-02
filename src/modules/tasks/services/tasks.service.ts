@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/common/dto';
-import { ActivityName } from 'src/common/enums';
+import { ActivityName, TaskStatus } from 'src/common/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
@@ -64,6 +64,7 @@ export class TasksService {
       stage: stage._id,
       images: images?.map((image) => image.originalname),
       project: stage.project._id,
+      status: taskValues.status || TaskStatus.Open,
     };
     const task = await this.tasksRepository.create(payload);
 

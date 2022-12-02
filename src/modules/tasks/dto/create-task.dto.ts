@@ -33,9 +33,7 @@ export class CreateTaskRequestDto {
   @IsOptional()
   reporter: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
   status: string;
 
   @ApiPropertyOptional({
