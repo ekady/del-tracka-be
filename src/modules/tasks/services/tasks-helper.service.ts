@@ -115,12 +115,12 @@ export class TasksHelperService {
     const { images, assignee, reporter, ...taskValues } = updateRequestDto;
     const userAssignee = await this.findUserForTask(
       assignee,
-      stage.project._id,
+      stage.project.shortId,
       'Assignee not found',
     );
     const userReporter = await this.findUserForTask(
       reporter,
-      stage.project._id,
+      stage.project.shortId,
       'Reporter not found',
     );
     const payload: UpdateTaskDto = {
