@@ -80,7 +80,13 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     if (options && options.projection) findAll.projection(options.projection);
 
     const data = await findAll.exec();
-    const count = await this._repository.find(find).count().exec();
+    const count = await this._repository
+      .find({
+        ...find,
+        deletedAt: options.withDeleted ? { $ne: null } : { $eq: null },
+      })
+      .count()
+      .exec();
 
     return {
       data,
