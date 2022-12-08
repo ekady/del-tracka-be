@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { StatusMessageDto } from 'src/common/dto';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';
@@ -30,7 +33,7 @@ export class ActivitiesService {
   async findActivitiesByProjectId(
     projectId: string,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const activities = await this.activitiesRepository.findAll(
       { project: new Types.ObjectId(projectId) },
       {
@@ -43,26 +46,29 @@ export class ActivitiesService {
       },
     );
 
-    return activities.data.map((activity) => ({
-      _id: activity._id,
-      createdAt: activity.createdAt,
-      updatedAt: activity.updatedAt,
-      comment: activity.comment,
-      createdBy: activity.createdBy,
-      project: activity.project.name,
-      stageAfter: activity.stageAfter,
-      stageBefore: activity.stageBefore,
-      taskAfter: activity.taskAfter,
-      taskBefore: activity.taskBefore,
-      type: activity.type,
-    }));
+    return {
+      data: activities.data.map((activity) => ({
+        _id: activity._id,
+        createdAt: activity.createdAt,
+        updatedAt: activity.updatedAt,
+        comment: activity.comment,
+        createdBy: activity.createdBy,
+        project: activity.project.name,
+        stageAfter: activity.stageAfter,
+        stageBefore: activity.stageBefore,
+        taskAfter: activity.taskAfter,
+        taskBefore: activity.taskBefore,
+        type: activity.type,
+      })),
+      pagination: activities.pagination,
+    };
   }
 
   async findStageActivities(
     projectId: string,
     stageId: string,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
     const activities = await this.activitiesRepository.findAll(
@@ -82,19 +88,22 @@ export class ActivitiesService {
         disablePagination: Boolean(queries.disablePagination),
       },
     );
-    return activities.data.map((activity) => ({
-      _id: activity._id,
-      createdAt: activity.createdAt,
-      updatedAt: activity.updatedAt,
-      comment: activity.comment,
-      createdBy: activity.createdBy,
-      project: activity.project.name,
-      stageAfter: activity.stageAfter,
-      stageBefore: activity.stageBefore,
-      taskAfter: activity.taskAfter,
-      taskBefore: activity.taskBefore,
-      type: activity.type,
-    }));
+    return {
+      data: activities.data.map((activity) => ({
+        _id: activity._id,
+        createdAt: activity.createdAt,
+        updatedAt: activity.updatedAt,
+        comment: activity.comment,
+        createdBy: activity.createdBy,
+        project: activity.project.name,
+        stageAfter: activity.stageAfter,
+        stageBefore: activity.stageBefore,
+        taskAfter: activity.taskAfter,
+        taskBefore: activity.taskBefore,
+        type: activity.type,
+      })),
+      pagination: activities.pagination,
+    };
   }
 
   async findActivitiesTask(
@@ -102,7 +111,7 @@ export class ActivitiesService {
     stageId: string,
     taskId: string,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
     const objectTaskId = new Types.ObjectId(taskId);
@@ -134,18 +143,21 @@ export class ActivitiesService {
       },
     );
 
-    return activities.data.map((activity) => ({
-      _id: activity._id,
-      createdAt: activity.createdAt,
-      updatedAt: activity.updatedAt,
-      comment: activity.comment,
-      createdBy: activity.createdBy,
-      project: activity.project.name,
-      stageAfter: activity.stageAfter,
-      stageBefore: activity.stageBefore,
-      taskAfter: activity.taskAfter,
-      taskBefore: activity.taskBefore,
-      type: activity.type,
-    }));
+    return {
+      data: activities.data.map((activity) => ({
+        _id: activity._id,
+        createdAt: activity.createdAt,
+        updatedAt: activity.updatedAt,
+        comment: activity.comment,
+        createdBy: activity.createdBy,
+        project: activity.project.name,
+        stageAfter: activity.stageAfter,
+        stageBefore: activity.stageBefore,
+        taskAfter: activity.taskAfter,
+        taskBefore: activity.taskBefore,
+        type: activity.type,
+      })),
+      pagination: activities.pagination,
+    };
   }
 }

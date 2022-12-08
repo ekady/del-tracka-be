@@ -26,7 +26,10 @@ import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ApiTags } from '@nestjs/swagger';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 
 @ApiTags('Stages')
 @Controller('projects/:projectId/stages')
@@ -74,7 +77,7 @@ export class StagesController {
     @Param('shortId') shortId: string,
     @Param('projectId') projectId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     return this.stagesService.findStageActivities(shortId, projectId, queries);
   }
 

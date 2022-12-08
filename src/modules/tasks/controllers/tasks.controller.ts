@@ -94,7 +94,7 @@ export class TasksController {
     @Param('stageId') stageId: string,
     @Param('id') id: string,
     @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const ids: ITaskShortIds = {
       taskId: id,
       stageId,

@@ -20,7 +20,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/common/enums';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 
 @ApiTags('Projects')
 @Controller('projects')
@@ -62,7 +65,7 @@ export class ProjectsController {
   findActivities(
     @Param('projectId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     return this.projectsService.findActivities(shortId, queries);
   }
 

@@ -14,7 +14,10 @@ import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
 import { StageEntity } from '../entities/stage.entity';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 
 @Injectable()
 export class StagesService {
@@ -156,7 +159,7 @@ export class StagesService {
     shortId: string,
     projectId: string,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
       projectId,

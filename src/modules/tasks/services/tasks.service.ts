@@ -166,7 +166,7 @@ export class TasksService {
   async findTaskActivities(
     ids: ITaskShortIds,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const stage = await this.stagesHelperService.findStageByShortId(
       ids.stageId,

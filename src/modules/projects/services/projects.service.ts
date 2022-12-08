@@ -14,7 +14,10 @@ import {
 } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
 import { ProjectsRepository } from '../repositories/projects.repository';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/common/interfaces/pagination.interface';
 import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
 
 @Injectable()
@@ -119,7 +122,7 @@ export class ProjectsService {
   async findActivities(
     shortId: string,
     queries?: Record<string, string> & PaginationOptions,
-  ): Promise<ActivityResponseDto[]> {
+  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const project = await this.projectsHelperService.findProjectByShortId(
       shortId,
     );
