@@ -65,7 +65,11 @@ export class ProjectsController {
   findActivities(
     @Param('projectId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries.startDate = startDate;
+    queries.endDate = endDate;
     return this.projectsService.findActivities(shortId, queries);
   }
 

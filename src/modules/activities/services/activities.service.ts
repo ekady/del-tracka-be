@@ -35,7 +35,13 @@ export class ActivitiesService {
     queries?: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const activities = await this.activitiesRepository.findAll(
-      { project: new Types.ObjectId(projectId) },
+      {
+        project: new Types.ObjectId(projectId),
+        createdAt: {
+          $gte: queries.startDate || 0,
+          $lte: queries.endDate || new Date().toISOString(),
+        },
+      },
       {
         populate: true,
         sort: { createdAt: -1 },

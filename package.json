@@ -38,6 +38,7 @@
     "config": "^3.3.7",
     "dotenv": "^16.0.1",
     "google-auth-library": "^8.5.1",
+    "json-as-xlsx": "^2.5.0",
     "mongodb": "^4.11.0",
     "mongoose": "^6.6.3",
     "nanoid": "^3.3.4",

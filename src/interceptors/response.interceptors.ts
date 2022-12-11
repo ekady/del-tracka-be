@@ -17,6 +17,11 @@ export class ResponseInterceptor<T>
   ): Observable<any> | Promise<Observable<ResponseDto<T>>> {
     const ctx = context.switchToHttp().getResponse();
     const statusCode = ctx.statusCode;
-    return next.handle().pipe(map((data) => ({ statusCode, data })));
+    return next.handle().pipe(
+      map((data) => {
+        if (data.stream) return data;
+        return { statusCode, data };
+      }),
+    );
   }
 }
