@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  StreamableFile,
+  Header,
 } from '@nestjs/common';
 import { ProjectsService } from '../services';
 import { CreateProjectDto } from '../dto/create-project.dto';
@@ -71,6 +73,23 @@ export class ProjectsController {
     queries.startDate = startDate;
     queries.endDate = endDate;
     return this.projectsService.findActivities(shortId, queries);
+  }
+
+  @Get(':projectId/activities/xlsx')
+  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @ApiResProperty([ActivityResponseDto], 200)
+  @Header('Content-Type', 'application/octet-stream')
+  @Header('Content-Disposition', 'attachment; filename="Activities.xlsx"')
+  getActivitiesExcel(
+    @Param('projectId') shortId: string,
+    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ): Promise<StreamableFile> {
+    queries.startDate = startDate;
+    queries.endDate = endDate;
+    queries.disablePagination = true;
+    return this.projectsService.getActivitiesExcel(shortId, queries);
   }
 
   @Put(':projectId')

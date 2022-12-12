@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, StreamableFile } from '@nestjs/common';
+import { IContent, IJsonSheet } from 'json-as-xlsx';
 import { StatusMessageDto } from 'src/common/dto';
 import { RoleName } from 'src/common/enums';
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
@@ -19,6 +20,8 @@ import {
   PaginationResponse,
 } from 'src/common/interfaces/pagination.interface';
 import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
+import { TransformActivityMessage } from '../helpers/transform-activity.helper';
+import { generateExcel } from '../helpers/generate-excel.helper';
 
 @Injectable()
 export class ProjectsService {
@@ -130,5 +133,36 @@ export class ProjectsService {
       project._id,
       queries,
     );
+  }
+
+  async getActivitiesExcel(
+    shortId: string,
+    queries?: Record<string, string> & PaginationOptions,
+  ): Promise<StreamableFile> {
+    const activities = await this.findActivities(shortId, queries);
+
+    const content: IContent[] = activities.data.map((activity) => ({
+      sprint: activity.stageAfter?.name || activity.stageBefore?.name || '-',
+      activity: TransformActivityMessage[activity.type](activity),
+      project: activity.project,
+      createdAt: new Date(activity.createdAt).toLocaleString(),
+    }));
+
+    const columns: IJsonSheet[] = [
+      {
+        sheet: 'Activities',
+        columns: [
+          { label: 'Date', value: 'createdAt' },
+          { label: 'Project Name', value: 'project' },
+          { label: 'Sprint', value: 'sprint' },
+          { label: 'Activity', value: 'activity' },
+        ],
+        content,
+      },
+    ];
+
+    const excel = generateExcel(columns);
+
+    return new StreamableFile(excel);
   }
 }
