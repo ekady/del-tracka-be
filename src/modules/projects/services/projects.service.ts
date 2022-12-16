@@ -1,5 +1,7 @@
 import { Injectable, StreamableFile } from '@nestjs/common';
 import { IContent, IJsonSheet } from 'json-as-xlsx';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { StatusMessageDto } from 'src/common/dto';
 import { RoleName } from 'src/common/enums';
 import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
@@ -133,6 +135,50 @@ export class ProjectsService {
       project._id,
       queries,
     );
+  }
+
+  async getActivitiesPdf(
+    shortId: string,
+    queries?: Record<string, string> & PaginationOptions,
+  ): Promise<StreamableFile> {
+    const activities = await this.findActivities(shortId, queries);
+
+    const header = ['Date', 'Project Name', 'Sprint', 'Activitiy'];
+    const content = [];
+
+    activities.data.forEach((activity) => {
+      const date = new Date(activity.createdAt).toLocaleString();
+      const project = activity.project;
+      const sprint =
+        activity.stageAfter?.name || activity.stageBefore?.name || '-';
+      const act = TransformActivityMessage[activity.type](activity);
+      content.push([date, project, sprint, act]);
+    });
+
+    const pdfContent = {
+      content: [
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', '*', '*', '*'],
+            body: [header, ...content],
+          },
+        },
+      ],
+    };
+
+    const pdf = pdfMake.createPdf(
+      pdfContent,
+      undefined,
+      undefined,
+      pdfFonts.pdfMake.vfs,
+    );
+
+    const pdfBuffer: Buffer = await new Promise((resolve) => {
+      pdf.getBuffer((buffer) => resolve(buffer));
+    });
+
+    return new StreamableFile(pdfBuffer);
   }
 
   async getActivitiesExcel(

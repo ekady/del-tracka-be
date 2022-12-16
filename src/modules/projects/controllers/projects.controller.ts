@@ -75,6 +75,26 @@ export class ProjectsController {
     return this.projectsService.findActivities(shortId, queries);
   }
 
+  @Get(':projectId/activities/pdf')
+  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @ApiResProperty([ActivityResponseDto], 200)
+  @Header('Content-Type', 'application/pdf')
+  @Header(
+    'Content-Disposition',
+    'attachment; filename="Project Activities.pdf"',
+  )
+  getActivitiesPdf(
+    @Param('projectId') shortId: string,
+    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ): Promise<StreamableFile> {
+    queries.startDate = startDate;
+    queries.endDate = endDate;
+    queries.disablePagination = true;
+    return this.projectsService.getActivitiesPdf(shortId, queries);
+  }
+
   @Get(':projectId/activities/xlsx')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)

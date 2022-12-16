@@ -3,6 +3,9 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": [{ "include": "**/email/templates/*", "watchAssets": true }]
+    "assets": [
+      { "include": "**/email/templates/*", "watchAssets": true },
+      { "include": "**/assets/**", "watchAssets": true }
+    ]
   }
 }
