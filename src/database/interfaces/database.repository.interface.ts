@@ -22,7 +22,7 @@ export interface DatabaseRepositoryAbstract<T extends Document> {
   findAllAggregate<N>(
     pipeline: PipelineStage[],
     options?: DatabaseFindAllAggregateOptions,
-  ): Promise<N[]>;
+  ): Promise<PaginationResponse<N[]>>;
 
   findOne(
     find: Record<string, any>,

@@ -61,7 +61,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     if (options && !options.disablePagination) {
       limit =
         options.limit !== undefined
-          ? options.limit
+          ? Number(options.limit)
           : DatabasePaginationOptionDefault.Limit;
       skip =
         options.page !== undefined
@@ -105,7 +105,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async findAllAggregate<N>(
     pipeline: PipelineStage[],
     options?: DatabaseFindAllAggregateOptions,
-  ): Promise<N[]> {
+  ): Promise<PaginationResponse<N[]>> {
     if (options && options.withDeleted) {
       pipeline.unshift({
         $match: { deletedAt: { $ne: null } },
@@ -116,23 +116,49 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       });
     }
 
-    if (options.search) {
-      pipeline.push({ $match: { $text: { $search: options.search } } });
-    }
-
-    if (options && options.limit !== undefined && options.page !== undefined) {
-      pipeline.push({ $skip: options.page });
-      pipeline.push({ $limit: options.limit });
-    }
-
     if (options && options.sort) {
       pipeline.push({ $sort: options.sort });
     }
 
-    const aggregate = this._repository.aggregate<N>(pipeline);
-    if (options && options.session) aggregate.session(options.session);
+    if (options.search) {
+      pipeline.unshift({ $match: { $text: { $search: options.search } } });
+    }
+    const countQuery = await this._repository
+      .aggregate<{ count: number }>([...pipeline, { $count: 'count' }])
+      .exec();
+    const count = countQuery?.[0].count || 0;
 
-    return aggregate.exec();
+    let limit: number, skip: number;
+    if (options && !options.disablePagination) {
+      limit =
+        options.limit !== undefined
+          ? Number(options.limit)
+          : DatabasePaginationOptionDefault.Limit;
+      skip =
+        options.page !== undefined
+          ? Number(options.page)
+          : DatabasePaginationOptionDefault.Page;
+
+      pipeline.push({ $skip: (skip - 1 >= 0 ? skip - 1 : 0) * limit });
+      pipeline.push({ $limit: limit });
+    }
+
+    const aggregate = this._repository.aggregate<N>(pipeline);
+
+    const data = await aggregate.exec();
+
+    return {
+      data,
+      pagination: {
+        limit: options.disablePagination ? count : limit,
+        page: options.disablePagination ? 1 : skip,
+        total: count,
+        totalPages:
+          options.disablePagination || count / limit <= 1
+            ? 1
+            : Math.ceil(count / limit),
+      },
+    };
   }
 
   async findOne(
