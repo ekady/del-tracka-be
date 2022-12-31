@@ -126,7 +126,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     const countQuery = await this._repository
       .aggregate<{ count: number }>([...pipeline, { $count: 'count' }])
       .exec();
-    const count = countQuery?.[0].count || 0;
+    const count = countQuery?.[0]?.count || 0;
 
     let limit: number, skip: number;
     if (options && !options.disablePagination) {

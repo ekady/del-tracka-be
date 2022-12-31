@@ -11,6 +11,8 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/common/interfaces/pagination.interface';
+import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
+import { ProjectMenu } from 'src/common/enums';
 
 @Injectable()
 export class MyTasksService {
@@ -21,6 +23,23 @@ export class MyTasksService {
     queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<MyTaskResponseDto[]>> {
     const user = new Types.ObjectId(userId);
+
+    if (queries.sortBy) {
+      const [field, order] = queries.sortBy.split('|');
+      queries.sort = { [field]: Number(order) };
+      delete queries.sortBy;
+    } else queries.sort = undefined;
+
+    // Filter by Priority and Status
+    const filter: { status?: string; priority?: string } = {};
+    if (queries.priority) filter.priority = queries.priority;
+    if (queries.status) filter.status = queries.status;
+
+    // Filter Project Name
+    const filterProjectName = queries?.project
+      ? { shortId: queries.project }
+      : {};
+
     const userField = {
       _id: 1,
       firstName: 1,
@@ -43,12 +62,26 @@ export class MyTasksService {
       as: 'assignee',
       pipeline: [{ $project: userField }],
     };
+    const lookupPermission = {
+      from: PermissionDatabaseName,
+      localField: '_id',
+      foreignField: 'role',
+      as: 'permissions',
+      pipeline: [
+        { $match: { menu: ProjectMenu.Task } },
+        { $project: { menu: 1, create: 1, update: 1, delete: 1, read: 1 } },
+      ],
+    };
     const lookupRole = {
       from: RoleDatabaseName,
       localField: 'role',
       foreignField: '_id',
       as: 'role',
-      pipeline: [{ $project: nameField }],
+      pipeline: [
+        { $lookup: lookupPermission },
+        { $unwind: '$permissions' },
+        { $project: { ...nameField, permissions: '$permissions' } },
+      ],
     };
     const lookupUserProject = {
       from: UserProjectDatabaseName,
@@ -66,7 +99,11 @@ export class MyTasksService {
       localField: 'project',
       foreignField: '_id',
       as: 'project',
-      pipeline: [{ $lookup: lookupUserProject }, { $unwind: '$userproject' }],
+      pipeline: [
+        { $match: { ...filterProjectName } },
+        { $lookup: lookupUserProject },
+        { $unwind: '$userproject' },
+      ],
     };
     const lookupStage = {
       from: StageDatabaseName,
@@ -75,9 +112,15 @@ export class MyTasksService {
       as: 'stage',
       pipeline: [{ $lookup: lookupProject }, { $unwind: '$project' }],
     };
+
     return this.tasksRepository.findAllAggregate(
       [
-        { $match: { $or: [{ assignee: user }, { reporter: user }] } },
+        {
+          $match: {
+            $or: [{ assignee: user }, { reporter: user }],
+            ...filter,
+          },
+        },
         { $lookup: lookupStage },
         { $unwind: '$stage' },
         { $lookup: lookupReporter },
@@ -85,6 +128,7 @@ export class MyTasksService {
         {
           $project: {
             _id: 1,
+            shortId: 1,
             title: 1,
             feature: 1,
             description: 1,
@@ -92,9 +136,17 @@ export class MyTasksService {
             status: 1,
             assignee: { $arrayElemAt: ['$assignee', 0] },
             reporter: { $arrayElemAt: ['$reporter', 0] },
-            stage: { _id: 1, name: 1 },
-            project: { _id: '$stage.project._id', name: '$stage.project.name' },
-            role: '$stage.project.userproject.role',
+            stage: { _id: 1, name: 1, shortId: 1 },
+            project: {
+              _id: '$stage.project._id',
+              name: '$stage.project.name',
+              shortId: '$stage.project.shortId',
+            },
+            role: {
+              _id: '$stage.project.userproject.role._id',
+              name: '$stage.project.userproject.role.name',
+            },
+            permissions: '$stage.project.userproject.role.permissions',
           },
         },
       ],

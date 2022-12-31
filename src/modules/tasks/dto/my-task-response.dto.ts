@@ -4,6 +4,7 @@ import { RoleEntity } from 'src/modules/roles/entities/role.entity';
 import { StageEntity } from 'src/modules/stages/entities/stage.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { CreateTaskRequestDto } from './create-task.dto';
+import { ProjectPermissionResponseDto } from 'src/modules/projects/dto/project-permission.dto';
 
 export class MyTaskResponseDto extends PartialType(
   OmitType(CreateTaskRequestDto, ['images', 'assignee', 'reporter']),
@@ -18,6 +19,9 @@ export class MyTaskResponseDto extends PartialType(
   reporter: UserEntity;
 
   @ApiResponseProperty()
+  shortId: string;
+
+  @ApiResponseProperty()
   project: ProjectEntity;
 
   @ApiResponseProperty()
@@ -25,4 +29,10 @@ export class MyTaskResponseDto extends PartialType(
 
   @ApiResponseProperty()
   role: RoleEntity;
+
+  @ApiResponseProperty()
+  permissions: ProjectPermissionResponseDto;
+
+  @ApiResponseProperty()
+  updatedAt: RoleEntity;
 }
