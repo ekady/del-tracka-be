@@ -34,5 +34,5 @@ export class MyTaskResponseDto extends PartialType(
   permissions: ProjectPermissionResponseDto;
 
   @ApiResponseProperty()
-  updatedAt: RoleEntity;
+  updatedAt: string;
 }

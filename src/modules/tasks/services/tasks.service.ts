@@ -128,6 +128,18 @@ export class TasksService {
         status: task.status,
         title: task.title,
         shortId: task.shortId,
+        stage: {
+          _id: stage._id,
+          name: stage.name,
+          description: stage.description,
+          shortId: stage.shortId,
+        },
+        project: {
+          _id: stage.project._id,
+          name: stage.project.name,
+          description: stage.project.description,
+          shortId: stage.project.shortId,
+        },
       })),
       pagination: tasks.pagination,
     };

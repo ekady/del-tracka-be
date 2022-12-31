@@ -147,6 +147,7 @@ export class MyTasksService {
               name: '$stage.project.userproject.role.name',
             },
             permissions: '$stage.project.userproject.role.permissions',
+            updatedAt: 1,
           },
         },
       ],
