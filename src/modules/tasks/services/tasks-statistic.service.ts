@@ -1,16 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { PipelineStage } from 'mongoose';
 import { ProjectsHelperService } from 'src/modules/projects/services';
-import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import {
+  TaskProjectCountDto,
+  TaskStageStatisticDto,
+  TaskStatisticDto,
+  TaskStatusStatisticDto,
+} from '../dto';
 import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
 import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
 import { TaskDatabaseName } from '../entities/task.entity';
+import { STATS_INITIAL_RESPONSE } from '../constants/stats-initial-response.constant';
+import { TaskStatus } from 'src/common/enums';
 
 @Injectable()
 export class TasksStatisticService {
   constructor(
     private userProjectRepository: UserProjectRepository,
     private projectsHelperService: ProjectsHelperService,
+    private userProjectService: UserProjectService,
   ) {}
 
   async getTasksStatisticByStatus(
@@ -59,17 +68,42 @@ export class TasksStatisticService {
     ]);
   }
 
-  async getTasksStatisticAll(userId: string): Promise<TaskStatisticDto[]> {
+  async getTasksStatisticAll(userId: string): Promise<TaskStatusStatisticDto> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
-    return this.getTasksStatisticByStatus(userProject);
+    const response = STATS_INITIAL_RESPONSE;
+    const stats = await this.getTasksStatisticByStatus(userProject);
+    stats.forEach((stat) => {
+      response[stat.name as TaskStatus] = stat.count;
+    });
+
+    return response;
   }
 
-  async getTasksStatisticByUser(userId: string): Promise<TaskStatisticDto[]> {
+  async getTasksStatisticByUser(
+    userId: string,
+  ): Promise<TaskStatusStatisticDto> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
+    const response = STATS_INITIAL_RESPONSE;
     const task: PipelineStage.Match = {
       $match: { $or: [{ assignee: userId }, { reporter: userId }] },
     };
-    return this.getTasksStatisticByStatus(userProject, task);
+    const stats = await this.getTasksStatisticByStatus(userProject, task);
+    stats.forEach((stat) => {
+      response[stat.name as TaskStatus] = stat.count;
+    });
+
+    return response;
+  }
+
+  async getTotalProjectAndTask(userId: string): Promise<TaskProjectCountDto> {
+    const userProject: PipelineStage.Match = { $match: { user: userId } };
+    const task = await this.getTasksStatisticByStatus(userProject);
+    const project = await this.userProjectService.findUserProjects(userId);
+
+    return {
+      totalProject: project.length,
+      totalTask: task.reduce((total, task) => total + task.count, 0),
+    };
   }
 
   async getTasksStatisticByProjectId(

@@ -3,7 +3,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { ApiResProperty } from 'src/common/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { TaskStageStatisticDto, TaskStatisticDto } from '../dto';
+import {
+  TaskProjectCountDto,
+  TaskStageStatisticDto,
+  TaskStatisticDto,
+  TaskStatusStatisticDto,
+} from '../dto';
 import { TasksStatisticService } from '../services';
 
 @ApiTags('Tasks Statistic')
@@ -11,19 +16,27 @@ import { TasksStatisticService } from '../services';
 export class TasksStatisticController {
   constructor(private taskStatisticService: TasksStatisticService) {}
 
+  @Get('total')
+  @ApiResProperty(TaskProjectCountDto, 200)
+  getTotalProjectAndTask(
+    @JwtPayloadReq() user: IJwtPayload,
+  ): Promise<TaskProjectCountDto> {
+    return this.taskStatisticService.getTotalProjectAndTask(user.id);
+  }
+
   @Get('all')
-  @ApiResProperty([TaskStatisticDto], 200)
+  @ApiResProperty(TaskStatusStatisticDto, 200)
   getTasksStatistic(
     @JwtPayloadReq() user: IJwtPayload,
-  ): Promise<TaskStatisticDto[]> {
+  ): Promise<TaskStatusStatisticDto> {
     return this.taskStatisticService.getTasksStatisticAll(user.id);
   }
 
   @Get('user')
-  @ApiResProperty([TaskStatisticDto], 200)
+  @ApiResProperty(TaskStatusStatisticDto, 200)
   getTasksStatisticByUser(
     @JwtPayloadReq() user: IJwtPayload,
-  ): Promise<TaskStatisticDto[]> {
+  ): Promise<TaskStatusStatisticDto> {
     return this.taskStatisticService.getTasksStatisticByUser(user.id);
   }
 
