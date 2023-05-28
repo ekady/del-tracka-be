@@ -4,7 +4,7 @@ import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 // find one
 export interface DatabaseFindOneOptions
   extends Pick<PaginationOptions, 'sort'> {
-  select?: Record<string, number> | Record<string, string>;
+  select?: Record<string, number>;
   populate?: boolean;
   session?: ClientSession;
   withDeleted?: boolean;

@@ -20,6 +20,7 @@ import {
   DatabaseAggregateOptions,
 } from '../interfaces/database.interface';
 import { DatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
+import paginationOptions from 'src/helpers/pagination-options.helper';
 
 export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   implements DatabaseRepositoryAbstract<T>
@@ -39,65 +40,63 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     find?: Record<string, any>,
     options?: DatabaseFindAllOptions,
   ): Promise<PaginationResponse<T[]>> {
-    if (
-      options &&
-      options.search &&
-      options.searchField &&
-      options.searchField.length
-    ) {
-      find.$or = options.searchField.map((field) => ({
-        [field]: { $regex: options.search, $options: 'ig' },
-      }));
-    }
+    const {
+      search,
+      searchField,
+      withDeleted,
+      select,
+      disablePagination,
+      sort,
+      populate,
+      session,
+      projection,
+      limit = DatabasePaginationOptionDefault.Limit,
+      page = DatabasePaginationOptionDefault.Page,
+    } = options;
 
     const findAll = this._repository.find(find);
-    let limit: number, skip: number;
 
-    if (options && options.withDeleted) findAll.where('deletedAt').ne(null);
-    else findAll.where('deletedAt').equals(null);
-
-    if (options && options.select) findAll.select(options.select);
-
-    if (options && !options.disablePagination) {
-      limit =
-        options.limit !== undefined
-          ? Number(options.limit)
-          : DatabasePaginationOptionDefault.Limit;
-      skip =
-        options.page !== undefined
-          ? Number(options.page)
-          : DatabasePaginationOptionDefault.Page;
-
-      findAll.limit(limit).skip((skip - 1 >= 0 ? skip - 1 : 0) * limit);
+    if (search && searchField?.length) {
+      const orConditions = searchField.map((field) => ({
+        [field]: { $regex: search, $options: 'ig' },
+      }));
+      find.$or = orConditions;
     }
 
-    if (options && options.sort) findAll.sort(options.sort);
+    findAll.where('deletedAt').equals(withDeleted ? null : undefined);
 
-    if (options && options.populate) findAll.populate(this._populateOnFind);
+    paginationOptions<Array<T>, T>(findAll, {
+      select,
+      disablePagination,
+      sort,
+      session,
+      projection,
+      limit,
+      page,
+    });
 
-    if (options && options.session) findAll.session(options.session);
+    if (populate) findAll.populate(this._populateOnFind);
 
-    if (options && options.projection) findAll.projection(options.projection);
+    const [data, count] = await Promise.all([
+      findAll.exec(),
+      this._repository
+        .count({
+          ...find,
+          deletedAt: withDeleted ? { $ne: null } : { $eq: null },
+        })
+        .exec(),
+    ]);
 
-    const data = await findAll.exec();
-    const count = await this._repository
-      .find({
-        ...find,
-        deletedAt: options.withDeleted ? { $ne: null } : { $eq: null },
-      })
-      .count()
-      .exec();
+    const totalPages =
+      disablePagination || count / limit <= 1 ? 1 : Math.ceil(count / limit);
 
     return {
       data,
       pagination: {
-        limit: options.disablePagination ? count : limit,
-        page: options.disablePagination ? 1 : skip,
+        limit: disablePagination ? count : Number(limit),
+        page: disablePagination ? 1 : Number(page),
         total: count,
-        totalPages:
-          options.disablePagination || count / limit <= 1
-            ? 1
-            : Math.ceil(count / limit),
+        totalPages,
       },
     };
   }
@@ -106,7 +105,16 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     pipeline: PipelineStage[],
     options?: DatabaseFindAllAggregateOptions,
   ): Promise<PaginationResponse<N[]>> {
-    if (options && options.withDeleted) {
+    const {
+      withDeleted,
+      sort,
+      search,
+      disablePagination,
+      limit = DatabasePaginationOptionDefault.Limit,
+      page = DatabasePaginationOptionDefault.Page,
+    } = options || {};
+
+    if (withDeleted) {
       pipeline.unshift({
         $match: { deletedAt: { $ne: null } },
       });
@@ -116,47 +124,42 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       });
     }
 
-    if (options && options.sort) {
-      pipeline.push({ $sort: options.sort });
+    if (sort) {
+      pipeline.push({ $sort: sort });
     }
 
-    if (options.search) {
-      pipeline.unshift({ $match: { $text: { $search: options.search } } });
+    if (search) {
+      pipeline.unshift({ $match: { $text: { $search: search } } });
     }
-    const countQuery = await this._repository
+
+    const countQuery = this._repository
       .aggregate<{ count: number }>([...pipeline, { $count: 'count' }])
       .exec();
-    const count = countQuery?.[0]?.count || 0;
+    const count = (await countQuery)?.[0]?.count || 0;
 
-    let limit: number, skip: number;
-    if (options && !options.disablePagination) {
-      limit =
-        options.limit !== undefined
-          ? Number(options.limit)
-          : DatabasePaginationOptionDefault.Limit;
-      skip =
-        options.page !== undefined
-          ? Number(options.page)
-          : DatabasePaginationOptionDefault.Page;
-
-      pipeline.push({ $skip: (skip - 1 >= 0 ? skip - 1 : 0) * limit });
-      pipeline.push({ $limit: limit });
+    let skip = 0;
+    if (!disablePagination) {
+      const skipValue = (page - 1 >= 0 ? page - 1 : 0) * Number(limit);
+      skip = skipValue;
+      pipeline.push({ $skip: skipValue });
+      pipeline.push({ $limit: Number(limit) });
     }
 
     const aggregate = this._repository.aggregate<N>(pipeline);
-
     const data = await aggregate.exec();
+
+    const totalPages =
+      disablePagination || count / Number(limit) <= 1
+        ? 1
+        : Math.ceil(count / Number(limit));
 
     return {
       data,
       pagination: {
-        limit: options.disablePagination ? count : limit,
-        page: options.disablePagination ? 1 : skip,
+        limit: disablePagination ? count : limit,
+        page: disablePagination ? 1 : skip + 1,
         total: count,
-        totalPages:
-          options.disablePagination || count / limit <= 1
-            ? 1
-            : Math.ceil(count / limit),
+        totalPages,
       },
     };
   }

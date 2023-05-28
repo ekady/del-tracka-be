@@ -131,7 +131,7 @@ export class UserProjectService {
     const [userProject] = await this.findUserProjects(userId, {
       shortId,
     });
-    if (!userProject || !userProject.project) {
+    if (!userProject?.project) {
       const errmsg = errorMessage || 'Project not found';
       throw new BadRequestException(errmsg);
     }
