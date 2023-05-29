@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName, TaskStatus } from 'src/common/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
-import { ActivityResponseDto } from 'src/modules/activities/dto';
+import {
+  ActivityResponseDto,
+  CreateActivityDto,
+} from 'src/modules/activities/dto';
 import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
 import { StagesHelperService } from 'src/modules/stages/services';
 import {
@@ -10,6 +13,7 @@ import {
   CreateTaskRequestDto,
   TaskResponseDto,
   UpdateStatusTaskDto,
+  UpdateTaskDto,
   UpdateTaskRequestDto,
 } from '../dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
@@ -19,6 +23,12 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/common/interfaces/pagination.interface';
+import { ITaskIds } from '../interfaces/taskIds.interface';
+import { FilterQuery } from 'mongoose';
+import { TaskDocument } from '../entities/task.entity';
+import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { UserProjectResponseDto } from 'src/modules/user-project/dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 
 @Injectable()
 export class TasksService {
@@ -27,7 +37,98 @@ export class TasksService {
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
     private activitiesService: ActivitiesService,
+    private userProjectService: UserProjectService,
   ) {}
+
+  private async checkTaskExist(
+    ids: Pick<ITaskIds, 'projectId' | 'stageId'>,
+    query: FilterQuery<TaskDocument>,
+  ): Promise<void> {
+    const { projectId, stageId } = ids;
+    const stage = await this.stagesHelperService.findStageById(
+      stageId,
+      projectId,
+    );
+    const task = await this.tasksRepository.findOne(
+      {
+        ...query,
+        stage: stage._id,
+      },
+      { populate: true },
+    );
+
+    if (task) {
+      throw new DocumentExistException('Task already exists.');
+    }
+  }
+
+  private async createTaskActivity(payload: CreateActivityDto): Promise<void> {
+    await this.activitiesService.create(payload);
+  }
+
+  private async findUserForTask(
+    userId: string,
+    projectId: string,
+    errorMessage?: string,
+  ): Promise<UserProjectResponseDto> {
+    if (!userId) return null;
+    return this.userProjectService.findUserProject(
+      userId,
+      projectId,
+      errorMessage,
+    );
+  }
+
+  private async update(
+    ids: ITaskShortIds & { userId: string },
+    updateRequestDto: UpdateTaskRequestDto,
+    type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
+  ): Promise<TaskDocument> {
+    const { projectId, stageId, userId } = ids;
+    const stage = await this.stagesHelperService.findStageByShortId(
+      stageId,
+      projectId,
+    );
+    const taskFound = await this.tasksHelperService.findTaskByShortId(ids);
+    await this.checkTaskExist(
+      { projectId: stage.project._id, stageId: stage._id },
+      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
+    );
+    const { images, assignee, reporter, ...taskValues } = updateRequestDto;
+    const userAssignee = await this.findUserForTask(
+      assignee,
+      stage.project.shortId,
+      'Assignee not found',
+    );
+    const userReporter = await this.findUserForTask(
+      reporter,
+      stage.project.shortId,
+      'Reporter not found',
+    );
+    const payload: UpdateTaskDto = {
+      ...taskValues,
+      updatedBy: userId,
+      reporter: userReporter?.user._id,
+      assignee: userAssignee?.user._id,
+      images: images?.map((image) => image.originalname),
+    };
+    const taskUpdate = await this.tasksRepository.updateOne(
+      { _id: taskFound._id, stage: stage._id },
+      payload,
+      { populate: true },
+    );
+
+    await this.createTaskActivity({
+      type,
+      createdBy: taskUpdate.updatedBy._id,
+      project: stage.project._id,
+      stageBefore: stage.depopulate(),
+      stageAfter: taskUpdate.stage,
+      taskBefore: taskFound.depopulate(),
+      taskAfter: taskUpdate.depopulate(),
+    });
+    return taskFound;
+  }
 
   async create(
     ids: IStageShortId,
@@ -40,17 +141,17 @@ export class TasksService {
       projectId,
     );
 
-    await this.tasksHelperService.checkTaskExist(
+    await this.checkTaskExist(
       { projectId: stage.project._id, stageId: stage._id },
       { title: createRequestDto.title },
     );
     const { images, assignee, reporter, ...taskValues } = createRequestDto;
-    const userAssignee = await this.tasksHelperService.findUserForTask(
+    const userAssignee = await this.findUserForTask(
       assignee,
       projectId,
       'Assignee not found',
     );
-    const userReporter = await this.tasksHelperService.findUserForTask(
+    const userReporter = await this.findUserForTask(
       reporter,
       projectId,
       'Reporter not found',
@@ -68,7 +169,7 @@ export class TasksService {
     };
     const task = await this.tasksRepository.create(payload);
 
-    await this.tasksHelperService.createTaskActivity({
+    await this.createTaskActivity({
       type: ActivityName.CREATE_TASK,
       createdBy: userId,
       project: stage.project._id,
@@ -197,7 +298,7 @@ export class TasksService {
     userId: string,
     updateRequestDto: UpdateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    await this.tasksHelperService.update(
+    await this.update(
       { ...ids, userId },
       updateRequestDto,
       ActivityName.UPDATE_TASK,
@@ -210,7 +311,7 @@ export class TasksService {
     userId: string,
     updateStatusDto: UpdateStatusTaskDto,
   ): Promise<StatusMessageDto> {
-    await this.tasksHelperService.update(
+    await this.update(
       { ...ids, userId },
       updateStatusDto,
       ActivityName.UPDATE_TASK_STATUS,
@@ -226,7 +327,7 @@ export class TasksService {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     await this.tasksRepository.softDeleteOneById(task._id);
 
-    await this.tasksHelperService.createTaskActivity({
+    await this.createTaskActivity({
       type: ActivityName.DELETE_TASK,
       createdBy: userId,
       project: stage.project._id,

@@ -10,11 +10,13 @@ import {
   CreateCommentDto,
   CreateCommentRequestDto,
 } from '../dto';
+import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 
 @Injectable()
 export class CommentsService {
   constructor(
     private commentsRespository: CommentsRepository,
+    private activitiesService: ActivitiesService,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
   ) {}
@@ -38,7 +40,7 @@ export class CommentsService {
     };
     await this.commentsRespository.create(payload);
 
-    await this.tasksHelperService.createTaskActivity({
+    await this.activitiesService.create({
       type: ActivityName.CREATE_COMMENT,
       createdBy: userId,
       project: stage.project._id,

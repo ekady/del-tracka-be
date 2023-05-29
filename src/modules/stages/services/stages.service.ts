@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/common/dto';
 import { ActivityName } from 'src/common/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
-import { ActivityResponseDto } from 'src/modules/activities/dto';
+import {
+  ActivityResponseDto,
+  CreateActivityDto,
+} from 'src/modules/activities/dto';
 import { ProjectsHelperService } from 'src/modules/projects/services';
 import {
   CreateStageDto,
@@ -13,11 +16,13 @@ import {
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
-import { StageEntity } from '../entities/stage.entity';
+import { StageDocument, StageEntity } from '../entities/stage.entity';
 import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/common/interfaces/pagination.interface';
+import { FilterQuery } from 'mongoose';
+import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 
 @Injectable()
 export class StagesService {
@@ -28,6 +33,22 @@ export class StagesService {
     private activitiesService: ActivitiesService,
   ) {}
 
+  private async checkStageNameExist(
+    query: FilterQuery<StageDocument>,
+  ): Promise<void> {
+    const stage = await this.stagesRepository.findOne(query, {
+      populate: true,
+    });
+
+    if (stage) throw new DocumentExistException('Stage already exists');
+  }
+
+  private async createStageActivity(
+    payload: Omit<CreateActivityDto, 'taskBefore' | 'taskAfter'>,
+  ): Promise<void> {
+    await this.activitiesService.create(payload);
+  }
+
   async create(
     userId: string,
     createStageDto: CreateStageDto,
@@ -37,7 +58,7 @@ export class StagesService {
       projectId,
     );
 
-    await this.stagesHelperService.checkStageNameExist({
+    await this.checkStageNameExist({
       name: payload.name,
       project: project._id,
     });
@@ -48,7 +69,7 @@ export class StagesService {
       project: project._id,
     });
 
-    await this.stagesHelperService.createStageActivity({
+    await this.createStageActivity({
       type: ActivityName.CREATE_STAGE,
       stageBefore: null,
       stageAfter: stage as StageEntity,
@@ -112,7 +133,7 @@ export class StagesService {
       shortId,
       projectId,
     );
-    await this.stagesHelperService.checkStageNameExist({
+    await this.checkStageNameExist({
       name: payload.name,
       project: stage.project._id,
       _id: { $ne: stage._id },
@@ -122,7 +143,7 @@ export class StagesService {
       updatedBy: userId,
     });
 
-    await this.stagesHelperService.createStageActivity({
+    await this.createStageActivity({
       type: ActivityName.UPDATE_STAGE,
       stageBefore: stage.depopulate('project'),
       stageAfter: stageUpdate,
@@ -145,7 +166,7 @@ export class StagesService {
 
     await this.stagesRepository.softDeleteOneById(stage._id);
 
-    await this.stagesHelperService.createStageActivity({
+    await this.createStageActivity({
       type: ActivityName.DELETE_STAGE,
       stageBefore: stage.depopulate('project'),
       stageAfter: null,

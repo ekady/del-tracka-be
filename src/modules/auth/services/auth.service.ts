@@ -16,7 +16,7 @@ import {
 } from '../dto';
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
-import { EmailService } from 'src/modules/email/email.service';
+import { EmailService } from 'src/modules/email/services/email.service';
 import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 
 @Injectable()
@@ -55,7 +55,7 @@ export class AuthService {
       providerRequestDto.jwtToken,
     );
 
-    if (!userJwt || !userJwt.email || !userJwt.given_name)
+    if (!userJwt?.email || !userJwt.given_name)
       throw new TokenInvalidException();
 
     let user = await this.usersRepository.findOne({ email: userJwt.email });
@@ -67,7 +67,7 @@ export class AuthService {
         lastName: userJwt.family_name,
         isViaProvider: true,
       });
-      this.emailService.sendMail({
+      await this.emailService.sendMail({
         to: user.email,
         subject: 'Welcome to Tracka Application',
         templateName: 'welcome',
@@ -87,7 +87,7 @@ export class AuthService {
       ...signUpDto,
       isViaProvider: false,
     });
-    this.emailService.sendMail({
+    await this.emailService.sendMail({
       to: newUser.email,
       subject: 'Welcome to Tracka Application',
       templateName: 'welcome',
@@ -109,7 +109,7 @@ export class AuthService {
     const user = await this.usersRepository.findOneById(userId, {
       select: { email: 1, hashedRefreshToken: 1 },
     });
-    if (!user || !user.hashedRefreshToken) throw new TokenInvalidException();
+    if (!user?.hashedRefreshToken) throw new TokenInvalidException();
 
     const isRefreshTokenMatch = await HashHelper.compare(
       refreshToken,
@@ -132,7 +132,7 @@ export class AuthService {
       },
     );
     if (user) {
-      this.emailService.sendMail({
+      await this.emailService.sendMail({
         to: user.email,
         subject: 'Reset Password',
         templateName: 'reset-password',
@@ -166,7 +166,7 @@ export class AuthService {
     user.hashedRefreshToken = undefined;
     await user.save();
 
-    this.emailService.sendMail({
+    await this.emailService.sendMail({
       to: user.email,
       subject: 'Reset Password Successful',
       url: `${this.config.get('URL_CLIENT')}/auth/sign-in`,

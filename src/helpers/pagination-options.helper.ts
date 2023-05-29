@@ -9,8 +9,6 @@ const paginationOptions = <T, V = T>(
   const { limit, page, disablePagination, sort, select, session, projection } =
     options;
 
-  console.log({ limit });
-
   if (options) model.select(select);
   if (!disablePagination) {
     const skip = (page - 1 >= 0 ? page - 1 : 0) * Number(limit);
