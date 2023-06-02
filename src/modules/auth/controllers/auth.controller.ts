@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -80,14 +82,14 @@ export class AuthController {
     return this.authService.forgotPassword(body);
   }
 
-  @Post('verify-reset-token')
+  @Get('verify-reset-token')
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
   verifyResetPasswordToken(
-    @Body() body: VerifyResetDto,
+    @Query('token') token: string,
   ): Promise<StatusMessageDto> {
-    return this.authService.verifyTokenResetPassword(body.token);
+    return this.authService.verifyTokenResetPassword(token);
   }
 
   @Post('reset-password')
