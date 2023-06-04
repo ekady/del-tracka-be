@@ -75,7 +75,7 @@ export class ProjectsController {
     return this.projectsService.findActivities(shortId, queries);
   }
 
-  @Get(':projectId/activities/pdf')
+  @Post(':projectId/activities/pdf')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @Header('Content-Type', 'application/pdf')
@@ -83,7 +83,7 @@ export class ProjectsController {
     'Content-Disposition',
     'attachment; filename="Project Activities.pdf"',
   )
-  getActivitiesPdf(
+  createActivitiesPdf(
     @Param('projectId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
     @Query('startDate') startDate: string,
@@ -95,12 +95,12 @@ export class ProjectsController {
     return this.projectsService.getActivitiesPdf(shortId, queries);
   }
 
-  @Get(':projectId/activities/xlsx')
+  @Post(':projectId/activities/xlsx')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @Header('Content-Type', 'application/octet-stream')
   @Header('Content-Disposition', 'attachment; filename="Activities.xlsx"')
-  getActivitiesExcel(
+  createActivitiesExcel(
     @Param('projectId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
     @Query('startDate') startDate: string,
