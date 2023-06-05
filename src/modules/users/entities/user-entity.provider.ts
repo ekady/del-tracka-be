@@ -25,12 +25,6 @@ export const UserSchemaProvider: AsyncModelFactory = {
       // Remove password and passwordChangedAt
       this.password = undefined;
       this.passwordChangedAt = undefined;
-
-      if (!this.picture) {
-        this.picture = `${config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
-          this.email,
-        )}?s=300&d=identicon`;
-      }
     });
 
     schema.post<UserDocument>(

@@ -59,13 +59,17 @@ export class AuthService {
       throw new TokenInvalidException();
 
     let user = await this.usersRepository.findOne({ email: userJwt.email });
-
     if (!user) {
       user = await this.usersRepository.create({
         email: userJwt.email,
         firstName: userJwt.given_name,
         lastName: userJwt.family_name,
         isViaProvider: true,
+        picture:
+          userJwt.picture ??
+          `${this.config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
+            userJwt.email,
+          )}?s=300&d=identicon`,
       });
       await this.emailService.sendMail({
         to: user.email,
@@ -86,6 +90,9 @@ export class AuthService {
     const newUser = await this.usersRepository.create({
       ...signUpDto,
       isViaProvider: false,
+      picture: `${this.config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
+        signUpDto.email,
+      )}?s=300&d=identicon`,
     });
     await this.emailService.sendMail({
       to: newUser.email,
