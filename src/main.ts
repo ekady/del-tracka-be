@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestApplication, NestFactory } from '@nestjs/core';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/http-exceptions/http-exception.filter';
 import { SwaggerSetup } from './config';
@@ -12,6 +13,7 @@ import { ResponseInterceptor } from './interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule);
+  app.use(helmet());
   app.enableCors({
     origin: AppModule.corsOrigin,
     methods: 'GET,PUT,PATCH,POST,DELETE',
@@ -32,4 +34,6 @@ async function bootstrap() {
   SwaggerSetup(app, AppModule.version);
   await app.listen(AppModule.port);
 }
-bootstrap();
+bootstrap().catch(() => {
+  //
+});

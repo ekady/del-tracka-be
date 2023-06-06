@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 // Modules
 import { DatabaseModule } from './database/database.module';
@@ -14,10 +15,12 @@ import { TasksModule } from './modules/tasks/tasks.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -31,6 +34,7 @@ import { PermissionsModule } from './modules/permissions/permission.module';
     ActivitiesModule,
     PermissionsModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {
   static port: number;

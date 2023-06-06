@@ -3,11 +3,11 @@ import {
   Controller,
   Get,
   HttpCode,
-  Param,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiResProperty } from 'src/common/decorators/api-res-property.decorator';
 import { StatusMessageDto } from 'src/common/dto';
 import { JwtPayloadReq, SkipAuth } from '../decorators';
@@ -22,7 +22,6 @@ import {
 import { AuthJwtRefreshGuard } from '../guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
-import { VerifyResetDto } from '../dto/verify-reset-payload.dto';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Controller('auth')
@@ -31,6 +30,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('sign-in')
+  @Throttle(5, 3600)
   @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -39,6 +39,7 @@ export class AuthController {
   }
 
   @Post('with-provider')
+  @Throttle(5, 3600)
   @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -49,6 +50,7 @@ export class AuthController {
   }
 
   @Post('sign-up')
+  @Throttle(5, 3600)
   @ApiResProperty(StatusMessageDto, 201, { isDisableAuth: true })
   @SkipAuth()
   async signUp(@Body() signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
@@ -75,6 +77,7 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @Throttle(5, 3600)
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -83,6 +86,7 @@ export class AuthController {
   }
 
   @Get('verify-reset-token')
+  @Throttle(5, 3600)
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -93,6 +97,7 @@ export class AuthController {
   }
 
   @Post('reset-password')
+  @Throttle(5, 3600)
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)

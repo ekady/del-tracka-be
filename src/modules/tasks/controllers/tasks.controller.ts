@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   Query,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { TasksService } from '../services';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ApiResProperty } from 'src/common/decorators';
@@ -59,6 +60,7 @@ export class TasksController {
   }
 
   @Get()
+  @Throttle(60, 60)
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findAll(

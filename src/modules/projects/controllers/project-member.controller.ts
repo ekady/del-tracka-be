@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ProjectMemberService } from '../services';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
@@ -24,9 +25,10 @@ export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}
 
   @Post(':projectId/member')
+  @Throttle(60, 60)
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
-  getMember(
+  addMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
     @Param('projectId') shortId: string,
     @Body() addUpdateMemberDto: AddMemberDto,
@@ -58,7 +60,7 @@ export class ProjectMemberController {
   @Get(':projectId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
-  addMember(
+  getMember(
     @Param('projectId') shortId: string,
   ): Promise<ProjectUserResponseDto[]> {
     return this.projectMemberService.getMember(shortId);

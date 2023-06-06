@@ -8,6 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { StagesService } from '../services';
 import {
   CreateStageDto,
@@ -52,6 +53,7 @@ export class StagesController {
   }
 
   @Get()
+  @Throttle(60, 60)
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
   findAll(
@@ -71,6 +73,7 @@ export class StagesController {
   }
 
   @Get(':shortId/activities')
+  @Throttle(60, 60)
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(

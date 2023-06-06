@@ -10,6 +10,7 @@ import {
   StreamableFile,
   Header,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ProjectsService } from '../services';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
@@ -43,6 +44,7 @@ export class ProjectsController {
   }
 
   @Get()
+  @Throttle(60, 60)
   @ApiResProperty([ProjectResponseWithStagesDto], 200)
   findAll(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
@@ -62,6 +64,7 @@ export class ProjectsController {
   }
 
   @Get(':projectId/activities')
+  @Throttle(60, 60)
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(

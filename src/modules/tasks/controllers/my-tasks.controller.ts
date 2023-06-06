@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { ApiResProperty } from 'src/common/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
@@ -16,6 +17,7 @@ export class MyTasksController {
   constructor(private myTasksService: MyTasksService) {}
 
   @Get()
+  @Throttle(60, 60)
   @ApiResProperty(MyTaskResponseDto, 200)
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
