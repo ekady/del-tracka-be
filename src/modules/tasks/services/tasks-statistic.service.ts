@@ -70,7 +70,7 @@ export class TasksStatisticService {
 
   async getTasksStatisticAll(userId: string): Promise<TaskStatusStatisticDto> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
-    const response = STATS_INITIAL_RESPONSE;
+    const response = { ...STATS_INITIAL_RESPONSE };
     const stats = await this.getTasksStatisticByStatus(userProject);
     stats.forEach((stat) => {
       response[stat.name as TaskStatus] = stat.count;
@@ -83,7 +83,7 @@ export class TasksStatisticService {
     userId: string,
   ): Promise<TaskStatusStatisticDto> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
-    const response = STATS_INITIAL_RESPONSE;
+    const response = { ...STATS_INITIAL_RESPONSE };
     const task: PipelineStage.Match = {
       $match: { $or: [{ assignee: userId }, { reporter: userId }] },
     };
