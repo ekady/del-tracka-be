@@ -1,8 +1,12 @@
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 
 const generateShortId = (length?: number): string => {
   const idLength = length ?? 10;
-  return nanoid(idLength);
+  const customNanoId = customAlphabet(
+    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMOPQRSTUVWXYZ',
+    idLength,
+  );
+  return customNanoId();
 };
 
 export default generateShortId;
