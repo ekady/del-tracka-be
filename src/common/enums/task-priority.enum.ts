@@ -1,6 +1,6 @@
 export enum TaskPriority {
   Low = 'LOW',
-  Medium = 'MEDIUM',
+  Normal = 'NORMAL',
   High = 'HIGH',
   Critical = 'CRITICAL',
 }

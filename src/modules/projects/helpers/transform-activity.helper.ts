@@ -1,3 +1,4 @@
+import { STATUS, StatusType } from 'src/common/enums';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 
 export const TransformActivityMessage: Record<
@@ -31,35 +32,47 @@ export const TransformActivityMessage: Record<
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
-      .replace('{task}', data.taskAfter.title),
+      .replace(
+        '{task}',
+        `${data.taskAfter.title} (#${data.taskAfter.shortId})`,
+      ),
   UPDATE_TASK: (data) =>
     '{name} has updated task {task}'
       .replace(
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
-      .replace('{task}', data.taskAfter.title),
+      .replace(
+        '{task}',
+        `${data.taskAfter.title} (#${data.taskAfter.shortId})`,
+      ),
   UPDATE_TASK_STATUS: (data) =>
     '{name} has updated status task {task} from {status1} to {status2}'
       .replace(
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
-      .replace('{task}', data.taskAfter.title)
-      .replace('{status1}', data.taskBefore.status)
-      .replace('{status2}', data.taskAfter.status),
+      .replace('{task}', `${data.taskAfter.title} (#${data.taskAfter.shortId})`)
+      .replace('{status1}', STATUS[data.taskBefore.status as StatusType].name)
+      .replace('{status2}', STATUS[data.taskAfter.status as StatusType].name),
   DELETE_TASK: (data) =>
     '{name} has deleted task {task}'
       .replace(
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
-      .replace('{task}', data.taskAfter.title),
+      .replace(
+        '{task}',
+        `${data.taskAfter.title} (#${data.taskAfter.shortId})`,
+      ),
   CREATE_COMMENT: (data) =>
     '{name} has commented on task {task}'
       .replace(
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
-      .replace('{task}', data.taskAfter.title),
+      .replace(
+        '{task}',
+        `${data.taskAfter.title} (#${data.taskAfter.shortId})`,
+      ),
 };
