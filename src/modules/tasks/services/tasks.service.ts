@@ -211,8 +211,8 @@ export class TasksService {
         limit,
         page,
         sort,
-        search: queries.search,
-        searchField: ['feature', 'title'],
+        search: queries.search?.replace('#', ''),
+        searchField: ['feature', 'title', 'shortId'],
       },
     );
     return {

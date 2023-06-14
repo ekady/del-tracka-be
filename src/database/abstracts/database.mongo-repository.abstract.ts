@@ -54,14 +54,14 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       page = DatabasePaginationOptionDefault.Page,
     } = options;
 
-    const findAll = this._repository.find(find);
-
     if (search && searchField?.length) {
       const orConditions = searchField.map((field) => ({
         [field]: { $regex: search, $options: 'ig' },
       }));
       find.$or = orConditions;
     }
+
+    const findAll = this._repository.find(find);
 
     findAll.where('deletedAt').equals(withDeleted ? null : undefined);
 
@@ -109,6 +109,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       withDeleted,
       sort,
       search,
+      searchField,
       disablePagination,
       limit = DatabasePaginationOptionDefault.Limit,
       page = DatabasePaginationOptionDefault.Page,
@@ -128,7 +129,17 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       pipeline.push({ $sort: sort });
     }
 
-    if (search) {
+    if (search && searchField?.length) {
+      pipeline.unshift({
+        $match: {
+          $expr: {
+            $or: searchField.map((field) => ({
+              $regexMatch: { input: `$${field}`, regex: search, options: 'i' },
+            })),
+          },
+        },
+      });
+    } else if (search) {
       pipeline.unshift({ $match: { $text: { $search: search } } });
     }
 

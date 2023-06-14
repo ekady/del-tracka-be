@@ -22,7 +22,9 @@ export type DatabaseAggregateOptions = Omit<DatabaseOptions, 'populate'>;
 
 export interface DatabaseFindAllAggregateOptions
   extends PaginationOptions,
-    DatabaseAggregateOptions {}
+    DatabaseAggregateOptions {
+  searchField?: string[];
+}
 
 export interface DatabaseGetTotalAggregateOptions extends DatabaseOptions {
   field?: Record<string, string> | string;

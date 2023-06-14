@@ -40,6 +40,9 @@ export class MyTasksService {
       ? { shortId: queries.project }
       : {};
 
+    // Clean up query search
+    if (queries.search) queries.search = queries.search.replace('#', '');
+
     const userField = {
       _id: 1,
       firstName: 1,
@@ -148,10 +151,11 @@ export class MyTasksService {
             },
             permissions: '$stage.project.userproject.role.permissions',
             updatedAt: 1,
+            result: 1,
           },
         },
       ],
-      queries,
+      { ...queries, searchField: ['shortId', 'title', 'feature'] },
     );
   }
 }
