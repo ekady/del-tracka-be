@@ -18,11 +18,13 @@ import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/services/email.service';
 import { UsersRepository } from 'src/modules/users/repositories/users.repository';
+import { UsersService } from 'src/modules/users/services/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
+    private userService: UsersService,
     private tokenService: TokenService,
     private emailService: EmailService,
     private config: ConfigService,
@@ -109,6 +111,8 @@ export class AuthService {
     await this.usersRepository.updateOneById(userId, {
       hashedRefreshToken: null,
     });
+
+    await this.userService.removeDevice(userId);
     return { message: 'Success' };
   }
 
@@ -116,13 +120,19 @@ export class AuthService {
     const user = await this.usersRepository.findOneById(userId, {
       select: { email: 1, hashedRefreshToken: 1 },
     });
-    if (!user?.hashedRefreshToken) throw new TokenInvalidException();
+    if (!user?.hashedRefreshToken) {
+      await this.userService.removeDevice(userId);
+      throw new TokenInvalidException();
+    }
 
     const isRefreshTokenMatch = await HashHelper.compare(
       refreshToken,
       user.hashedRefreshToken,
     );
-    if (!isRefreshTokenMatch) throw new TokenInvalidException();
+    if (!isRefreshTokenMatch) {
+      await this.userService.removeDevice(userId);
+      throw new TokenInvalidException();
+    }
 
     return this.tokenService.generateAuthTokens({ id: userId });
   }

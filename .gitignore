@@ -37,5 +37,8 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Firebase SDK
+firebase-adminsdk.json
+
 # Sonar Scanner
 .scannerwork

@@ -16,6 +16,7 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
 import { APP_GUARD } from '@nestjs/core';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { APP_GUARD } from '@nestjs/core';
     CommentsModule,
     ActivitiesModule,
     PermissionsModule,
+    NotificationModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

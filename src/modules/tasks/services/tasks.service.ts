@@ -29,6 +29,10 @@ import { TaskDocument } from '../entities/task.entity';
 import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
 import { UserProjectResponseDto } from 'src/modules/user-project/dto';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { TransformActivityMessage } from 'src/modules/projects/helpers/transform-activity.helper';
+import { UsersService } from 'src/modules/users/services/users.service';
 
 @Injectable()
 export class TasksService {
@@ -38,6 +42,8 @@ export class TasksService {
     private stagesHelperService: StagesHelperService,
     private activitiesService: ActivitiesService,
     private userProjectService: UserProjectService,
+    private notificationService: NotificationService,
+    private userService: UsersService,
   ) {}
 
   private async checkTaskExist(
@@ -118,6 +124,22 @@ export class TasksService {
       { populate: true },
     );
 
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title:
+        type === ActivityName.UPDATE_TASK
+          ? 'Update Task'
+          : 'Update Task Status',
+      body: TransformActivityMessage[type]({
+        taskBefore: taskFound,
+        taskAfter: taskUpdate,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+      }),
+      webUrl: `/app/projects/${projectId}/${stageId}/${taskFound.shortId}-`,
+    };
+
     await this.createTaskActivity({
       type,
       createdBy: taskUpdate.updatedBy._id,
@@ -127,6 +149,23 @@ export class TasksService {
       taskBefore: taskFound.depopulate(),
       taskAfter: taskUpdate.depopulate(),
     });
+
+    if (
+      taskUpdate?.reporter?._id &&
+      userId !== taskUpdate?.reporter._id.toString()
+    )
+      await this.notificationService.create(
+        taskUpdate.reporter._id,
+        notifPayload,
+      );
+    if (
+      taskUpdate?.assignee?._id &&
+      userId !== taskUpdate?.assignee._id.toString()
+    )
+      await this.notificationService.create(
+        taskUpdate.assignee._id,
+        notifPayload,
+      );
     return taskFound;
   }
 
@@ -178,6 +217,24 @@ export class TasksService {
       taskBefore: null,
       taskAfter: task,
     });
+
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title: 'Create Task',
+      body: TransformActivityMessage.CREATE_TASK({
+        taskBefore: null,
+        taskAfter: task,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+      }),
+      webUrl: `/app/projects/${projectId}/${stageId}/${task.shortId}-`,
+    };
+
+    if (task?.reporter?._id && userId !== task?.reporter._id.toString())
+      await this.notificationService.create(task.reporter._id, notifPayload);
+    if (task?.assignee?._id && userId !== task?.assignee._id.toString())
+      await this.notificationService.create(task.assignee._id, notifPayload);
     return { message: 'Success' };
   }
 

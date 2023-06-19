@@ -56,6 +56,9 @@ export class UserEntity extends DatabaseTimestampsAbstract {
 
   @Prop({ select: false })
   passwordResetExpires: Date;
+
+  @Prop()
+  deviceId: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);

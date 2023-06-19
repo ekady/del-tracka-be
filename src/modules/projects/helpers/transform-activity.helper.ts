@@ -46,15 +46,16 @@ export const TransformActivityMessage: Record<
         '{task}',
         `${data.taskAfter.title} (#${data.taskAfter.shortId})`,
       ),
-  UPDATE_TASK_STATUS: (data) =>
-    '{name} has updated status task {task} from {status1} to {status2}'
+  UPDATE_TASK_STATUS: (data) => {
+    return '{name} has updated status task {task} from {status1} to {status2}'
       .replace(
         '{name}',
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
       .replace('{task}', `${data.taskAfter.title} (#${data.taskAfter.shortId})`)
       .replace('{status1}', STATUS[data.taskBefore.status as StatusType].name)
-      .replace('{status2}', STATUS[data.taskAfter.status as StatusType].name),
+      .replace('{status2}', STATUS[data.taskAfter.status as StatusType].name);
+  },
   DELETE_TASK: (data) =>
     '{name} has deleted task {task}'
       .replace(
