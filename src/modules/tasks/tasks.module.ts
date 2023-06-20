@@ -17,6 +17,8 @@ import { ProjectsModule } from '../projects/projects.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TaskSchemaProvider } from './entities/task-entity.provider';
 import { TasksRepository } from './repositories/tasks.repository';
+import { NotificationModule } from '../notification/notification.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
@@ -33,6 +35,8 @@ import { TasksRepository } from './repositories/tasks.repository';
     UserProjectModule,
     ActivitiesModule,
     ProjectsModule,
+    NotificationModule,
+    UsersModule,
   ],
   exports: [TasksRepository, TasksHelperService],
 })

@@ -5,9 +5,10 @@ import { UsersRepository } from './repositories/users.repository';
 import { UserSchemaProvider } from './entities/user-entity.provider';
 import { ProfileService } from './services/profile.service';
 import { UsersService } from './services/users.service';
+import { UserController } from './controllers/users.controller';
 
 @Module({
-  controllers: [ProfileController],
+  controllers: [ProfileController, UserController],
   providers: [UsersRepository, UsersService, ProfileService],
   exports: [UsersRepository, UsersService],
   imports: [MongooseModule.forFeatureAsync([UserSchemaProvider])],
