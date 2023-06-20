@@ -1,4 +1,5 @@
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { ActivityName } from 'src/common/enums';
 
 export class CreateNotificationDto {
   @IsString()
@@ -9,4 +10,8 @@ export class CreateNotificationDto {
 
   @IsString()
   webUrl: string;
+
+  @IsString()
+  @IsEnum(ActivityName)
+  type: string;
 }

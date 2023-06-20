@@ -137,6 +137,7 @@ export class TasksService {
         updatedAt: new Date(),
         createdBy: user,
       }),
+      type,
       webUrl: `/app/projects/${projectId}/${stageId}/${taskFound.shortId}-`,
     };
 
@@ -152,7 +153,9 @@ export class TasksService {
 
     if (
       taskUpdate?.reporter?._id &&
-      userId !== taskUpdate?.reporter._id.toString()
+      taskUpdate?.reporter?._id.toString() !==
+        taskUpdate?.assignee?._id.toString() &&
+      userId.toString() !== taskUpdate?.reporter._id.toString()
     )
       await this.notificationService.create(
         taskUpdate.reporter._id,
@@ -160,7 +163,9 @@ export class TasksService {
       );
     if (
       taskUpdate?.assignee?._id &&
-      userId !== taskUpdate?.assignee._id.toString()
+      taskUpdate?.reporter?._id.toString() !==
+        taskUpdate?.assignee?._id.toString() &&
+      userId.toString() !== taskUpdate?.assignee._id.toString()
     )
       await this.notificationService.create(
         taskUpdate.assignee._id,
@@ -228,12 +233,22 @@ export class TasksService {
         updatedAt: new Date(),
         createdBy: user,
       }),
+      type: ActivityName.CREATE_TASK,
       webUrl: `/app/projects/${projectId}/${stageId}/${task.shortId}-`,
     };
 
-    if (task?.reporter?._id && userId !== task?.reporter._id.toString())
+    if (
+      task?.reporter?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.reporter._id.toString()
+    )
       await this.notificationService.create(task.reporter._id, notifPayload);
-    if (task?.assignee?._id && userId !== task?.assignee._id.toString())
+
+    if (
+      task?.assignee?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.assignee._id.toString()
+    )
       await this.notificationService.create(task.assignee._id, notifPayload);
     return { message: 'Success' };
   }

@@ -1,5 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { ActivityName } from 'src/common/enums';
 import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 
@@ -27,6 +28,9 @@ export class NotificationEntity extends DatabaseTimestampsAbstract {
 
   @Prop({ type: String, default: null })
   webUrl: string;
+
+  @Prop({ type: String, enum: ActivityName, default: null })
+  type: string;
 }
 
 export type NotificationDocument = NotificationEntity & Document;

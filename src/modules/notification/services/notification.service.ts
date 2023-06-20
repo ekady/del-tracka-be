@@ -33,7 +33,7 @@ export class NotificationService {
   ): Promise<void> {
     try {
       await firebase.messaging().send({
-        data: { title: notification.title, body: notification.body },
+        data: { ...notification },
         notification: { title: notification.title, body: notification.body },
         token: deviceId,
         android: { priority: 'high' },
@@ -88,6 +88,7 @@ export class NotificationService {
         title: notification.title,
         isRead: notification.isRead,
         webUrl: notification.webUrl,
+        type: notification.type,
       })),
       pagination: notifications.pagination,
     };
