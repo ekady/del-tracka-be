@@ -70,7 +70,7 @@ export class NotificationService {
     const { limit, disablePagination, page } = queries;
 
     const filter: { isRead?: boolean } = {};
-    if (queries.isRead) filter.isRead = !!queries.isRead;
+    if (queries.readonly) filter.isRead = !queries.readonly;
 
     const notifications = await this.notificationRepository.findAll(
       { user: new Types.ObjectId(userId), ...filter },
@@ -84,11 +84,13 @@ export class NotificationService {
     );
     return {
       data: notifications.data.map((notification) => ({
+        id: notification._id,
         body: notification.body,
         title: notification.title,
         isRead: notification.isRead,
         webUrl: notification.webUrl,
         type: notification.type,
+        createdAt: notification.createdAt,
       })),
       pagination: notifications.pagination,
     };
@@ -100,9 +102,10 @@ export class NotificationService {
   ): Promise<StatusMessageDto> {
     try {
       await this.notificationRepository.updateOne(
-        { _id: new Types.ObjectId(id), user: new Types.ObjectId(userId) },
+        { _id: new Types.ObjectId(id), user: userId },
         { isRead: true },
       );
+      return { message: 'Success' };
     } catch {
       return { message: 'Failed' };
     }
@@ -111,7 +114,7 @@ export class NotificationService {
   async readAllNotifications(userId: string): Promise<StatusMessageDto> {
     try {
       await this.notificationBulkRepository.updateMany(
-        { user: new Types.ObjectId(userId) },
+        { user: userId },
         { isRead: true },
       );
       return { message: 'Success' };
