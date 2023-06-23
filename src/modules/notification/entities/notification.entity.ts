@@ -2,6 +2,7 @@ import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ActivityName } from 'src/common/enums';
 import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
+import { TaskEntity } from 'src/modules/tasks/entities/task.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 
 export const NotificationDatabaseName = 'notifications';
@@ -25,6 +26,9 @@ export class NotificationEntity extends DatabaseTimestampsAbstract {
 
   @Prop({ required: true, type: Types.ObjectId, ref: UserEntity.name })
   user: UserEntity;
+
+  @Prop({ type: Types.ObjectId, ref: TaskEntity.name })
+  task: TaskEntity;
 
   @Prop({ type: String, default: null })
   webUrl: string;

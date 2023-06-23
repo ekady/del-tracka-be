@@ -21,6 +21,9 @@ export class TaskResponseDto
   updatedAt: Date;
 
   @ApiResponseProperty()
+  deletedAt: Date;
+
+  @ApiResponseProperty()
   assignee: UserEntity;
 
   @ApiResponseProperty()

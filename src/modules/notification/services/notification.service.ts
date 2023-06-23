@@ -38,8 +38,8 @@ export class NotificationService {
         token: deviceId,
         android: { priority: 'high' },
       });
-    } catch {
-      //
+    } catch (error) {
+      console.log({ NotificationError: error });
     }
   }
 
@@ -91,6 +91,35 @@ export class NotificationService {
         webUrl: notification.webUrl,
         type: notification.type,
         createdAt: notification.createdAt,
+        task: notification.task
+          ? {
+              assignee: notification.task.assignee,
+              createdAt: notification.task.createdAt,
+              images: notification.task.images,
+              reporter: notification.task.reporter,
+              updatedAt: notification.task.updatedAt,
+              deletedAt: notification.task.deletedAt,
+              _id: notification.task._id,
+              detail: notification.task.detail,
+              feature: notification.task.feature,
+              priority: notification.task.priority,
+              status: notification.task.status,
+              title: notification.task.title,
+              shortId: notification.task.shortId,
+              project: {
+                _id: notification.task.project._id,
+                description: notification.task.project.description,
+                name: notification.task.project.name,
+                shortId: notification.task.project.shortId,
+              },
+              stage: {
+                _id: notification.task.stage._id,
+                description: notification.task.stage.description,
+                name: notification.task.stage.name,
+                shortId: notification.task.stage.shortId,
+              },
+            }
+          : undefined,
       })),
       pagination: notifications.pagination,
     };

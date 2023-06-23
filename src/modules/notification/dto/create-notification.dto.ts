@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { ActivityName } from 'src/common/enums';
 
 export class CreateNotificationDto {
@@ -14,4 +14,7 @@ export class CreateNotificationDto {
   @IsString()
   @IsEnum(ActivityName)
   type: string;
+
+  @IsOptional()
+  task?: string;
 }
