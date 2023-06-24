@@ -138,9 +138,26 @@ export class TasksService {
         createdBy: user,
       }),
       type,
-      webUrl: `/app/projects/${projectId}/${stageId}/${taskFound.shortId}-`,
+      webUrl: `/app/projects/${projectId}/${stageId}/${taskFound.shortId}`,
+      task: taskUpdate._id.toString(),
     };
 
+    if (
+      taskUpdate?.reporter?._id &&
+      taskUpdate?.reporter?._id.toString() !==
+        taskUpdate?.assignee?._id.toString() &&
+      userId.toString() !== taskUpdate?.reporter._id.toString()
+    ) {
+      this.notificationService.create(taskUpdate.reporter._id, notifPayload);
+    }
+    if (
+      taskUpdate?.assignee?._id &&
+      taskUpdate?.reporter?._id.toString() !==
+        taskUpdate?.assignee?._id.toString() &&
+      userId.toString() !== taskUpdate?.assignee._id.toString()
+    ) {
+      this.notificationService.create(taskUpdate.assignee._id, notifPayload);
+    }
     await this.createTaskActivity({
       type,
       createdBy: taskUpdate.updatedBy._id,
@@ -151,26 +168,6 @@ export class TasksService {
       taskAfter: taskUpdate.depopulate(),
     });
 
-    if (
-      taskUpdate?.reporter?._id &&
-      taskUpdate?.reporter?._id.toString() !==
-        taskUpdate?.assignee?._id.toString() &&
-      userId.toString() !== taskUpdate?.reporter._id.toString()
-    )
-      await this.notificationService.create(
-        taskUpdate.reporter._id,
-        notifPayload,
-      );
-    if (
-      taskUpdate?.assignee?._id &&
-      taskUpdate?.reporter?._id.toString() !==
-        taskUpdate?.assignee?._id.toString() &&
-      userId.toString() !== taskUpdate?.assignee._id.toString()
-    )
-      await this.notificationService.create(
-        taskUpdate.assignee._id,
-        notifPayload,
-      );
     return taskFound;
   }
 
@@ -234,7 +231,8 @@ export class TasksService {
         createdBy: user,
       }),
       type: ActivityName.CREATE_TASK,
-      webUrl: `/app/projects/${projectId}/${stageId}/${task.shortId}-`,
+      webUrl: `/app/projects/${projectId}/${stageId}/${task.shortId}`,
+      task: task._id.toString(),
     };
 
     if (
@@ -242,14 +240,14 @@ export class TasksService {
       task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
       userId.toString() !== task?.reporter._id.toString()
     )
-      await this.notificationService.create(task.reporter._id, notifPayload);
+      this.notificationService.create(task.reporter._id, notifPayload);
 
     if (
       task?.assignee?._id &&
       task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
       userId.toString() !== task?.assignee._id.toString()
     )
-      await this.notificationService.create(task.assignee._id, notifPayload);
+      this.notificationService.create(task.assignee._id, notifPayload);
     return { message: 'Success' };
   }
 
@@ -293,6 +291,7 @@ export class TasksService {
         createdAt: task.createdAt,
         images: task.images,
         reporter: task.reporter,
+        deletedAt: task.deletedAt,
         updatedAt: task.updatedAt,
         _id: task._id,
         detail: task.detail,
@@ -324,6 +323,7 @@ export class TasksService {
       assignee: task.assignee,
       createdAt: task.createdAt,
       images: task.images,
+      deletedAt: task.deletedAt,
       reporter: task.reporter,
       updatedAt: task.updatedAt,
       _id: task._id,
@@ -408,6 +408,35 @@ export class TasksService {
       taskBefore: task.depopulate(),
       taskAfter: task.depopulate(),
     });
+
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title: 'Delete Task',
+      body: TransformActivityMessage.DELETE_TASK({
+        taskBefore: task,
+        taskAfter: task,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+      }),
+      type: ActivityName.DELETE_TASK,
+      webUrl: `/app/projects/${ids.projectId}/${ids.stageId}`,
+      task: task._id.toString(),
+    };
+
+    if (
+      task?.reporter?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.reporter._id.toString()
+    )
+      this.notificationService.create(task.reporter._id, notifPayload);
+
+    if (
+      task?.assignee?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.assignee._id.toString()
+    )
+      this.notificationService.create(task.assignee._id, notifPayload);
     return { message: 'Success' };
   }
 }
