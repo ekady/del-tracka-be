@@ -11,6 +11,10 @@ import {
   CreateCommentRequestDto,
 } from '../dto';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { UsersService } from 'src/modules/users/services/users.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { TransformActivityMessage } from 'src/modules/projects/helpers/transform-activity.helper';
 
 @Injectable()
 export class CommentsService {
@@ -19,6 +23,8 @@ export class CommentsService {
     private activitiesService: ActivitiesService,
     private tasksHelperService: TasksHelperService,
     private stagesHelperService: StagesHelperService,
+    private notificationService: NotificationService,
+    private userService: UsersService,
   ) {}
 
   async create(
@@ -39,6 +45,36 @@ export class CommentsService {
       project: stage.project._id,
     };
     await this.commentsRespository.create(payload);
+
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title: 'Create Comment',
+      body: TransformActivityMessage.CREATE_COMMENT({
+        taskBefore: task,
+        taskAfter: task,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+        comment: createDto.comment,
+      }),
+      type: ActivityName.CREATE_COMMENT,
+      webUrl: `/app/projects/${ids.projectId}/${ids.stageId}/${task.shortId}-`,
+      task: task._id.toString(),
+    };
+
+    if (
+      task?.reporter?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.reporter._id.toString()
+    )
+      this.notificationService.create(task.reporter._id, notifPayload);
+
+    if (
+      task?.assignee?._id &&
+      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
+      userId.toString() !== task?.assignee._id.toString()
+    )
+      this.notificationService.create(task.assignee._id, notifPayload);
 
     await this.activitiesService.create({
       type: ActivityName.CREATE_COMMENT,
