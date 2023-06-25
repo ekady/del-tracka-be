@@ -10,6 +10,9 @@ import { UserProjectService } from 'src/modules/user-project/services/user-proje
 import { UsersService } from 'src/modules/users/services/users.service';
 import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { ActivityName } from 'src/common/enums';
 
 @Injectable()
 export class ProjectMemberService {
@@ -18,6 +21,7 @@ export class ProjectMemberService {
     private userProjectService: UserProjectService,
     private userService: UsersService,
     private rolesService: RolesService,
+    private notificationService: NotificationService,
   ) {}
 
   async addMember(
@@ -40,6 +44,15 @@ export class ProjectMemberService {
       createUserProjectDto,
       userCreatedId,
     );
+
+    const notifPayload: CreateNotificationDto = {
+      title: 'Added to Project',
+      body: `${user.firstName} ${user.lastName} has been added to ${project.name}`,
+      type: ActivityName.ADDED_PROJECT,
+      webUrl: `/app/projects/${project.shortId}`,
+    };
+    this.notificationService.create(user._id, notifPayload);
+
     return { message: 'Success' };
   }
 
@@ -64,6 +77,14 @@ export class ProjectMemberService {
       updateUserProjectDto,
       userUpdatedId,
     );
+
+    const notifPayload: CreateNotificationDto = {
+      title: 'Update Role',
+      body: `${user.firstName} ${user.lastName} role of ${project.name} has been updated to ${roleName}`,
+      type: ActivityName.UPDATED_ROLE,
+      webUrl: `/app/projects/${project.shortId}`,
+    };
+    this.notificationService.create(user._id, notifPayload);
     return { message: 'Success' };
   }
 

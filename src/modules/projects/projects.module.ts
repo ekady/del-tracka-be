@@ -14,6 +14,7 @@ import { ProjectSchemaProvider } from './schema/project-entity.provider';
 import { ProjectsRepository } from './repositories/projects.repository';
 import { ProjectMemberController } from './controllers/project-member.controller';
 import { PermissionsModule } from '../permissions/permission.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   controllers: [ProjectsController, ProjectMemberController],
@@ -30,6 +31,7 @@ import { PermissionsModule } from '../permissions/permission.module';
     RolesModule,
     PermissionsModule,
     ActivitiesModule,
+    NotificationModule,
   ],
   exports: [ProjectsRepository, ProjectsHelperService],
 })
