@@ -7,6 +7,7 @@ import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
 import { StatusMessageDto } from 'src/common/dto';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Notification')
 @Controller('notification')
@@ -14,6 +15,7 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @Get()
+  @Throttle(60, 60)
   @ApiResProperty([NotificationResponseDto], 200)
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
