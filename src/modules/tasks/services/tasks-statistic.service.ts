@@ -12,7 +12,7 @@ import { UserProjectRepository } from 'src/modules/user-project/repositories/use
 import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
 import { TaskDatabaseName } from '../entities/task.entity';
 import { STATS_INITIAL_RESPONSE } from '../constants/stats-initial-response.constant';
-import { TaskStatus } from 'src/common/enums';
+import { TaskStatus } from 'src/shared/enums';
 
 @Injectable()
 export class TasksStatisticService {

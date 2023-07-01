@@ -13,10 +13,10 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { TasksService } from '../services';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import {
   CreateTaskRequestDto,
@@ -32,7 +32,7 @@ import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectId/stages/:stageId/tasks')

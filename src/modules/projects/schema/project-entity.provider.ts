@@ -4,7 +4,7 @@ import {
   ProjectDocument,
   ProjectSchema,
 } from './project.entity';
-import { generateShortId } from 'src/helpers';
+import { generateShortId } from 'src/shared/helpers';
 
 export const ProjectSchemaProvider: AsyncModelFactory = {
   name: ProjectEntity.name,

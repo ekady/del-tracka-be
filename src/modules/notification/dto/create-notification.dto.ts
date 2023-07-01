@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { ActivityName } from 'src/common/enums';
+import { ActivityName } from 'src/shared/enums';
 
 export class CreateNotificationDto {
   @IsString()

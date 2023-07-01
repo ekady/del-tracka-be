@@ -1,5 +1,5 @@
 import { ClientSession } from 'mongoose';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
 
 // find one
 export interface DatabaseFindOneOptions

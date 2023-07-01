@@ -1,5 +1,5 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
-import { HashHelper } from 'src/helpers';
+import { HashHelper } from 'src/shared/helpers';
 import { UserEntity, UserDocument, UserSchema } from './user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 

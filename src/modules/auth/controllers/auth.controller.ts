@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { ApiResProperty } from 'src/common/decorators/api-res-property.decorator';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators/api-res-property.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
 import { JwtPayloadReq, SkipAuth } from '../decorators';
 import {
   ContinueProviderRequestDto,

@@ -1,5 +1,5 @@
 import { QueryWithHelpers } from 'mongoose';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
+import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
 import { DatabaseFindOneOptions } from 'src/database/interfaces/database.interface';
 
 const paginationOptions = <T, V = T>(

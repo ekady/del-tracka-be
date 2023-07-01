@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { UsersRepository } from '../repositories/users.repository';

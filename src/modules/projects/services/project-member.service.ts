@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
 import { RolesService } from 'src/modules/roles/services/roles.service';
 import {
   ProjectUserResponseDto,
@@ -12,7 +12,7 @@ import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
 import { ProjectsHelperService } from './project-helper.service';
 import { NotificationService } from 'src/modules/notification/services/notification.service';
 import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
-import { ActivityName } from 'src/common/enums';
+import { ActivityName } from 'src/shared/enums';
 
 @Injectable()
 export class ProjectMemberService {

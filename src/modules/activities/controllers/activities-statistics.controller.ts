@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiResProperty } from 'src/common/decorators';
+import { ApiResProperty } from 'src/shared/decorators';
 import { ActivitiesStatisticDto } from '../dto/activities-statistics.dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { ActivitiesStatisticsService } from '../services/activities-statistics.service';

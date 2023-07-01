@@ -20,17 +20,17 @@ import {
 } from '../dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
 import { RolePermission } from 'src/modules/roles/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { ApiTags } from '@nestjs/swagger';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { IStageShortId } from '../interfaces/stageShortIds.interface';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Stages')
 @Controller('projects/:projectId/stages')

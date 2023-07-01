@@ -1,6 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { ErrorDto } from 'src/common/dto';
-import { ErrorType } from 'src/common/enums';
+import { ErrorDto } from 'src/shared/dto';
+import { ErrorType } from 'src/shared/enums';
 
 export class CredentialInvalidException extends UnauthorizedException {
   constructor() {

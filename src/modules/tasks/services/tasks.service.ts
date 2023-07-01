@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
-import { ActivityName, TaskStatus } from 'src/common/enums';
+import { StatusMessageDto } from 'src/shared/dto';
+import { ActivityName, TaskStatus } from 'src/shared/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import {
   ActivityResponseDto,
@@ -22,11 +22,11 @@ import { TasksRepository } from '../repositories/tasks.repository';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { ITaskIds } from '../interfaces/taskIds.interface';
 import { FilterQuery } from 'mongoose';
 import { TaskDocument } from '../entities/task.entity';
-import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import { UserProjectResponseDto } from 'src/modules/user-project/dto';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import { NotificationService } from 'src/modules/notification/services/notification.service';

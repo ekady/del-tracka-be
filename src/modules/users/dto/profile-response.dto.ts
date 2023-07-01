@@ -1,5 +1,5 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { EntityResponseDto } from 'src/common/dto';
+import { EntityResponseDto } from 'src/shared/dto';
 import { UpdateProfileDto } from './update-profile.dto';
 
 export class ProfileResponseDto

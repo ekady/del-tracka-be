@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Error } from 'mongoose';
-import { ErrorResponseDto } from 'src/common/dto';
-import { ErrorType } from 'src/common/enums';
+import { ErrorResponseDto } from 'src/shared/dto';
+import { ErrorType } from 'src/shared/enums';
 
 @Catch(Error.CastError)
 export class CastErrorException implements ExceptionFilter<Error.CastError> {

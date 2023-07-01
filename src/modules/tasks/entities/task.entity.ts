@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { TaskPriority, TaskStatus } from 'src/common/enums';
+import { TaskPriority, TaskStatus } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 import { StageEntity } from 'src/modules/stages/entities/stage.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';

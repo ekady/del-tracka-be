@@ -1,4 +1,4 @@
-import { TaskStatus } from 'src/common/enums';
+import { TaskStatus } from 'src/shared/enums';
 
 export const STATS_INITIAL_RESPONSE = {
   [TaskStatus.Open]: 0,

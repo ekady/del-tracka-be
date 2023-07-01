@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { UserDocument } from 'src/modules/users/entities/user.entity';
 import { UsersRepository } from '../repositories/users.repository';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
 
 @Injectable()
 export class UsersService {

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { ErrorResponseDto } from 'src/common/dto';
+import { ErrorResponseDto } from 'src/shared/dto';
 import { MongoServerError } from 'mongodb';
-import { ErrorType } from 'src/common/enums';
+import { ErrorType } from 'src/shared/enums';
 
 @Catch(MongoServerError)
 export class DuplicationException implements ExceptionFilter<MongoServerError> {

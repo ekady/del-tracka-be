@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { PermissionDocument } from '../entities/permission.entity';
 import { PermissionsRepository } from '../repositories/permissions.repository';
 

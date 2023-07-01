@@ -5,7 +5,7 @@ import {
   PopulateOptions,
   Types,
 } from 'mongoose';
-import { PaginationResponse } from 'src/common/interfaces/pagination.interface';
+import { PaginationResponse } from 'src/shared/interfaces/pagination.interface';
 import { DatabasePaginationOptionDefault } from '../enums/database.enum';
 import {
   DatabaseCreateOptions,
@@ -20,7 +20,7 @@ import {
   DatabaseAggregateOptions,
 } from '../interfaces/database.interface';
 import { DatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
-import paginationOptions from 'src/helpers/pagination-options.helper';
+import paginationOptions from 'src/shared/helpers/pagination-options.helper';
 
 export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   implements DatabaseRepositoryAbstract<T>

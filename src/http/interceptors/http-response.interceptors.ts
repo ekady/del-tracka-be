@@ -5,10 +5,10 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
-import { ResponseDto } from 'src/common/dto';
+import { ResponseDto } from 'src/shared/dto';
 
 @Injectable()
-export class ResponseInterceptor<T>
+export class HttpResponseInterceptor<T>
   implements NestInterceptor<T, ResponseDto<T>>
 {
   intercept(
@@ -16,9 +16,11 @@ export class ResponseInterceptor<T>
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<ResponseDto<T>>> {
     const ctx = context.switchToHttp().getResponse();
+    const request = context.switchToHttp().getRequest();
     const statusCode = ctx.statusCode;
     return next.handle().pipe(
       map((data) => {
+        if (request.__id) ctx.set({ 'X-Request-Id': request.__id });
         if (data.stream) return data;
         return { statusCode, data };
       }),

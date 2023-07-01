@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { StageDocument } from 'src/modules/stages/entities/stage.entity';
 import { ProjectsHelperService } from 'src/modules/projects/services';
 import { StagesRepository } from '../repositories/stages.repository';

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
-import { RoleName } from 'src/common/enums';
-import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { RoleName } from 'src/shared/enums';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
 import {
   ProjectDatabaseName,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import { TaskDocument } from 'src/modules/tasks/entities/task.entity';
 import { StagesHelperService } from 'src/modules/stages/services';
 import { ITaskIds } from '../interfaces/taskIds.interface';

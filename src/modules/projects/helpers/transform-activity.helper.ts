@@ -1,4 +1,4 @@
-import { STATUS, StatusType } from 'src/common/enums';
+import { STATUS, StatusType } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 
 export const TransformActivityMessage: Record<

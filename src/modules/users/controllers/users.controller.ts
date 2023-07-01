@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { UsersService } from '../services/users.service';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
 import { RegisterDeviceDto } from '../dto/register-device-id.dto';
 
 @ApiTags('User')

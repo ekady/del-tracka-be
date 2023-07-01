@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
-import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
+import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { RolePermission } from 'src/modules/roles/decorator';

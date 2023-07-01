@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { RoleName } from 'src/common/enums';
+import { RoleName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 
 export const RoleDatabaseName = 'roles';

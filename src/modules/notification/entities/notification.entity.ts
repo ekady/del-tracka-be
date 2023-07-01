@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ActivityName } from 'src/common/enums';
+import { ActivityName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
 import { TaskEntity } from 'src/modules/tasks/entities/task.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';

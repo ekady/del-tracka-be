@@ -2,9 +2,9 @@ import { Injectable, StreamableFile } from '@nestjs/common';
 import { IContent, IJsonSheet } from 'json-as-xlsx';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { StatusMessageDto } from 'src/common/dto';
-import { RoleName } from 'src/common/enums';
-import { DocumentNotFoundException } from 'src/common/http-exceptions/exceptions';
+import { StatusMessageDto } from 'src/shared/dto';
+import { RoleName } from 'src/shared/enums';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { RolesService } from 'src/modules/roles/services/roles.service';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
@@ -20,7 +20,7 @@ import { ProjectsRepository } from '../repositories/projects.repository';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { PermissionsService } from 'src/modules/permissions/services/permissions.service';
 import { TransformActivityMessage } from '../helpers/transform-activity.helper';
 import { generateExcel } from '../helpers/generate-excel.helper';

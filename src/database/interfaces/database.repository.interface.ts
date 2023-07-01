@@ -1,5 +1,5 @@
 import { Document, PipelineStage } from 'mongoose';
-import { PaginationResponse } from 'src/common/interfaces/pagination.interface';
+import { PaginationResponse } from 'src/shared/interfaces/pagination.interface';
 import {
   DatabaseCreateOptions,
   DatabaseSoftDeleteOptions,

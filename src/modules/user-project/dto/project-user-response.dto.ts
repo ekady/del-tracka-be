@@ -1,5 +1,5 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { EntityResponseDto, UserResponse } from 'src/common/dto';
+import { EntityResponseDto, UserResponse } from 'src/shared/dto';
 import { ProfileResponseDto } from 'src/modules/users/dto/profile-response.dto';
 import { ProjectResponseDto } from 'src/modules/projects/dto';
 import { RoleDto } from 'src/modules/roles/dto';

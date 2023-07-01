@@ -42,9 +42,12 @@
     "google-auth-library": "^8.8.0",
     "helmet": "^7.0.0",
     "json-as-xlsx": "^2.5.3",
+    "jwt-decode": "^3.1.2",
     "mongodb": "^5.6.0",
     "mongoose": "^7.2.3",
+    "morgan": "^1.10.0",
     "nanoid": "^3.3.6",
+    "nest-winston": "^1.9.3",
     "nodemailer": "^6.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
@@ -52,7 +55,10 @@
     "pug": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
-    "rxjs": "^7.8.1"
+    "rotating-file-stream": "^3.1.0",
+    "rxjs": "^7.8.1",
+    "winston": "^3.9.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.5.0",
@@ -61,6 +67,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/morgan": "^1.9.4",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.3.0",
     "@types/passport-jwt": "^3.0.8",

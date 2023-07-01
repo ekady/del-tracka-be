@@ -11,12 +11,12 @@ import { Throttle } from '@nestjs/throttler';
 import { ProjectMemberService } from '../services';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
 import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
 
 @ApiTags('Projects')

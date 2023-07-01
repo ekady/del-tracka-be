@@ -17,12 +17,15 @@ import { ActivitiesModule } from './modules/activities/activities.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
 import { APP_GUARD } from '@nestjs/core';
 import { NotificationModule } from './modules/notification/notification.module';
+import { LoggerModule } from './logger/logger.module';
+import { HttpModule } from './http/http.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
     DatabaseModule,
+    HttpModule,
     UsersModule,
     AuthModule,
     UserProjectModule,
@@ -35,6 +38,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     ActivitiesModule,
     PermissionsModule,
     NotificationModule,
+    LoggerModule.forRoot(),
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

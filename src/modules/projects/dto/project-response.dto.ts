@@ -1,6 +1,6 @@
 import { ApiResponseProperty, PartialType } from '@nestjs/swagger';
 
-import { EntityResponseDto, UserResponse } from 'src/common/dto';
+import { EntityResponseDto, UserResponse } from 'src/shared/dto';
 import { StageResponseDto } from 'src/modules/stages/dto/stage-response.dto';
 import { CreateProjectDto } from './create-project.dto';
 import { ProjectPermissionResponseDto } from './project-permission.dto';

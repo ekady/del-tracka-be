@@ -1,5 +1,5 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
-import { generateShortId } from 'src/helpers';
+import { generateShortId } from 'src/shared/helpers';
 import { StageEntity, StageDocument, StageSchema } from './stage.entity';
 
 export const StageSchemaProvider: AsyncModelFactory = {

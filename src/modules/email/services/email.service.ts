@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { renderFile } from 'pug';
 import { ISendEmail } from '../interfaces/send-email.interface';
-import { HttpErrorType } from 'src/common/http-exceptions/http-error-type';
+import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
 
 @Injectable()
 export class EmailService {

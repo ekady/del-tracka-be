@@ -16,17 +16,17 @@ import { CreateProjectDto } from '../dto/create-project.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { ApiResProperty } from 'src/common/decorators';
-import { StatusMessageDto } from 'src/common/dto';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
 import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/roles/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/common/enums';
+import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Projects')
 @Controller('projects')

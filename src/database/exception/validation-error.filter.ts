@@ -1,8 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 
 import { Error } from 'mongoose';
-import { ErrorDto, ErrorResponseDto } from 'src/common/dto';
-import { ErrorType } from 'src/common/enums';
+import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
+import { ErrorType } from 'src/shared/enums';
 
 @Catch(Error.ValidationError)
 export class ValidationException

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
-import { ActivityName } from 'src/common/enums';
+import { StatusMessageDto } from 'src/shared/dto';
+import { ActivityName } from 'src/shared/enums';
 import { CommentsRepository } from '../repository/comments.repository';
 import { StagesHelperService } from 'src/modules/stages/services';
 import { ITaskShortIds } from 'src/modules/tasks/interfaces/taskShortIds.interface';

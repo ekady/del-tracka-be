@@ -10,9 +10,9 @@ import { TasksRepository } from '../repositories/tasks.repository';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
-import { ProjectMenu } from 'src/common/enums';
+import { ProjectMenu } from 'src/shared/enums';
 
 @Injectable()
 export class MyTasksService {

@@ -7,11 +7,13 @@ import { CreateNotificationDto } from '../dto/create-notification.dto';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { Types } from 'mongoose';
 import { NotificationBulkRepository } from '../repositories/notification.bulk.repository';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
+import { LoggerService } from 'src/logger/services/logger.service';
+import { ILoggerLog } from 'src/logger/interfaces/logger.interface';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(
@@ -19,12 +21,15 @@ firebase.initializeApp({
   ),
 });
 
+const ERROR_SEND_PUSH_NOTIFICATION = 'ERROR_SEND_PUSH_NOTIFICATION';
+
 @Injectable()
 export class NotificationService {
   constructor(
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
     private usersService: UsersService,
+    private loggerService: LoggerService,
   ) {}
 
   private async sendPushNotification(
@@ -39,7 +44,16 @@ export class NotificationService {
         android: { priority: 'high' },
       });
     } catch (error) {
-      console.log({ NotificationError: error });
+      const logger: ILoggerLog = {
+        description: error instanceof Error ? error.message : error.toString(),
+        class: NotificationService.name,
+        function: this.sendPushNotification.name,
+      };
+      this.loggerService.error(
+        ERROR_SEND_PUSH_NOTIFICATION,
+        logger,
+        notification,
+      );
     }
   }
 

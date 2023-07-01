@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { ApiResProperty } from 'src/common/decorators';
+import { ApiResProperty } from 'src/shared/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { MyTaskResponseDto } from '../dto';
@@ -9,7 +9,7 @@ import { MyTasksService } from '../services';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Tasks')
 @Controller('my-tasks')

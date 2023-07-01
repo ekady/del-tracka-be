@@ -2,7 +2,7 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
 import { Observable } from 'rxjs';
-import { TokenInvalidException } from 'src/common/http-exceptions/exceptions';
+import { TokenInvalidException } from 'src/shared/http-exceptions/exceptions';
 import { TokenJwtConfig } from '../enum';
 import { TokenService } from '../services/token.service';
 

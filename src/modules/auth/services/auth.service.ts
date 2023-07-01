@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
 import {
   CredentialInvalidException,
   EmailUsernameExistException,
   TokenInvalidException,
-} from 'src/common/http-exceptions/exceptions';
-import { HashHelper } from 'src/helpers';
+} from 'src/shared/http-exceptions/exceptions';
+import { HashHelper } from 'src/shared/helpers';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
@@ -43,7 +43,10 @@ export class AuthService {
     );
 
     const userId = user ? user._id : '';
-    const tokens = await this.tokenService.generateAuthTokens({ id: userId });
+    const tokens = await this.tokenService.generateAuthTokens({
+      id: userId,
+      email: user.email,
+    });
 
     if (!user || !isPasswordCorrect) throw new CredentialInvalidException();
 
@@ -82,7 +85,10 @@ export class AuthService {
       });
     }
 
-    return this.tokenService.generateAuthTokens({ id: user._id });
+    return this.tokenService.generateAuthTokens({
+      id: user._id,
+      email: user.email,
+    });
   }
 
   async signUp(signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
@@ -134,7 +140,10 @@ export class AuthService {
       throw new TokenInvalidException();
     }
 
-    return this.tokenService.generateAuthTokens({ id: userId });
+    return this.tokenService.generateAuthTokens({
+      id: userId,
+      email: user.email,
+    });
   }
 
   async forgotPassword(

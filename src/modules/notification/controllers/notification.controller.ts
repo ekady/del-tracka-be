@@ -1,12 +1,12 @@
 import { Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 import { ApiTags } from '@nestjs/swagger';
-import { ApiResProperty } from 'src/common/decorators';
+import { ApiResProperty } from 'src/shared/decorators';
 import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { PaginationOptions } from 'src/common/interfaces/pagination.interface';
-import { StatusMessageDto } from 'src/common/dto';
+import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
+import { StatusMessageDto } from 'src/shared/dto';
 import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Notification')

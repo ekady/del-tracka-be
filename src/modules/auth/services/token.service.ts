@@ -7,9 +7,9 @@ import {
   CredentialInvalidException,
   RefreshTokenExpiredException,
   TokenInvalidException,
-} from 'src/common/http-exceptions/exceptions';
+} from 'src/shared/http-exceptions/exceptions';
 import { UserDocument } from 'src/modules/users/entities/user.entity';
-import { HashHelper } from 'src/helpers';
+import { HashHelper } from 'src/shared/helpers';
 import { TokensDto } from '../dto';
 import { TokenJwtConfig } from '../enum';
 import { OAuth2Client } from 'google-auth-library';
@@ -26,7 +26,7 @@ export class TokenService {
   ) {}
 
   async generateAuthTokens(
-    payload: Pick<IJwtPayload, 'id'>,
+    payload: Pick<IJwtPayload, 'id' | 'email'>,
   ): Promise<TokensDto> {
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: this.config.get('JWT_EXPIRES_IN'),

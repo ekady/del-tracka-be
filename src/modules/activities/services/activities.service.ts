@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { StatusMessageDto } from 'src/common/dto';
+import { StatusMessageDto } from 'src/shared/dto';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';

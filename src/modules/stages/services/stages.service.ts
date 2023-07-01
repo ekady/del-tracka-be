@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StatusMessageDto } from 'src/common/dto';
-import { ActivityName } from 'src/common/enums';
+import { StatusMessageDto } from 'src/shared/dto';
+import { ActivityName } from 'src/shared/enums';
 import { ActivitiesService } from 'src/modules/activities/services/activities.service';
 import {
   ActivityResponseDto,
@@ -20,9 +20,9 @@ import { StageDocument, StageEntity } from '../entities/stage.entity';
 import {
   PaginationOptions,
   PaginationResponse,
-} from 'src/common/interfaces/pagination.interface';
+} from 'src/shared/interfaces/pagination.interface';
 import { FilterQuery } from 'mongoose';
-import { DocumentExistException } from 'src/common/http-exceptions/exceptions';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 
 @Injectable()
 export class StagesService {
