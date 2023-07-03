@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 // Modules
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './common/database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
@@ -15,10 +16,9 @@ import { TasksModule } from './modules/tasks/tasks.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
-import { APP_GUARD } from '@nestjs/core';
 import { NotificationModule } from './modules/notification/notification.module';
-import { LoggerModule } from './logger/logger.module';
-import { HttpModule } from './http/http.module';
+import { LoggerModule } from './common/logger/logger.module';
+import { HttpModule } from './common/http/http.module';
 
 @Module({
   imports: [

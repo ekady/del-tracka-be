@@ -4,7 +4,7 @@ import {
   LoggerHttpResponseMiddleware,
   LoggerHttpWriteIntoConsoleMiddleware,
   LoggerHttpWriteIntoFileMiddleware,
-} from 'src/logger/middleware/http/logger-http.middleware';
+} from 'src/common/logger/middleware/http/logger-http.middleware';
 
 @Module({})
 export class LoggerMiddlewareModule implements NestModule {

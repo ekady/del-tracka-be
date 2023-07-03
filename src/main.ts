@@ -7,7 +7,7 @@ import {
   DuplicationException,
   ValidationException,
   CastErrorException,
-} from './database/exception';
+} from './common/database/exception';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule, {});

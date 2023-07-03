@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
+import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 
 export const UserDatabaseName = 'users';
 

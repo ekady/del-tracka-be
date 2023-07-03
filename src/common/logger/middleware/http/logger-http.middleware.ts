@@ -6,11 +6,11 @@ import { ConfigService } from '@nestjs/config';
 import {
   ILoggerHttpConfig,
   ILoggerHttpConfigOptions,
-} from 'src/logger/interfaces/logger.interface';
+} from 'src/common/logger/interfaces/logger.interface';
 import {
   LOGGER_HTTP_FORMAT,
   LOGGER_HTTP_NAME,
-} from 'src/logger/constants/logger.constant';
+} from 'src/common/logger/constants/logger.constant';
 import { decodeJwt } from 'src/shared/helpers';
 
 @Injectable()

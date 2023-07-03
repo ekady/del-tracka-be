@@ -4,7 +4,7 @@ import {
   PermissionDocument,
   PermissionSchema,
   PermissionDatabaseName,
-} from '../../modules/permissions/entities/permission.entity';
+} from 'src/modules/permissions/entities/permission.entity';
 import {
   RoleDocument,
   RoleSchema,

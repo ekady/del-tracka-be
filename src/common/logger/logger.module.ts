@@ -7,10 +7,10 @@ import {
   Type,
 } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
-import { LoggerOptionsModule } from 'src/logger/logger-options.module';
-import { LoggerMiddlewareModule } from 'src/logger/middleware/logger.middleware.module';
-import { LoggerOptionService } from 'src/logger/services/logger-options.service';
-import { LoggerService } from 'src/logger/services/logger.service';
+import { LoggerOptionsModule } from 'src/common/logger/logger-options.module';
+import { LoggerMiddlewareModule } from 'src/common/logger/middleware/logger.middleware.module';
+import { LoggerOptionService } from 'src/common/logger/services/logger-options.service';
+import { LoggerService } from 'src/common/logger/services/logger.service';
 
 @Global()
 @Module({})

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseMongoRepositoryAbstract } from 'src/database/abstracts/database.mongo-repository.abstract';
+import { DatabaseMongoRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-repository.abstract';
 import {
   NotificationDocument,
   NotificationEntity,

@@ -7,9 +7,9 @@ import {
 import { Response } from 'express';
 import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
 import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
-import { LoggerService } from 'src/logger/services/logger.service';
-import { IHttpRequest } from '../interfaces/http-request.interface';
-import { ILoggerLog } from 'src/logger/interfaces/logger.interface';
+import { LoggerService } from 'src/common/logger/services/logger.service';
+import { IHttpRequest } from 'src/common/http/interfaces/http-request.interface';
+import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
 import { decodeJwt } from 'src/shared/helpers';
 
 @Catch(HttpException)

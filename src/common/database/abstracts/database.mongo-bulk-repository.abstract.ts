@@ -1,11 +1,11 @@
 import { Document, Model, PopulateOptions, Types } from 'mongoose';
-import { DatabaseBulkRepositoryAbstract } from 'src/database/interfaces/database.bulk.repository.interface';
+import { DatabaseBulkRepositoryAbstract } from 'src/common/database/interfaces/database.bulk.repository.interface';
 import {
   DatabaseCreateManyOptions,
   DatabaseManyOptions,
   DatabaseSoftDeleteManyOptions,
   DatabaseRestoreManyOptions,
-} from 'src/database/interfaces/database.interface';
+} from 'src/common/database/interfaces/database.interface';
 
 export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   implements DatabaseBulkRepositoryAbstract
@@ -45,12 +45,12 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
     const del = this._repository.deleteMany({ _id: { $in: map } });
 
-    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    if (options?.withDeleted) del.where('deletedAt').ne(null);
     else del.where('deletedAt').equals(null);
 
-    if (options && options.session) del.session(options.session);
+    if (options?.session) del.session(options.session);
 
-    if (options && options.populate) del.populate(this._populateOnFind);
+    if (options?.populate) del.populate(this._populateOnFind);
 
     try {
       await del.exec();
@@ -66,12 +66,12 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   ): Promise<boolean> {
     const del = this._repository.deleteMany(find);
 
-    if (options && options.withDeleted) del.where('deletedAt').ne(null);
+    if (options?.withDeleted) del.where('deletedAt').ne(null);
     else del.where('deletedAt').equals(null);
 
-    if (options && options.session) del.session(options.session);
+    if (options?.session) del.session(options.session);
 
-    if (options && options.populate) del.populate(this._populateOnFind);
+    if (options?.populate) del.populate(this._populateOnFind);
 
     try {
       await del.exec();
@@ -92,9 +92,9 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
       .where('deletedAt')
       .equals(null);
 
-    if (options && options.session) softDel.session(options.session);
+    if (options?.session) softDel.session(options.session);
 
-    if (options && options.populate) softDel.populate(this._populateOnFind);
+    if (options?.populate) softDel.populate(this._populateOnFind);
 
     try {
       await softDel.exec();
@@ -113,9 +113,9 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
       .where('deletedAt')
       .equals(null);
 
-    if (options && options.session) softDel.session(options.session);
+    if (options?.session) softDel.session(options.session);
 
-    if (options && options.populate) softDel.populate(this._populateOnFind);
+    if (options?.populate) softDel.populate(this._populateOnFind);
 
     try {
       await softDel.exec();
@@ -136,9 +136,9 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
       .where('deletedAt')
       .exists(true);
 
-    if (options && options.session) rest.session(options.session);
+    if (options?.session) rest.session(options.session);
 
-    if (options && options.populate) rest.populate(this._populateOnFind);
+    if (options?.populate) rest.populate(this._populateOnFind);
 
     try {
       await rest.exec();
@@ -155,12 +155,12 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   ): Promise<boolean> {
     const update = this._repository.updateMany(find, { $set: data });
 
-    if (options && options.withDeleted) update.where('deletedAt').ne(null);
+    if (options?.withDeleted) update.where('deletedAt').ne(null);
     else update.where('deletedAt').equals(null);
 
-    if (options && options.session) update.session(options.session);
+    if (options?.session) update.session(options.session);
 
-    if (options && options.populate) update.populate(this._populateOnFind);
+    if (options?.populate) update.populate(this._populateOnFind);
 
     try {
       await update.exec();

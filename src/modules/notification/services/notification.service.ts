@@ -12,8 +12,8 @@ import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { Types } from 'mongoose';
 import { NotificationBulkRepository } from '../repositories/notification.bulk.repository';
 import { StatusMessageDto } from 'src/shared/dto';
-import { LoggerService } from 'src/logger/services/logger.service';
-import { ILoggerLog } from 'src/logger/interfaces/logger.interface';
+import { LoggerService } from 'src/common/logger/services/logger.service';
+import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(

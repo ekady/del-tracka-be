@@ -1,7 +1,7 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ProjectMenu } from 'src/shared/enums';
-import { DatabaseTimestampsAbstract } from 'src/database/abstracts/database-timestamps.abstract';
+import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import {
   RoleDocument,
   RoleEntity,

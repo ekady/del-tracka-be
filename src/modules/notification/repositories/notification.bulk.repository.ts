@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { DatabaseMongoBulkRepositoryAbstract } from 'src/database/abstracts/database.mongo-bulk-repository.abstract';
+import { DatabaseMongoBulkRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-bulk-repository.abstract';
 import {
   NotificationDocument,
   NotificationEntity,
