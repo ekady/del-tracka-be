@@ -17,6 +17,7 @@ async function bootstrap() {
     methods: 'GET,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    exposedHeaders: ['X-Request-Id'],
   });
 
   app.setGlobalPrefix(`/${AppModule.prefix}/v${AppModule.version}`);
