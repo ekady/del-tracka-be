@@ -135,10 +135,7 @@ export class AwsS3Service {
     }
   }
 
-  async getItemInBucket(
-    filename: string,
-    path?: string,
-  ): Promise<Readable | ReadableStream<any> | Blob> {
+  async getItemInBucket(filename: string, path?: string) {
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
     const key: string = path ? `${path}/${filename}` : filename;
@@ -154,9 +151,10 @@ export class AwsS3Service {
         GetObjectCommandInput,
         GetObjectCommandOutput
       >(command);
-      return item.Body;
+
+      return item;
     } catch (err: any) {
-      throw err;
+      this.throwError(err);
     }
   }
 
