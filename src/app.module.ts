@@ -19,6 +19,7 @@ import { PermissionsModule } from './modules/permissions/permission.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { HttpModule } from './common/http/http.module';
+import { AwsModule } from './common/aws/aws.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { HttpModule } from './common/http/http.module';
     PermissionsModule,
     NotificationModule,
     LoggerModule.forRoot(),
+    AwsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

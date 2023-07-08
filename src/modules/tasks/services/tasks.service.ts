@@ -33,6 +33,8 @@ import { NotificationService } from 'src/modules/notification/services/notificat
 import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
 import { TransformActivityMessage } from 'src/modules/projects/helpers/transform-activity.helper';
 import { UsersService } from 'src/modules/users/services/users.service';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class TasksService {
@@ -44,6 +46,7 @@ export class TasksService {
     private userProjectService: UserProjectService,
     private notificationService: NotificationService,
     private userService: UsersService,
+    private awsS3Service: AwsS3Service,
   ) {}
 
   private async checkTaskExist(
@@ -85,6 +88,34 @@ export class TasksService {
     );
   }
 
+  private async putImageToS3(images: Express.Multer.File[]) {
+    const s3ImagesService = images.map(async (image) => {
+      return this.awsS3Service.putItemInBucket(
+        image.buffer,
+        {
+          extension: image.originalname.split('.').pop(),
+          mimetype: image.mimetype,
+          fileSize: image.size,
+        },
+        { path: '/private/tasks' },
+      );
+    });
+    const s3Images = await Promise.all(s3ImagesService);
+
+    return s3Images.map((s3Image, index) => ({
+      ...s3Image,
+      filename: images[index].originalname ?? s3Image.filename,
+    }));
+  }
+
+  private async deleteImagesFromS3(imagePaths: string[]) {
+    try {
+      await this.awsS3Service.deleteItemsInBucket(imagePaths);
+    } catch {
+      //
+    }
+  }
+
   private async update(
     ids: ITaskShortIds & { userId: string },
     updateRequestDto: UpdateTaskRequestDto,
@@ -100,7 +131,9 @@ export class TasksService {
       { projectId: stage.project._id, stageId: stage._id },
       { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
     );
-    const { images, assignee, reporter, ...taskValues } = updateRequestDto;
+    const { images, oldImages, assignee, reporter, ...taskValues } =
+      updateRequestDto;
+
     const userAssignee = await this.findUserForTask(
       assignee,
       stage.project.shortId,
@@ -111,12 +144,25 @@ export class TasksService {
       stage.project.shortId,
       'Reporter not found',
     );
+
+    const oldImagesArray: AwsS3Serialization[] = oldImages
+      ? JSON.parse(oldImages)
+      : [];
+    const oldImagePaths =
+      oldImagesArray?.map((image) => image.completedPath) ?? [];
+    const imagesToBeDeleted = taskFound.images
+      .filter((image) => !oldImagePaths.includes(image.completedPath))
+      .map((image) => image.completedPath);
+
+    const imageUploaded = await this.putImageToS3(images);
+    await this.deleteImagesFromS3(imagesToBeDeleted);
+
     const payload: UpdateTaskDto = {
       ...taskValues,
       updatedBy: userId,
       reporter: userReporter?.user._id,
       assignee: userAssignee?.user._id,
-      images: images?.map((image) => image.originalname),
+      images: [...imageUploaded, ...oldImagesArray],
     };
     const taskUpdate = await this.tasksRepository.updateOne(
       { _id: taskFound._id, stage: stage._id },
@@ -197,6 +243,8 @@ export class TasksService {
       projectId,
       'Reporter not found',
     );
+
+    const imageUploaded = await this.putImageToS3(images);
     const payload: CreateTaskDto = {
       ...taskValues,
       createdBy: userId,
@@ -204,7 +252,7 @@ export class TasksService {
       reporter: userReporter?.user._id ?? userId,
       assignee: userAssignee?.user._id,
       stage: stage._id,
-      images: images?.map((image) => image.originalname),
+      images: imageUploaded,
       project: stage.project._id,
       status: taskValues.status || TaskStatus.Open,
     };

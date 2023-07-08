@@ -1,6 +1,7 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
 import { EntityResponseDto } from 'src/shared/dto';
 import { UpdateProfileDto } from './update-profile.dto';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class ProfileResponseDto
   extends PartialType(
@@ -13,7 +14,7 @@ export class ProfileResponseDto
   implements EntityResponseDto
 {
   @ApiResponseProperty()
-  picture: string;
+  picture: AwsS3Serialization;
 
   @ApiResponseProperty()
   _id: string;

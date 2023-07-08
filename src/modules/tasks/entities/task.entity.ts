@@ -5,6 +5,7 @@ import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/databa
 import { StageEntity } from 'src/modules/stages/entities/stage.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export const TaskDatabaseName = 'tasks';
 
@@ -45,8 +46,8 @@ export class TaskEntity extends DatabaseTimestampsAbstract {
   @Prop({ required: true, enum: TaskStatus })
   status: string;
 
-  @Prop({ type: [String], default: [] })
-  images: string[];
+  @Prop({ type: Array, default: [] })
+  images: AwsS3Serialization[];
 
   @Prop({ type: String, unique: true })
   shortId: string;

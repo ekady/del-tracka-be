@@ -15,9 +15,6 @@ export class ProjectUserResponseDto
 
   @ApiResponseProperty()
   updatedBy: UserResponse;
-
-  @ApiResponseProperty()
-  _id: string;
 }
 
 export class UserProjectResponseDto implements EntityResponseDto {

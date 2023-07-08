@@ -4,6 +4,7 @@ import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
 import { StageEntity } from 'src/modules/stages/entities/stage.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import { CreateTaskRequestDto } from './create-task.dto';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class TaskResponseDto
   extends PartialType(
@@ -30,7 +31,7 @@ export class TaskResponseDto
   reporter: UserEntity;
 
   @ApiResponseProperty()
-  images: string[];
+  images: AwsS3Serialization[];
 
   @ApiResponseProperty()
   shortId: string;

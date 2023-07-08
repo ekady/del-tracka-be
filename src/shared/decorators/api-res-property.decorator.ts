@@ -15,13 +15,21 @@ import { ResponseDto } from '../dto';
 export const ApiResProperty = <TModel extends Type<any>>(
   model: TModel | TModel[],
   statusCode: number,
-  { isDisableAuth = false } = {},
+  { isDisableAuth = false, defaultStructure = true } = {},
 ) => {
   const models = Array.isArray(model) ? model : [model];
   const data = Array.isArray(model)
     ? { type: 'array', items: { $ref: getSchemaPath(model[0]) } }
     : { $ref: getSchemaPath(model) };
   const apiAuth = isDisableAuth ? ApiSecurity({}) : ApiBearerAuth();
+  const properties = defaultStructure
+    ? {
+        data,
+        statusCode: {
+          default: statusCode,
+        },
+      }
+    : {};
   return applyDecorators(
     apiAuth,
     ApiExtraModels(ResponseDto, ...models),
@@ -30,12 +38,7 @@ export const ApiResProperty = <TModel extends Type<any>>(
         allOf: [
           { $ref: getSchemaPath(ResponseDto) },
           {
-            properties: {
-              data,
-              statusCode: {
-                default: statusCode,
-              },
-            },
+            properties,
           },
         ],
       },

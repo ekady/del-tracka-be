@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class CreateTaskRequestDto {
   @ApiProperty()
@@ -42,6 +43,10 @@ export class CreateTaskRequestDto {
   })
   @IsOptional()
   images: Express.Multer.File[];
+
+  @ApiPropertyOptional({ type: 'string' })
+  @IsOptional()
+  oldImages: string;
 }
 
 export class CreateTaskDto extends OmitType(CreateTaskRequestDto, ['images']) {
@@ -57,7 +62,7 @@ export class CreateTaskDto extends OmitType(CreateTaskRequestDto, ['images']) {
   @IsNotEmpty()
   updatedBy: string;
 
-  images: string[];
+  images: AwsS3Serialization[];
 
   @IsString()
   @IsNotEmpty()

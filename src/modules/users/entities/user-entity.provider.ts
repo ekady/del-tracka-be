@@ -32,9 +32,9 @@ export const UserSchemaProvider: AsyncModelFactory = {
       { document: true, query: true },
       function (doc) {
         if (doc && !doc.picture) {
-          doc.picture = `${config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
-            doc.email,
-          )}?s=300&d=identicon`;
+          // doc.picture = `${config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
+          //   doc.email,
+          // )}?s=300&d=identicon`;
         }
       },
     );

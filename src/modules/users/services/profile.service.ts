@@ -3,10 +3,14 @@ import { StatusMessageDto } from 'src/shared/dto';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { UsersRepository } from '../repositories/users.repository';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
 export class ProfileService {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private awsS3Service: AwsS3Service,
+  ) {}
 
   async findProfile(id: string): Promise<ProfileResponseDto> {
     const user = await this.usersRepository.findOneById(id);
@@ -27,7 +31,24 @@ export class ProfileService {
     updateProfileDto: UpdateProfileDto,
   ): Promise<ProfileResponseDto> {
     const { picture, password, passwordConfirm, ...data } = updateProfileDto;
-    const userValues = { ...data, picture: picture?.originalname };
+
+    const pictureFile = await this.awsS3Service.putItemInBucket(
+      picture.buffer,
+      {
+        extension: picture.originalname.split('.').pop(),
+        mimetype: picture.mimetype,
+        fileSize: picture.size,
+      },
+      { path: '/private/profile' },
+    );
+
+    pictureFile.filename = picture?.originalname || pictureFile.filename;
+    const userValues = { ...data, picture: pictureFile };
+
+    const oldUser = await this.usersRepository.findOneById(id);
+    if (oldUser.picture?.completedPath) {
+      await this.awsS3Service.deleteItemInBucket(oldUser.picture.completedPath);
+    }
 
     let user = await this.usersRepository.updateOneById(id, userValues);
     if (password || passwordConfirm) {

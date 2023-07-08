@@ -19,6 +19,7 @@ import { TaskSchemaProvider } from './entities/task-entity.provider';
 import { TasksRepository } from './repositories/tasks.repository';
 import { NotificationModule } from '../notification/notification.module';
 import { UsersModule } from '../users/users.module';
+import { AwsModule } from 'src/common/aws/aws.module';
 
 @Module({
   controllers: [MyTasksController, TasksController, TasksStatisticController],
@@ -37,6 +38,7 @@ import { UsersModule } from '../users/users.module';
     ProjectsModule,
     NotificationModule,
     UsersModule,
+    AwsModule,
   ],
   exports: [TasksRepository, TasksHelperService],
 })
