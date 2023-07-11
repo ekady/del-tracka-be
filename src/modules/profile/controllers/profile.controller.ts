@@ -10,7 +10,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ProfileService } from '../services/profile.service';
-import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/shared/decorators';

@@ -5,6 +5,9 @@ import { APP_GUARD } from '@nestjs/core';
 
 // Modules
 import { DatabaseModule } from './common/database/database.module';
+import { LoggerModule } from './common/logger/logger.module';
+import { HttpModule } from './common/http/http.module';
+import { AwsModule } from './common/aws/aws.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
@@ -17,9 +20,8 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { PermissionsModule } from './modules/permissions/permission.module';
 import { NotificationModule } from './modules/notification/notification.module';
-import { LoggerModule } from './common/logger/logger.module';
-import { HttpModule } from './common/http/http.module';
-import { AwsModule } from './common/aws/aws.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { FileStreamModule } from './modules/file-stream/file-stream.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { AwsModule } from './common/aws/aws.module';
     NotificationModule,
     LoggerModule.forRoot(),
     AwsModule,
+    ProfileModule,
+    FileStreamModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

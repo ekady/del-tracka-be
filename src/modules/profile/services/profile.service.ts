@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/shared/dto';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
-import { UpdateProfileDto } from '../dto/update-profile.dto';
-import { UsersRepository } from '../repositories/users.repository';
+import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
+import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
