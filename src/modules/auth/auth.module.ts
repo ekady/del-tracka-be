@@ -8,6 +8,7 @@ import { EmailModule } from '../email/email.module';
 import { AuthService } from './services//auth.service';
 import { TokenService } from './services/token.service';
 import { UsersModule } from '../users/users.module';
+import { AwsModule } from 'src/common/aws/aws.module';
 
 @Module({
   controllers: [AuthController],
@@ -21,7 +22,7 @@ import { UsersModule } from '../users/users.module';
       useClass: AuthJwtGuard,
     },
   ],
-  imports: [JwtModule.register({}), EmailModule, UsersModule],
+  imports: [JwtModule.register({}), EmailModule, UsersModule, AwsModule],
   exports: [AuthService, TokenService],
 })
 export class AuthModule {}

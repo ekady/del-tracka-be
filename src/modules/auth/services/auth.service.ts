@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import axios, { AxiosResponse } from 'axios';
 import { StatusMessageDto } from 'src/shared/dto';
 import {
   CredentialInvalidException,
@@ -19,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/services/email.service';
 import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 import { UsersService } from 'src/modules/users/services/users.service';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +29,7 @@ export class AuthService {
     private userService: UsersService,
     private tokenService: TokenService,
     private emailService: EmailService,
+    private awsS3Service: AwsS3Service,
     private config: ConfigService,
   ) {}
 
@@ -65,16 +68,29 @@ export class AuthService {
 
     let user = await this.usersRepository.findOne({ email: userJwt.email });
     if (!user) {
+      const imageUrl =
+        userJwt.picture ??
+        `${this.config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
+          userJwt.email,
+        )}?s=300&d=identicon`;
+      const blob: AxiosResponse<Buffer> = await axios.get(imageUrl, {
+        responseType: 'arraybuffer',
+      });
+      const picture = await this.awsS3Service.putItemInBucket(
+        blob.data,
+        {
+          extension: 'png',
+          filename: 'picture.png',
+          mimetype: 'image/png',
+        },
+        { path: '/private/profile' },
+      );
       user = await this.usersRepository.create({
         email: userJwt.email,
         firstName: userJwt.given_name,
         lastName: userJwt.family_name,
         isViaProvider: true,
-        picture:
-          userJwt.picture ??
-          `${this.config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
-            userJwt.email,
-          )}?s=300&d=identicon`,
+        picture,
       });
       await this.emailService.sendMail({
         to: user.email,
