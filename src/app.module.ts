@@ -22,6 +22,7 @@ import { PermissionsModule } from './modules/permissions/permission.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { FileStreamModule } from './modules/file-stream/file-stream.module';
+import { MyTaskModule } from './modules/my-task/my-task.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { FileStreamModule } from './modules/file-stream/file-stream.module';
     AwsModule,
     ProfileModule,
     FileStreamModule,
+    MyTaskModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

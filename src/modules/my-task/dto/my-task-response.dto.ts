@@ -3,7 +3,7 @@ import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
 import { RoleEntity } from 'src/modules/roles/entities/role.entity';
 import { StageEntity } from 'src/modules/stages/entities/stage.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
-import { CreateTaskRequestDto } from './create-task.dto';
+import { CreateTaskRequestDto } from '../../tasks/dto/create-task.dto';
 import { ProjectPermissionResponseDto } from 'src/modules/projects/dto/project-permission.dto';
 
 export class MyTaskResponseDto extends PartialType(

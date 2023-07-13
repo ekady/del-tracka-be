@@ -80,7 +80,7 @@ export class ProjectsController {
 
   @Post(':projectId/activities/pdf')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
-  @ApiResProperty([ActivityResponseDto], 200)
+  @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/pdf')
   @Header(
     'Content-Disposition',
@@ -100,7 +100,7 @@ export class ProjectsController {
 
   @Post(':projectId/activities/xlsx')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
-  @ApiResProperty([ActivityResponseDto], 200)
+  @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/octet-stream')
   @Header('Content-Disposition', 'attachment; filename="Activities.xlsx"')
   createActivitiesExcel(

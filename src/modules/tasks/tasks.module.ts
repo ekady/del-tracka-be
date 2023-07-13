@@ -1,17 +1,12 @@
 import { Module } from '@nestjs/common';
 import {
-  MyTasksService,
   TasksHelperService,
   TasksService,
   TasksStatisticService,
 } from './services';
 import { StagesModule } from '../stages/stages.module';
 import { UserProjectModule } from '../user-project/user-project.module';
-import {
-  MyTasksController,
-  TasksController,
-  TasksStatisticController,
-} from './controllers';
+import { TasksController, TasksStatisticController } from './controllers';
 import { ActivitiesModule } from '../activities/activities.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -22,12 +17,11 @@ import { UsersModule } from '../users/users.module';
 import { AwsModule } from 'src/common/aws/aws.module';
 
 @Module({
-  controllers: [MyTasksController, TasksController, TasksStatisticController],
+  controllers: [TasksController, TasksStatisticController],
   providers: [
     TasksRepository,
     TasksHelperService,
     TasksService,
-    MyTasksService,
     TasksStatisticService,
   ],
   imports: [

@@ -5,8 +5,8 @@ import { RoleDatabaseName } from 'src/modules/roles/entities/role.entity';
 import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
 import { UserProjectDatabaseName } from 'src/modules/user-project/entities/user-project.entity';
 import { UserDatabaseName } from 'src/modules/users/entities/user.entity';
-import { MyTaskResponseDto } from '../dto';
-import { TasksRepository } from '../repositories/tasks.repository';
+import { MyTaskResponseDto } from 'src/modules/my-task/dto/my-task-response.dto';
+import { TasksRepository } from 'src/modules/tasks/repositories/tasks.repository';
 import {
   PaginationOptions,
   PaginationResponse,
@@ -15,10 +15,10 @@ import { PermissionDatabaseName } from 'src/modules/permissions/entities/permiss
 import { ProjectMenu } from 'src/shared/enums';
 
 @Injectable()
-export class MyTasksService {
+export class MyTaskService {
   constructor(private tasksRepository: TasksRepository) {}
 
-  async findMyTasks(
+  async findMyTask(
     userId: string,
     queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<MyTaskResponseDto[]>> {
