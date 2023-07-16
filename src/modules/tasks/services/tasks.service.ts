@@ -116,6 +116,46 @@ export class TasksService {
     }
   }
 
+  private async findReporterAndAssignee(
+    reporterId: string,
+    assigneeId: string,
+    projectShortId: string,
+  ) {
+    const assignee = await this.findUserForTask(
+      assigneeId,
+      projectShortId,
+      'Assignee not found',
+    );
+    const reporter = await this.findUserForTask(
+      reporterId,
+      projectShortId,
+      'Reporter not found',
+    );
+
+    return { reporter, assignee };
+  }
+
+  private async createUserNotification(
+    userIds: { userId: string; reporterId: string; assigneeId: string },
+    payload: CreateNotificationDto,
+  ) {
+    const { assigneeId, reporterId, userId } = userIds;
+    if (
+      reporterId.toString() &&
+      reporterId.toString() !== assigneeId.toString() &&
+      userId.toString() !== reporterId.toString()
+    ) {
+      this.notificationService.create(reporterId, payload);
+    }
+    if (
+      assigneeId &&
+      reporterId.toString() !== assigneeId.toString() &&
+      userId.toString() !== assigneeId.toString()
+    ) {
+      this.notificationService.create(assigneeId, payload);
+    }
+  }
+
   private async update(
     ids: ITaskShortIds & { userId: string },
     updateRequestDto: UpdateTaskRequestDto,
@@ -134,16 +174,12 @@ export class TasksService {
     const { images, oldImages, assignee, reporter, ...taskValues } =
       updateRequestDto;
 
-    const userAssignee = await this.findUserForTask(
-      assignee,
-      stage.project.shortId,
-      'Assignee not found',
-    );
-    const userReporter = await this.findUserForTask(
-      reporter,
-      stage.project.shortId,
-      'Reporter not found',
-    );
+    const { reporter: userReporter, assignee: userAssignee } =
+      await this.findReporterAndAssignee(
+        reporter,
+        assignee,
+        stage.project.shortId,
+      );
 
     const oldImagesArray: AwsS3Serialization[] = oldImages
       ? JSON.parse(oldImages)
@@ -188,22 +224,15 @@ export class TasksService {
       task: taskUpdate._id.toString(),
     };
 
-    if (
-      taskUpdate?.reporter?._id &&
-      taskUpdate?.reporter?._id.toString() !==
-        taskUpdate?.assignee?._id.toString() &&
-      userId.toString() !== taskUpdate?.reporter._id.toString()
-    ) {
-      this.notificationService.create(taskUpdate.reporter._id, notifPayload);
-    }
-    if (
-      taskUpdate?.assignee?._id &&
-      taskUpdate?.reporter?._id.toString() !==
-        taskUpdate?.assignee?._id.toString() &&
-      userId.toString() !== taskUpdate?.assignee._id.toString()
-    ) {
-      this.notificationService.create(taskUpdate.assignee._id, notifPayload);
-    }
+    this.createUserNotification(
+      {
+        assigneeId: taskUpdate?.assignee?._id,
+        reporterId: taskUpdate?.reporter?._id,
+        userId,
+      },
+      notifPayload,
+    );
+
     await this.createTaskActivity({
       type,
       createdBy: taskUpdate.updatedBy._id,
@@ -233,16 +262,9 @@ export class TasksService {
       { title: createRequestDto.title },
     );
     const { images, assignee, reporter, ...taskValues } = createRequestDto;
-    const userAssignee = await this.findUserForTask(
-      assignee,
-      projectId,
-      'Assignee not found',
-    );
-    const userReporter = await this.findUserForTask(
-      reporter,
-      projectId,
-      'Reporter not found',
-    );
+
+    const { reporter: userReporter, assignee: userAssignee } =
+      await this.findReporterAndAssignee(reporter, assignee, projectId);
 
     const imageUploaded = await this.putImageToS3(images);
     const payload: CreateTaskDto = {
@@ -283,19 +305,15 @@ export class TasksService {
       task: task._id.toString(),
     };
 
-    if (
-      task?.reporter?._id &&
-      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
-      userId.toString() !== task?.reporter._id.toString()
-    )
-      this.notificationService.create(task.reporter._id, notifPayload);
+    this.createUserNotification(
+      {
+        assigneeId: task?.assignee?._id,
+        reporterId: task?.reporter?._id,
+        userId,
+      },
+      notifPayload,
+    );
 
-    if (
-      task?.assignee?._id &&
-      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
-      userId.toString() !== task?.assignee._id.toString()
-    )
-      this.notificationService.create(task.assignee._id, notifPayload);
     return { message: 'Success' };
   }
 
@@ -472,19 +490,14 @@ export class TasksService {
       task: task._id.toString(),
     };
 
-    if (
-      task?.reporter?._id &&
-      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
-      userId.toString() !== task?.reporter._id.toString()
-    )
-      this.notificationService.create(task.reporter._id, notifPayload);
-
-    if (
-      task?.assignee?._id &&
-      task?.reporter?._id.toString() !== task?.assignee?._id.toString() &&
-      userId.toString() !== task?.assignee._id.toString()
-    )
-      this.notificationService.create(task.assignee._id, notifPayload);
+    this.createUserNotification(
+      {
+        assigneeId: task?.assignee?._id,
+        reporterId: task?.reporter?._id,
+        userId,
+      },
+      notifPayload,
+    );
     return { message: 'Success' };
   }
 }
