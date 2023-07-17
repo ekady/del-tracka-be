@@ -9,12 +9,12 @@ import {
   TaskStatisticDto,
   TaskStatusStatisticDto,
 } from '../dto';
-import { TasksStatisticService } from '../services';
+import { TaskStatisticService } from 'src/modules/task-statistic/services/task-statistic.service';
 
 @ApiTags('Tasks Statistic')
 @Controller('tasks-statistic')
-export class TasksStatisticController {
-  constructor(private taskStatisticService: TasksStatisticService) {}
+export class TaskStatisticController {
+  constructor(private taskStatisticService: TaskStatisticService) {}
 
   @Get('total')
   @ApiResProperty(TaskProjectCountDto, 200)

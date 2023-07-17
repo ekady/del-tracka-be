@@ -10,12 +10,12 @@ import {
 } from '../dto';
 import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
 import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
-import { TaskDatabaseName } from '../entities/task.entity';
-import { STATS_INITIAL_RESPONSE } from '../constants/stats-initial-response.constant';
+import { TaskDatabaseName } from 'src/modules/tasks/entities/task.entity';
+import { STATS_INITIAL_RESPONSE } from 'src/modules/tasks/constants/stats-initial-response.constant';
 import { TaskStatus } from 'src/shared/enums';
 
 @Injectable()
-export class TasksStatisticService {
+export class TaskStatisticService {
   constructor(
     private userProjectRepository: UserProjectRepository,
     private projectsHelperService: ProjectsHelperService,

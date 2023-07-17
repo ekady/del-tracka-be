@@ -23,6 +23,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { FileStreamModule } from './modules/file-stream/file-stream.module';
 import { MyTaskModule } from './modules/my-task/my-task.module';
+import { TaskStatisticModule } from './modules/task-statistic/task-statistic.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { MyTaskModule } from './modules/my-task/my-task.module';
     ProfileModule,
     FileStreamModule,
     MyTaskModule,
+    TaskStatisticModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
