@@ -136,21 +136,21 @@ export class TasksService {
   }
 
   private async createUserNotification(
-    userIds: { userId: string; reporterId: string; assigneeId: string },
+    userIds: { userId: string; reporterId?: string; assigneeId?: string },
     payload: CreateNotificationDto,
   ) {
     const { assigneeId, reporterId, userId } = userIds;
     if (
-      reporterId.toString() &&
-      reporterId.toString() !== assigneeId.toString() &&
-      userId.toString() !== reporterId.toString()
+      reporterId?.toString() &&
+      reporterId?.toString() !== assigneeId?.toString() &&
+      userId.toString() !== reporterId?.toString()
     ) {
       this.notificationService.create(reporterId, payload);
     }
     if (
       assigneeId &&
-      reporterId.toString() !== assigneeId.toString() &&
-      userId.toString() !== assigneeId.toString()
+      reporterId?.toString() !== assigneeId?.toString() &&
+      userId.toString() !== assigneeId?.toString()
     ) {
       this.notificationService.create(assigneeId, payload);
     }
