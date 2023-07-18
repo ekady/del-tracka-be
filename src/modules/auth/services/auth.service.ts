@@ -46,12 +46,13 @@ export class AuthService {
     );
 
     const userId = user ? user._id : '';
+
+    if (!user || !isPasswordCorrect) throw new CredentialInvalidException();
+
     const tokens = await this.tokenService.generateAuthTokens({
       id: userId,
       email: user.email,
     });
-
-    if (!user || !isPasswordCorrect) throw new CredentialInvalidException();
 
     return tokens;
   }
