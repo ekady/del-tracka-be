@@ -89,6 +89,7 @@ export class TasksController {
   }
 
   @Get(':id/activities')
+  @Throttle(60, 60)
   @ApiResProperty([ActivityResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findActivities(
