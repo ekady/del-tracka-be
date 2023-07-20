@@ -24,11 +24,13 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { FileStreamModule } from './modules/file-stream/file-stream.module';
 import { MyTaskModule } from './modules/my-task/my-task.module';
 import { TaskStatisticModule } from './modules/task-statistic/task-statistic.module';
+import { FileMulterModule } from './common/file-multer/file-multer.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
+    FileMulterModule,
     DatabaseModule,
     HttpModule,
     UsersModule,
