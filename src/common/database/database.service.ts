@@ -12,7 +12,9 @@ export class MongooseConfigService implements MongooseOptionsFactory {
 
   createMongooseOptions(): MongooseModuleOptions {
     return {
-      uri: this.config.get<string>('DATABASE_LOCAL'),
+      uri: this.config
+        .get<string>('DATABASE_LOCAL')
+        .replace('<PASSWORD>', this.config.get<string>('DATABASE_PASSWORD')),
       connectionFactory(connection: Connection) {
         connection.plugin((schema) => {
           schema.index({ deletedAt: -1 });
