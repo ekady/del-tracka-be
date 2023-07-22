@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
 import * as path from 'path';
-import { UsersService } from 'src/modules/users/services/users.service';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import {
@@ -14,6 +13,7 @@ import { NotificationBulkRepository } from '../repositories/notification.bulk.re
 import { StatusMessageDto } from 'src/shared/dto';
 import { LoggerService } from 'src/common/logger/services/logger.service';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
+import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(
@@ -28,7 +28,7 @@ export class NotificationService {
   constructor(
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
-    private usersService: UsersService,
+    private userRepository: UsersRepository,
     private loggerService: LoggerService,
   ) {}
 
@@ -61,7 +61,9 @@ export class NotificationService {
     userId: string,
     createNotificationDto: CreateNotificationDto,
   ): Promise<boolean> {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.userRepository.findOneById(userId, {
+      select: { deviceId: 1 },
+    });
     if (!user.deviceId) return false;
 
     await this.notificationRepository.create({

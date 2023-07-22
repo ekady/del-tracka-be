@@ -58,7 +58,7 @@ export class UserEntity extends DatabaseTimestampsAbstract {
   @Prop({ select: false })
   passwordResetExpires: Date;
 
-  @Prop()
+  @Prop({ select: false })
   deviceId: string[];
 }
 
