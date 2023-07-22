@@ -4,6 +4,7 @@ import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
 import { UsersRepository } from 'src/modules/users/repositories/users.repository';
 import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class ProfileService {
@@ -31,18 +32,21 @@ export class ProfileService {
     updateProfileDto: UpdateProfileDto,
   ): Promise<ProfileResponseDto> {
     const { picture, password, passwordConfirm, ...data } = updateProfileDto;
+    let pictureFile: AwsS3Serialization;
 
-    const pictureFile = await this.awsS3Service.putItemInBucket(
-      picture.buffer,
-      {
-        extension: picture.originalname.split('.').pop(),
-        mimetype: picture.mimetype,
-        fileSize: picture.size,
-      },
-      { path: '/private/profile' },
-    );
+    if (picture?.buffer) {
+      const pictureFile = await this.awsS3Service.putItemInBucket(
+        picture.buffer,
+        {
+          extension: picture.originalname.split('.').pop(),
+          mimetype: picture.mimetype,
+          fileSize: picture.size,
+        },
+        { path: '/private/profile' },
+      );
+      pictureFile.filename = picture?.originalname || pictureFile.filename;
+    }
 
-    pictureFile.filename = picture?.originalname || pictureFile.filename;
     const userValues = { ...data, picture: pictureFile };
 
     const oldUser = await this.usersRepository.findOneById(id);
