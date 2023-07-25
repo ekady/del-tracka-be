@@ -31,9 +31,20 @@ export class MyTaskService {
     } else queries.sort = undefined;
 
     // Filter by Priority and Status
-    const filter: { status?: string; priority?: string } = {};
-    if (queries.priority) filter.priority = queries.priority;
-    if (queries.status) filter.status = queries.status;
+    const filter: {
+      status?: { $in: string[] };
+      priority?: { $in: string[] };
+    } = {};
+    if (queries.priority) {
+      filter.priority = Array.isArray(queries.priority)
+        ? { $in: queries.priority }
+        : { $in: queries.priority.split(',') };
+    }
+    if (queries.status) {
+      filter.status = Array.isArray(queries.status)
+        ? { $in: queries.status }
+        : { $in: queries.status.split(',') };
+    }
 
     // Filter Project Name
     const filterProjectName = queries?.project
