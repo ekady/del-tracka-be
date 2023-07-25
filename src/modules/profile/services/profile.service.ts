@@ -35,7 +35,7 @@ export class ProfileService {
     let pictureFile: AwsS3Serialization;
 
     if (picture?.buffer) {
-      const pictureFile = await this.awsS3Service.putItemInBucket(
+      pictureFile = await this.awsS3Service.putItemInBucket(
         picture.buffer,
         {
           extension: picture.originalname.split('.').pop(),
