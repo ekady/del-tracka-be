@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
@@ -10,6 +10,11 @@ import { ITaskShortIds } from 'src/modules/tasks/interfaces/taskShortIds.interfa
 import { CommentsService } from '../services/comments.service';
 import { CommentResponse } from '../dto';
 import { CreateCommentRequestDto } from '../dto/create-comment.dto';
+import {
+  PaginationOptions,
+  PaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectId/stages/:stageId/tasks/:taskId/comments')
@@ -35,18 +40,20 @@ export class CommentsController {
   }
 
   @Get()
+  @Throttle(60, 60)
   @ApiResProperty([CommentResponse], 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
   findAll(
     @Param('projectId') projectId: string,
     @Param('stageId') stageId: string,
     @Param('taskId') taskId: string,
-  ): Promise<CommentResponse[]> {
+    @Query() queries: Record<string, string> & PaginationOptions,
+  ): Promise<PaginationResponse<CommentResponse[]>> {
     const ids: ITaskShortIds = {
       projectId,
       stageId,
       taskId,
     };
-    return this.commentsService.findAll(ids);
+    return this.commentsService.findAll(ids, queries);
   }
 }
