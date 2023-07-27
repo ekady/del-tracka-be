@@ -92,6 +92,7 @@ export class ProjectsService {
       description: userProject.project.description,
       shortId: userProject.project.shortId,
       role: userProject.role.name,
+      stages: userProject.stages,
       rolePermissions: rolePermissions.map((permission) => ({
         menu: permission.menu,
         create: permission.create,

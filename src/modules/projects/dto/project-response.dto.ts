@@ -46,6 +46,9 @@ export class ProjectResponseDto
 
   @ApiResponseProperty()
   shortId: string;
+
+  @ApiResponseProperty()
+  stages: Omit<StageResponseDto, 'project'>[];
 }
 
 export class ProjectResponseWithStagesDto extends PartialType(
