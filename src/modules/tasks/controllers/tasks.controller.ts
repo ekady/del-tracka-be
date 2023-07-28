@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFiles,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { TasksService } from '../services';
@@ -21,6 +22,7 @@ import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import {
   CreateTaskRequestDto,
   TaskResponseDto,
+  UpdateStatusTaskBulkDto,
   UpdateStatusTaskDto,
   UpdateTaskRequestDto,
 } from '../dto';
@@ -104,6 +106,26 @@ export class TasksController {
       projectId,
     };
     return this.tasksService.findTaskActivities(ids, queries);
+  }
+
+  @Put('update-status')
+  @ApiResProperty(StatusMessageDto, 200)
+  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  updateStatusBulk(
+    @JwtPayloadReq() user: IJwtPayload,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Body() updateStatusBulkDto: UpdateStatusTaskBulkDto,
+  ) {
+    const ids: IStageShortId = {
+      stageId,
+      projectId,
+    };
+    return this.tasksService.updateStatusBulk(
+      ids,
+      user.id,
+      updateStatusBulkDto,
+    );
   }
 
   @Put(':id')

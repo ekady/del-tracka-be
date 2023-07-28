@@ -12,6 +12,7 @@ import {
   CreateTaskDto,
   CreateTaskRequestDto,
   TaskResponseDto,
+  UpdateStatusTaskBulkDto,
   UpdateStatusTaskDto,
   UpdateTaskDto,
   UpdateTaskRequestDto,
@@ -458,12 +459,37 @@ export class TasksService {
     userId: string,
     updateStatusDto: UpdateStatusTaskDto,
   ): Promise<StatusMessageDto> {
-    await this.update(
-      { ...ids, userId },
-      updateStatusDto,
-      ActivityName.UPDATE_TASK_STATUS,
-    );
-    return { message: 'Success' };
+    try {
+      await this.update(
+        { ...ids, userId },
+        updateStatusDto,
+        ActivityName.UPDATE_TASK_STATUS,
+      );
+      return { message: 'Success' };
+    } catch {
+      return { message: 'Failed' };
+    }
+  }
+
+  async updateStatusBulk(
+    ids: IStageShortId,
+    userId: string,
+    updateStatusBulkDto: UpdateStatusTaskBulkDto,
+  ): Promise<StatusMessageDto> {
+    try {
+      const updateStatusBulk = updateStatusBulkDto.taskIds.map((taskId) =>
+        this.updateStatus({ ...ids, taskId }, userId, {
+          status: updateStatusBulkDto.status,
+        }),
+      );
+      const message = await Promise.all(updateStatusBulk);
+      if (message.every((status) => status.message === 'Success')) {
+        return { message: 'Success' };
+      }
+      return { message: 'Failed' };
+    } catch {
+      return { message: 'Failed' };
+    }
   }
 
   async remove(ids: ITaskShortIds, userId: string): Promise<StatusMessageDto> {
