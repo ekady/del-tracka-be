@@ -21,6 +21,7 @@ import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import {
   CreateTaskRequestDto,
+  MoveToStageDto,
   TaskResponseDto,
   UpdateStatusTaskBulkDto,
   UpdateStatusTaskDto,
@@ -106,6 +107,22 @@ export class TasksController {
       projectId,
     };
     return this.tasksService.findTaskActivities(ids, queries);
+  }
+
+  @Put('move-stage')
+  @ApiResProperty(StatusMessageDto, 200)
+  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  moveStage(
+    @JwtPayloadReq() user: IJwtPayload,
+    @Param('projectId') projectId: string,
+    @Param('stageId') stageId: string,
+    @Body() moveStageDto: MoveToStageDto,
+  ) {
+    const ids: IStageShortId = {
+      stageId,
+      projectId,
+    };
+    return this.tasksService.moveToStage(ids, moveStageDto);
   }
 
   @Put('update-status')

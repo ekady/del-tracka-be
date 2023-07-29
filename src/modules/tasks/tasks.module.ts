@@ -11,10 +11,16 @@ import { TasksRepository } from './repositories/tasks.repository';
 import { NotificationModule } from '../notification/notification.module';
 import { UsersModule } from '../users/users.module';
 import { AwsModule } from 'src/common/aws/aws.module';
+import { TaskBulkRepository } from './repositories/task.bulk.repository';
 
 @Module({
   controllers: [TasksController],
-  providers: [TasksRepository, TasksHelperService, TasksService],
+  providers: [
+    TasksRepository,
+    TaskBulkRepository,
+    TasksHelperService,
+    TasksService,
+  ],
   imports: [
     MongooseModule.forFeatureAsync([TaskSchemaProvider]),
     StagesModule,

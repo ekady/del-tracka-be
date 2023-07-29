@@ -11,6 +11,7 @@ import { StagesHelperService } from 'src/modules/stages/services';
 import {
   CreateTaskDto,
   CreateTaskRequestDto,
+  MoveToStageDto,
   TaskResponseDto,
   UpdateStatusTaskBulkDto,
   UpdateStatusTaskDto,
@@ -246,6 +247,36 @@ export class TasksService {
     });
 
     return taskFound;
+  }
+
+  async moveToStage(
+    ids: IStageShortId,
+    moveToStageDto: MoveToStageDto,
+  ): Promise<StatusMessageDto> {
+    try {
+      const stage = await this.stagesHelperService.findStageByShortId(
+        ids.stageId,
+        ids.projectId,
+      );
+      const stageTo = await this.stagesHelperService.findStageByShortId(
+        moveToStageDto.stageId,
+        ids.projectId,
+      );
+
+      const promiseTasks = moveToStageDto.taskIds.map((taskId) =>
+        this.tasksRepository.findOne({ stage: stage._id, shortId: taskId }),
+      );
+      const tasks = await Promise.all(promiseTasks);
+
+      const promiseUpdateTask = tasks.map((task) =>
+        this.tasksRepository.updateOneById(task._id, { stage: stageTo._id }),
+      );
+      await Promise.all(promiseUpdateTask);
+
+      return { message: 'Success' };
+    } catch {
+      return { message: 'Failed' };
+    }
   }
 
   async create(
