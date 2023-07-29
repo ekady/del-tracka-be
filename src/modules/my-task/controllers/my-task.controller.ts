@@ -14,7 +14,7 @@ import {
 @ApiTags('My Tasks')
 @Controller('my-tasks')
 export class MyTaskController {
-  constructor(private MyTaskService: MyTaskService) {}
+  constructor(private myTaskService: MyTaskService) {}
 
   @Get()
   @Throttle(60, 60)
@@ -23,6 +23,6 @@ export class MyTaskController {
     @JwtPayloadReq() user: IJwtPayload,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<MyTaskResponseDto[]>> {
-    return this.MyTaskService.findMyTask(user.id, queries);
+    return this.myTaskService.findMyTask(user.id, queries);
   }
 }
