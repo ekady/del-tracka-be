@@ -15,6 +15,7 @@ import {
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
 import { Throttle } from '@nestjs/throttler';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Task Comment')
 @Controller(
@@ -45,6 +46,7 @@ export class CommentsController {
   @Throttle(60, 60)
   @ApiResProperty([CommentResponse], 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
+  @QueryPagination()
   findAll(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,

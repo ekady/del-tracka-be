@@ -35,6 +35,7 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Tasks')
 @Controller('projects/:projectShortId/stages/:stageShortId/tasks')
@@ -65,6 +66,7 @@ export class TasksController {
   @Throttle(60, 60)
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  @QueryPagination()
   findAll(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
@@ -94,10 +96,13 @@ export class TasksController {
   @Throttle(60, 60)
   @ApiResProperty([ActivityResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  @QueryPagination()
   findActivities(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Param('shortId') shortId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const ids: ITaskShortIds = {
@@ -105,6 +110,8 @@ export class TasksController {
       stageShortId,
       projectShortId,
     };
+    queries.startDate = startDate;
+    queries.endDate = endDate;
     return this.tasksService.findTaskActivities(ids, queries);
   }
 
@@ -112,7 +119,6 @@ export class TasksController {
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   moveStage(
-    @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Body() moveStageDto: MoveToStageDto,

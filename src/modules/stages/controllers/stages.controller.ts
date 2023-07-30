@@ -31,6 +31,7 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Stages')
 @Controller('projects/:projectShortId/stages')
@@ -76,11 +77,16 @@ export class StagesController {
   @Throttle(60, 60)
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
+  @QueryPagination()
   findActivities(
     @Param('shortId') shortId: string,
     @Param('projectShortId') projectShortId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries.startDate = startDate;
+    queries.endDate = endDate;
     return this.stagesService.findStageActivities(
       shortId,
       projectShortId,

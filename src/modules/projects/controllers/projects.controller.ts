@@ -27,6 +27,7 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Projects')
 @Controller('projects')
@@ -67,6 +68,7 @@ export class ProjectsController {
   @Throttle(60, 60)
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
+  @QueryPagination()
   findActivities(
     @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,

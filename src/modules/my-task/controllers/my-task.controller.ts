@@ -10,6 +10,7 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('My Tasks')
 @Controller('my-tasks')
@@ -19,6 +20,7 @@ export class MyTaskController {
   @Get()
   @Throttle(60, 60)
   @ApiResProperty(MyTaskResponseDto, 200)
+  @QueryPagination()
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
     @Query() queries: Record<string, string> & PaginationOptions,
