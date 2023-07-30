@@ -9,7 +9,6 @@ import {
   UseInterceptors,
   UploadedFiles,
   Query,
-  Patch,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { TasksService } from '../services';
@@ -30,7 +29,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
-import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
+import { IStageShortIds } from 'src/modules/stages/interfaces/stageShortIds.interface';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import {
   PaginationOptions,
@@ -38,7 +37,7 @@ import {
 } from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Tasks')
-@Controller('projects/:projectId/stages/:stageId/tasks')
+@Controller('projects/:projectShortId/stages/:stageShortId/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
@@ -49,15 +48,15 @@ export class TasksController {
   @UseInterceptors(FilesInterceptor('images'))
   create(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
     @Body() body: CreateTaskRequestDto,
     @UploadedFiles() images: Express.Multer.File[],
   ): Promise<StatusMessageDto> {
     body.images = images;
-    const ids: IStageShortId = {
-      projectId,
-      stageId,
+    const ids: IStageShortIds = {
+      projectShortId,
+      stageShortId,
     };
     return this.tasksService.create(ids, user.id, body);
   }
@@ -67,44 +66,44 @@ export class TasksController {
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findAll(
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<TaskResponseDto[]>> {
-    const ids: IStageShortId = { projectId, stageId };
+    const ids: IStageShortIds = { projectShortId, stageShortId };
     return this.tasksService.findAll(ids, queries);
   }
 
-  @Get(':id')
+  @Get(':shortId')
   @ApiResProperty(TaskResponseDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findOne(
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('shortId') shortId: string,
   ) {
     const ids: ITaskShortIds = {
-      stageId,
-      taskId: id,
-      projectId,
+      stageShortId,
+      taskShortId: shortId,
+      projectShortId,
     };
     return this.tasksService.findOne(ids);
   }
 
-  @Get(':id/activities')
+  @Get(':shortId/activities')
   @Throttle(60, 60)
   @ApiResProperty([ActivityResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   findActivities(
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const ids: ITaskShortIds = {
-      taskId: id,
-      stageId,
-      projectId,
+      taskShortId: shortId,
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.findTaskActivities(ids, queries);
   }
@@ -114,13 +113,13 @@ export class TasksController {
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   moveStage(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
     @Body() moveStageDto: MoveToStageDto,
   ) {
-    const ids: IStageShortId = {
-      stageId,
-      projectId,
+    const ids: IStageShortIds = {
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.moveToStage(ids, moveStageDto);
   }
@@ -130,13 +129,13 @@ export class TasksController {
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   updateStatusBulk(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
     @Body() updateStatusBulkDto: UpdateStatusTaskBulkDto,
   ) {
-    const ids: IStageShortId = {
-      stageId,
-      projectId,
+    const ids: IStageShortIds = {
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.updateStatusBulk(
       ids,
@@ -145,7 +144,7 @@ export class TasksController {
     );
   }
 
-  @Put(':id')
+  @Put(':shortId')
   @ApiConsumes('multipart/form-data')
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
@@ -153,51 +152,51 @@ export class TasksController {
   update(
     @JwtPayloadReq() user: IJwtPayload,
     @UploadedFiles() images: Express.Multer.File[],
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('shortId') shortId: string,
     @Body() updateTaskDto: UpdateTaskRequestDto,
   ) {
     updateTaskDto.images = images;
     const ids: ITaskShortIds = {
-      taskId: id,
-      stageId,
-      projectId,
+      taskShortId: shortId,
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.updateOne(ids, user.id, updateTaskDto);
   }
 
-  @Put(':id/update-status')
+  @Put(':shortId/update-status')
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
   updateStatus(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('shortId') shortId: string,
     @Body() updateTaskDto: UpdateStatusTaskDto,
   ) {
     const ids: ITaskShortIds = {
-      taskId: id,
-      stageId,
-      projectId,
+      taskShortId: shortId,
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.updateStatus(ids, user.id, updateTaskDto);
   }
 
-  @Delete(':id')
+  @Delete(':shortId')
   @ApiResProperty(StatusMessageDto, 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Delete)
   remove(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('id') id: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('shortId') shortId: string,
   ) {
     const ids: ITaskShortIds = {
-      taskId: id,
-      stageId,
-      projectId,
+      taskShortId: shortId,
+      stageShortId,
+      projectShortId,
     };
     return this.tasksService.remove(ids, user.id);
   }

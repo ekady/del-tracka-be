@@ -106,12 +106,12 @@ export class TaskStatisticService {
     };
   }
 
-  async getTasksStatisticByProjectId(
+  async getTasksStatisticByProjectShortId(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStatisticDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
+      projectShortId,
     );
     const userProject: PipelineStage.Match = {
       $match: { user: userId, project: project._id },
@@ -121,10 +121,10 @@ export class TaskStatisticService {
 
   async getTasksStatisticByStages(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStageStatisticDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
+      projectShortId,
     );
     const match: PipelineStage.Match = {
       $match: { user: userId, project: project._id },

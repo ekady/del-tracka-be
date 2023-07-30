@@ -1,5 +1,5 @@
-import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
+import { IStageShortIds } from 'src/modules/stages/interfaces/stageShortIds.interface';
 
-export interface ITaskShortIds extends IStageShortId {
-  taskId: string;
+export interface ITaskShortIds extends IStageShortIds {
+  taskShortId: string;
 }

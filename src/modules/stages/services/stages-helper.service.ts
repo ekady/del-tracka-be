@@ -27,10 +27,10 @@ export class StagesHelperService {
 
   async findStageByShortId(
     stageId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<StageDocument> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
+      projectShortId,
     );
     const stage = await this.stagesRepository.findOne(
       { project: project._id, shortId: stageId },

@@ -1,4 +1,4 @@
-export interface IStageShortId {
-  projectId: string;
-  stageId: string;
+export interface IStageShortIds {
+  projectShortId: string;
+  stageShortId: string;
 }

@@ -16,8 +16,10 @@ import {
 } from 'src/shared/interfaces/pagination.interface';
 import { Throttle } from '@nestjs/throttler';
 
-@ApiTags('Tasks')
-@Controller('projects/:projectId/stages/:stageId/tasks/:taskId/comments')
+@ApiTags('Task Comment')
+@Controller(
+  'projects/:projectShortId/stages/:stageShortId/tasks/:taskShortId/comments',
+)
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
@@ -26,15 +28,15 @@ export class CommentsController {
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Create)
   create(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('taskId') taskId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('taskShortId') taskShortId: string,
     @Body() createDto: CreateCommentRequestDto,
   ): Promise<StatusMessageDto> {
     const ids: ITaskShortIds = {
-      projectId,
-      stageId,
-      taskId,
+      projectShortId,
+      stageShortId,
+      taskShortId,
     };
     return this.commentsService.create(ids, user.id, createDto);
   }
@@ -44,15 +46,15 @@ export class CommentsController {
   @ApiResProperty([CommentResponse], 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
   findAll(
-    @Param('projectId') projectId: string,
-    @Param('stageId') stageId: string,
-    @Param('taskId') taskId: string,
+    @Param('projectShortId') projectShortId: string,
+    @Param('stageShortId') stageShortId: string,
+    @Param('taskShortId') taskShortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<CommentResponse[]>> {
     const ids: ITaskShortIds = {
-      projectId,
-      stageId,
-      taskId,
+      projectShortId,
+      stageShortId,
+      taskShortId,
     };
     return this.commentsService.findAll(ids, queries);
   }

@@ -39,7 +39,7 @@ export class RolePermissionGuard implements CanActivate {
 
     const [menu, permission] = menuPermission;
     const { id: userId } = request.user;
-    const shortId = request.params.projectId;
+    const shortId = request.params.projectShortId ?? request.params.shortId;
 
     return this.matchingPermission(userId, shortId, menu, permission);
   }

@@ -6,7 +6,7 @@ import {
   ActivityResponseDto,
   CreateActivityDto,
 } from 'src/modules/activities/dto';
-import { IStageShortId } from 'src/modules/stages/interfaces/stageShortIds.interface';
+import { IStageShortIds } from 'src/modules/stages/interfaces/stageShortIds.interface';
 import { StagesHelperService } from 'src/modules/stages/services';
 import {
   CreateTaskDto,
@@ -164,10 +164,10 @@ export class TasksService {
     updateRequestDto: UpdateTaskRequestDto,
     type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
   ): Promise<TaskDocument> {
-    const { projectId, stageId, userId } = ids;
+    const { projectShortId, stageShortId, userId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageId,
-      projectId,
+      stageShortId,
+      projectShortId,
     );
     const taskFound = await this.tasksHelperService.findTaskByShortId(ids);
     await this.checkTaskExist(
@@ -223,7 +223,7 @@ export class TasksService {
         createdBy: user,
       }),
       type,
-      webUrl: `/app/projects/${projectId}/${stageId}/${taskFound.shortId}`,
+      webUrl: `/app/projects/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
       task: taskUpdate._id.toString(),
     };
 
@@ -250,17 +250,17 @@ export class TasksService {
   }
 
   async moveToStage(
-    ids: IStageShortId,
+    ids: IStageShortIds,
     moveToStageDto: MoveToStageDto,
   ): Promise<StatusMessageDto> {
     try {
       const stage = await this.stagesHelperService.findStageByShortId(
-        ids.stageId,
-        ids.projectId,
+        ids.stageShortId,
+        ids.projectShortId,
       );
       const stageTo = await this.stagesHelperService.findStageByShortId(
         moveToStageDto.stageId,
-        ids.projectId,
+        ids.projectShortId,
       );
 
       const promiseTasks = moveToStageDto.taskIds.map((taskId) =>
@@ -280,14 +280,14 @@ export class TasksService {
   }
 
   async create(
-    ids: IStageShortId,
+    ids: IStageShortIds,
     userId: string,
     createRequestDto: CreateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    const { projectId, stageId } = ids;
+    const { projectShortId, stageShortId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageId,
-      projectId,
+      stageShortId,
+      projectShortId,
     );
 
     await this.checkTaskExist(
@@ -297,7 +297,7 @@ export class TasksService {
     const { images, assignee, reporter, ...taskValues } = createRequestDto;
 
     const { reporter: userReporter, assignee: userAssignee } =
-      await this.findReporterAndAssignee(reporter, assignee, projectId);
+      await this.findReporterAndAssignee(reporter, assignee, projectShortId);
 
     const imageUploaded = await this.putImageToS3(images);
     const payload: CreateTaskDto = {
@@ -334,7 +334,7 @@ export class TasksService {
         createdBy: user,
       }),
       type: ActivityName.CREATE_TASK,
-      webUrl: `/app/projects/${projectId}/${stageId}/${task.shortId}`,
+      webUrl: `/app/projects/${projectShortId}/${stageShortId}/${task.shortId}`,
       task: task._id.toString(),
     };
 
@@ -351,13 +351,13 @@ export class TasksService {
   }
 
   async findAll(
-    ids: IStageShortId,
+    ids: IStageShortIds,
     queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<TaskResponseDto[]>> {
-    const { projectId, stageId } = ids;
+    const { projectShortId, stageShortId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageId,
-      projectId,
+      stageShortId,
+      projectShortId,
     );
     if (queries.sortBy) {
       const [field, order] = queries.sortBy.split('|');
@@ -461,8 +461,8 @@ export class TasksService {
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageId,
-      ids.projectId,
+      ids.stageShortId,
+      ids.projectShortId,
     );
     return this.activitiesService.findActivitiesTask(
       stage.project._id,
@@ -503,13 +503,13 @@ export class TasksService {
   }
 
   async updateStatusBulk(
-    ids: IStageShortId,
+    ids: IStageShortIds,
     userId: string,
     updateStatusBulkDto: UpdateStatusTaskBulkDto,
   ): Promise<StatusMessageDto> {
     try {
       const updateStatusBulk = updateStatusBulkDto.taskIds.map((taskId) =>
-        this.updateStatus({ ...ids, taskId }, userId, {
+        this.updateStatus({ ...ids, taskShortId: taskId }, userId, {
           status: updateStatusBulkDto.status,
         }),
       );
@@ -525,8 +525,8 @@ export class TasksService {
 
   async remove(ids: ITaskShortIds, userId: string): Promise<StatusMessageDto> {
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageId,
-      ids.projectId,
+      ids.stageShortId,
+      ids.projectShortId,
     );
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     await this.tasksRepository.softDeleteOneById(task._id);
@@ -552,7 +552,7 @@ export class TasksService {
         createdBy: user,
       }),
       type: ActivityName.DELETE_TASK,
-      webUrl: `/app/projects/${ids.projectId}/${ids.stageId}`,
+      webUrl: `/app/projects/${ids.projectShortId}/${ids.stageShortId}`,
       task: task._id.toString(),
     };
 

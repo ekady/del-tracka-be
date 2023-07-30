@@ -26,14 +26,14 @@ import { RolePermission } from 'src/modules/roles/decorator';
 import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
 import { ApiTags } from '@nestjs/swagger';
 import { ActivityResponseDto } from 'src/modules/activities/dto';
-import { IStageShortId } from '../interfaces/stageShortIds.interface';
+import { IStageShortIds } from '../interfaces/stageShortIds.interface';
 import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
 
 @ApiTags('Stages')
-@Controller('projects/:projectId/stages')
+@Controller('projects/:projectShortId/stages')
 export class StagesController {
   constructor(private readonly stagesService: StagesService) {}
 
@@ -42,12 +42,12 @@ export class StagesController {
   @ApiResProperty(StatusMessageDto, 201)
   create(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
     @Body() createStageDto: CreateStageRequestDto,
   ): Promise<StatusMessageDto> {
     const payload: CreateStageDto = {
       ...createStageDto,
-      projectId,
+      projectShortId,
     };
     return this.stagesService.create(user.id, payload);
   }
@@ -57,9 +57,9 @@ export class StagesController {
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
   findAll(
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<StageResponseWithoutProjectDto[]> {
-    return this.stagesService.findAll(projectId);
+    return this.stagesService.findAll(projectShortId);
   }
 
   @Get(':shortId')
@@ -67,9 +67,9 @@ export class StagesController {
   @ApiResProperty(StageResponseDto, 200)
   findOne(
     @Param('shortId') shortId: string,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ) {
-    return this.stagesService.findOne(shortId, projectId);
+    return this.stagesService.findOne(shortId, projectShortId);
   }
 
   @Get(':shortId/activities')
@@ -78,10 +78,14 @@ export class StagesController {
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
     @Param('shortId') shortId: string,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
-    return this.stagesService.findStageActivities(shortId, projectId, queries);
+    return this.stagesService.findStageActivities(
+      shortId,
+      projectShortId,
+      queries,
+    );
   }
 
   @Put(':shortId')
@@ -89,14 +93,14 @@ export class StagesController {
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
     @Param('shortId') shortId: string,
     @Body() updateStageDto: UpdateStageRequestDto,
   ) {
     const payload: UpdateStageDto = {
       ...updateStageDto,
       userId: user.id,
-      projectId,
+      projectShortId,
     };
     return this.stagesService.update(shortId, payload);
   }
@@ -107,11 +111,11 @@ export class StagesController {
   remove(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('shortId') shortId: string,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ) {
-    const shortIds: IStageShortId = {
-      stageId: shortId,
-      projectId: projectId,
+    const shortIds: IStageShortIds = {
+      stageShortId: shortId,
+      projectShortId: projectShortId,
     };
     return this.stagesService.remove(shortIds, user.id);
   }

@@ -37,8 +37,8 @@ export class CommentsService {
     createDto: CreateCommentRequestDto,
   ): Promise<StatusMessageDto> {
     const stage = await this.stagesHelperService.findStageByShortId(
-      ids.stageId,
-      ids.projectId,
+      ids.stageShortId,
+      ids.projectShortId,
     );
     const task = await this.tasksHelperService.findTaskByShortId(ids);
     const payload: CreateCommentDto = {
@@ -62,7 +62,7 @@ export class CommentsService {
         comment: createDto.comment,
       }),
       type: ActivityName.CREATE_COMMENT,
-      webUrl: `/app/projects/${ids.projectId}/${ids.stageId}/${task.shortId}-`,
+      webUrl: `/app/projects/${ids.projectShortId}/${ids.stageShortId}/${task.shortId}-`,
       task: task._id.toString(),
     };
 

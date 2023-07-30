@@ -24,13 +24,13 @@ import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
 export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}
 
-  @Post(':projectId/member')
+  @Post(':shortId/member')
   @Throttle(60, 60)
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   addMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Body() addUpdateMemberDto: AddMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
@@ -41,12 +41,12 @@ export class ProjectMemberController {
     );
   }
 
-  @Put(':projectId/member')
+  @Put(':shortId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Body() addUpdateMemberDto: UpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
@@ -57,30 +57,30 @@ export class ProjectMemberController {
     );
   }
 
-  @Get(':projectId/member')
+  @Get(':shortId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
   getMember(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
   ): Promise<ProjectUserResponseDto[]> {
     return this.projectMemberService.getMember(shortId);
   }
 
-  @Delete(':projectId/member')
+  @Delete(':shortId/member')
   @RolePermission(ProjectMenu.Member, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   removeMember(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Body() removeMemberReq: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     return this.projectMemberService.removeMember(shortId, removeMemberReq);
   }
 
-  @Put(':projectId/leave')
+  @Put(':shortId/leave')
   @ApiResProperty(StatusMessageDto, 200)
   leaveProject(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectMemberService.removeMember(shortId, { userId });

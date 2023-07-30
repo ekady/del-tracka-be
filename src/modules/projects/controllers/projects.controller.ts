@@ -53,22 +53,22 @@ export class ProjectsController {
     return this.projectsService.findAll(userId);
   }
 
-  @Get(':projectId')
+  @Get(':shortId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty(ProjectResponseWithStagesDto, 200)
   findOne(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @JwtPayloadReq() jwtPayload: IJwtPayload,
   ): Promise<ProjectResponseDto> {
     return this.projectsService.findOne(shortId, jwtPayload.id);
   }
 
-  @Get(':projectId/activities')
+  @Get(':shortId/activities')
   @Throttle(60, 60)
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   findActivities(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -78,7 +78,7 @@ export class ProjectsController {
     return this.projectsService.findActivities(shortId, queries);
   }
 
-  @Post(':projectId/activities/pdf')
+  @Post(':shortId/activities/pdf')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/pdf')
@@ -87,7 +87,7 @@ export class ProjectsController {
     'attachment; filename="Project Activities.pdf"',
   )
   createActivitiesPdf(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -98,13 +98,13 @@ export class ProjectsController {
     return this.projectsService.getActivitiesPdf(shortId, queries);
   }
 
-  @Post(':projectId/activities/xlsx')
+  @Post(':shortId/activities/xlsx')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/octet-stream')
   @Header('Content-Disposition', 'attachment; filename="Activities.xlsx"')
   createActivitiesExcel(
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -115,22 +115,22 @@ export class ProjectsController {
     return this.projectsService.getActivitiesExcel(shortId, queries);
   }
 
-  @Put(':projectId')
+  @Put(':shortId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
-    @Param('projectId') shortId: string,
+    @Param('shortId') shortId: string,
     @Body() updateProjectDto: UpdateProjectDto,
   ): Promise<StatusMessageDto> {
     const { id: userId } = jwtPayload;
     return this.projectsService.update(userId, shortId, updateProjectDto);
   }
 
-  @Delete(':projectId')
+  @Delete(':shortId')
   @RolePermission(ProjectMenu.Project, PermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
-  remove(@Param('projectId') shortId: string): Promise<StatusMessageDto> {
+  remove(@Param('shortId') shortId: string): Promise<StatusMessageDto> {
     return this.projectsService.remove(shortId);
   }
 }

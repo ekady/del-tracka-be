@@ -14,7 +14,10 @@ export class TasksHelperService {
     private stagesHelperService: StagesHelperService,
   ) {}
 
-  async findTaskById(ids: ITaskIds, select?: string): Promise<TaskDocument> {
+  async findTaskById(
+    ids: ITaskIds,
+    select?: Record<string, number>,
+  ): Promise<TaskDocument> {
     const { taskId, projectId, stageId } = ids;
     const stage = await this.stagesHelperService.findStageById(
       stageId,
@@ -25,7 +28,7 @@ export class TasksHelperService {
         _id: new Types.ObjectId(taskId),
         stage: stage._id,
       },
-      { populate: true },
+      { populate: true, select },
     );
 
     if (!task) throw new DocumentExistException('Task not found');
@@ -33,14 +36,14 @@ export class TasksHelperService {
   }
 
   async findTaskByShortId(ids: ITaskShortIds): Promise<TaskDocument> {
-    const { taskId, projectId, stageId } = ids;
+    const { taskShortId, projectShortId, stageShortId } = ids;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageId,
-      projectId,
+      stageShortId,
+      projectShortId,
     );
     const task = await this.tasksRepository.findOne(
       {
-        shortId: taskId,
+        shortId: taskShortId,
         stage: stage._id,
       },
       { populate: true },

@@ -13,7 +13,7 @@ import {
   StageResponseWithoutProjectDto,
   UpdateStageDto,
 } from '../dto';
-import { IStageShortId } from '../interfaces/stageShortIds.interface';
+import { IStageShortIds } from '../interfaces/stageShortIds.interface';
 import { StagesHelperService } from './stages-helper.service';
 import { StagesRepository } from '../repositories/stages.repository';
 import { StageDocument, StageEntity } from '../entities/stage.entity';
@@ -53,9 +53,9 @@ export class StagesService {
     userId: string,
     createStageDto: CreateStageDto,
   ): Promise<StatusMessageDto> {
-    const { projectId, ...payload } = createStageDto;
+    const { projectShortId, ...payload } = createStageDto;
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
+      projectShortId,
     );
 
     await this.checkStageNameExist({
@@ -79,9 +79,11 @@ export class StagesService {
     return { message: 'Success' };
   }
 
-  async findAll(projectId: string): Promise<StageResponseWithoutProjectDto[]> {
+  async findAll(
+    projectShortId: string,
+  ): Promise<StageResponseWithoutProjectDto[]> {
     const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
+      projectShortId,
     );
     const stages = await this.stagesRepository.findAll(
       { project: project._id },
@@ -103,10 +105,13 @@ export class StagesService {
     }));
   }
 
-  async findOne(shortId: string, projectId: string): Promise<StageResponseDto> {
+  async findOne(
+    shortId: string,
+    projectShortId: string,
+  ): Promise<StageResponseDto> {
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
-      projectId,
+      projectShortId,
     );
     return {
       _id: stage._id,
@@ -128,10 +133,10 @@ export class StagesService {
     shortId: string,
     updateStageDto: UpdateStageDto,
   ): Promise<StatusMessageDto> {
-    const { userId, projectId, ...payload } = updateStageDto;
+    const { userId, projectShortId, ...payload } = updateStageDto;
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
-      projectId,
+      projectShortId,
     );
     await this.checkStageNameExist({
       name: payload.name,
@@ -155,13 +160,13 @@ export class StagesService {
   }
 
   async remove(
-    shortIds: IStageShortId,
+    shortIds: IStageShortIds,
     userId: string,
   ): Promise<StatusMessageDto> {
-    const { projectId, stageId } = shortIds;
+    const { projectShortId, stageShortId } = shortIds;
     const stage = await this.stagesHelperService.findStageByShortId(
-      stageId,
-      projectId,
+      stageShortId,
+      projectShortId,
     );
 
     await this.stagesRepository.softDeleteOneById(stage._id);
@@ -178,12 +183,12 @@ export class StagesService {
 
   async findStageActivities(
     shortId: string,
-    projectId: string,
+    projectShortId: string,
     queries?: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
     const stage = await this.stagesHelperService.findStageByShortId(
       shortId,
-      projectId,
+      projectShortId,
     );
     return this.activitiesService.findStageActivities(
       stage.project._id,
