@@ -80,6 +80,10 @@ export class ActivitiesService {
     const activities = await this.activitiesRepository.findAll(
       {
         project: objectProjectId,
+        createdAt: {
+          $gte: queries.startDate || 0,
+          $lte: queries.endDate || new Date().toISOString(),
+        },
         $or: [
           { 'stageAfter._id': objectStageId },
           { 'stageBefore._id': objectStageId },
@@ -124,6 +128,10 @@ export class ActivitiesService {
     const activities = await this.activitiesRepository.findAll(
       {
         project: objectProjectId,
+        createdAt: {
+          $gte: queries.startDate || 0,
+          $lte: queries.endDate || new Date().toISOString(),
+        },
         $and: [
           {
             $or: [
