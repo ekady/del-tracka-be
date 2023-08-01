@@ -3,8 +3,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PermissionRepository } from './repositories/permission.repository';
 import { PermissionFeature } from './entities/permission.entity';
 import { PermissionService } from './services/permission.service';
+import { PermissionController } from './controllers/permission.controllers';
 
 @Module({
+  controllers: [PermissionController],
   providers: [PermissionRepository, PermissionService],
   exports: [PermissionRepository, PermissionService],
   imports: [MongooseModule.forFeature([PermissionFeature])],

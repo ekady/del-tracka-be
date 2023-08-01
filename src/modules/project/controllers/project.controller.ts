@@ -84,10 +84,7 @@ export class ProjectController {
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/pdf')
-  @Header(
-    'Content-Disposition',
-    'attachment; filename="Project Activity.pdf"',
-  )
+  @Header('Content-Disposition', 'attachment; filename="Project Activity.pdf"')
   createActivityPdf(
     @Param('shortId') shortId: string,
     @Query() queries: Record<string, string> & PaginationOptions,

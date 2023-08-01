@@ -6,6 +6,7 @@ import {
   PermissionDocument,
   PermissionEntity,
 } from '../entities/permission.entity';
+import { RoleEntity } from 'src/modules/role/entities/role.entity';
 
 @Injectable()
 export class PermissionRepository extends DatabaseMongoRepositoryAbstract<PermissionDocument> {
@@ -13,6 +14,6 @@ export class PermissionRepository extends DatabaseMongoRepositoryAbstract<Permis
     @InjectModel(PermissionEntity.name)
     private permissionModel: Model<PermissionDocument>,
   ) {
-    super(permissionModel);
+    super(permissionModel, [{ path: 'role', model: RoleEntity.name }]);
   }
 }
