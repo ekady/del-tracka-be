@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { MyTaskResponseDto } from 'src/modules/my-task/dto/my-task-response.dto';
-import { TasksRepository } from 'src/modules/tasks/repositories/tasks.repository';
+import { TaskRepository } from 'src/modules/task/repositories/task.repository';
 import {
   PaginationOptions,
   PaginationResponse,
@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class MyTaskService {
-  constructor(private tasksRepository: TasksRepository) {}
+  constructor(private taskRepository: TaskRepository) {}
 
   async findMyTask(
     userId: string,
@@ -54,7 +54,7 @@ export class MyTaskService {
     const { lookupAssignee, lookupReporter } = helperUserAssigneeAndReporter();
     const lookupStage = helperLookupStage(user, filterProjectName);
 
-    return this.tasksRepository.findAllAggregate(
+    return this.taskRepository.findAllAggregate(
       [
         {
           $match: {

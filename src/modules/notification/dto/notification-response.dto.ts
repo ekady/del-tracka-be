@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
 import { CreateNotificationDto } from './create-notification.dto';
-import { TaskResponseDto } from 'src/modules/tasks/dto';
+import { TaskResponseDto } from 'src/modules/task/dto';
 
 export class NotificationResponseDto extends OmitType(CreateNotificationDto, [
   'task',

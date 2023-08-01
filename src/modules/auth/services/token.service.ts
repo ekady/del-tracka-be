@@ -8,19 +8,19 @@ import {
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/shared/http-exceptions/exceptions';
-import { UserDocument } from 'src/modules/users/entities/user.entity';
+import { UserDocument } from 'src/modules/user/entities/user.entity';
 import { HashHelper } from 'src/shared/helpers';
 import { TokensDto } from '../dto';
 import { TokenJwtConfig } from '../enum';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
-import { UsersRepository } from 'src/modules/users/repositories/users.repository';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
 
 @Injectable()
 export class TokenService {
   constructor(
-    private usersRepository: UsersRepository,
+    private userRepository: UserRepository,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {}
@@ -41,7 +41,7 @@ export class TokenService {
     const hashedRefreshToken = await HashHelper.encrypt(refreshToken);
 
     try {
-      await this.usersRepository.updateOneById(payload.id, {
+      await this.userRepository.updateOneById(payload.id, {
         hashedRefreshToken,
       });
     } catch (_) {
@@ -56,7 +56,7 @@ export class TokenService {
   }
 
   async validateTokenUser(payload: IJwtPayload): Promise<IJwtPayload> {
-    const user = await this.usersRepository.findOneById(payload.id);
+    const user = await this.userRepository.findOneById(payload.id);
     if (!user) throw new UnauthorizedException();
 
     payload.id = user._id;
@@ -104,7 +104,7 @@ export class TokenService {
         .createHash('sha256')
         .update(token)
         .digest('hex');
-      return this.usersRepository.findOne({
+      return this.userRepository.findOne({
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() },
       });

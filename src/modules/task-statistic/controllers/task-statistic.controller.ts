@@ -12,7 +12,7 @@ import {
 import { TaskStatisticService } from 'src/modules/task-statistic/services/task-statistic.service';
 
 @ApiTags('Tasks Statistic')
-@Controller('tasks-statistic')
+@Controller('task-statistic')
 export class TaskStatisticController {
   constructor(private taskStatisticService: TaskStatisticService) {}
 
@@ -52,7 +52,7 @@ export class TaskStatisticController {
     );
   }
 
-  @Get('project/:projectShortId/stages')
+  @Get('project/:projectShortId/stage')
   @ApiResProperty([TaskStageStatisticDto], 200)
   getTasksStatisticByStages(
     @JwtPayloadReq() user: IJwtPayload,

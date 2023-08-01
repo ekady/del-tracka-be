@@ -7,7 +7,7 @@ import { AccessTokenStrategy, RefreshTokenStrategy } from './strategy';
 import { EmailModule } from '../email/email.module';
 import { AuthService } from './services//auth.service';
 import { TokenService } from './services/token.service';
-import { UsersModule } from '../users/users.module';
+import { UserModule } from '../user/user.module';
 import { AwsModule } from 'src/common/aws/aws.module';
 
 @Module({
@@ -22,7 +22,7 @@ import { AwsModule } from 'src/common/aws/aws.module';
       useClass: AuthJwtGuard,
     },
   ],
-  imports: [JwtModule.register({}), EmailModule, UsersModule, AwsModule],
+  imports: [JwtModule.register({}), EmailModule, UserModule, AwsModule],
   exports: [AuthService, TokenService],
 })
 export class AuthModule {}

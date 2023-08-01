@@ -2,18 +2,18 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
 import { RoleName } from 'src/shared/enums';
 import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
-import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
+import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
 import {
   ProjectDatabaseName,
   ProjectDocument,
-} from 'src/modules/projects/schema/project.entity';
+} from 'src/modules/project/schema/project.entity';
 import {
   RoleDatabaseName,
   RoleDocument,
-} from 'src/modules/roles/entities/role.entity';
-import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
+} from 'src/modules/role/entities/role.entity';
+import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
 import { UserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
-import { UserDatabaseName } from 'src/modules/users/entities/user.entity';
+import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
 import {
   CreateUserProjectDto,
   UpdateUserProjectDto,
@@ -30,7 +30,7 @@ export class UserProjectService {
     private userProjectBulkRepository: UserProjectBulkRepository,
   ) {}
 
-  async findUserProjects(
+  async findUserProject(
     userId: string,
     queryProject?: FilterQuery<ProjectDocument>,
     queryRole?: FilterQuery<RoleDocument>,
@@ -123,12 +123,12 @@ export class UserProjectService {
     ]);
   }
 
-  async findUserProject(
+  async findUserProjects(
     userId: string,
     shortId: string,
     errorMessage?: string,
   ): Promise<UserProjectResponseDto> {
-    const [userProject] = await this.findUserProjects(userId, {
+    const [userProject] = await this.findUserProject(userId, {
       shortId,
     });
     if (!userProject?.project) {
@@ -142,13 +142,13 @@ export class UserProjectService {
     userId: string,
     projectName: string,
   ): Promise<UserProjectResponseDto> {
-    const [userProject] = await this.findUserProjects(userId, {
+    const [userProject] = await this.findUserProject(userId, {
       name: projectName,
     });
     return userProject;
   }
 
-  async findProjectsByUserId(userId: string): Promise<UserProjectDocument[]> {
+  async findProjectByUserId(userId: string): Promise<UserProjectDocument[]> {
     const projects = await this.userProjectRepository.findAll(
       { user: userId },
       { limit: undefined, page: undefined, disablePagination: true },
@@ -183,7 +183,7 @@ export class UserProjectService {
     }));
   }
 
-  async findUserProjectsByRoleId(
+  async findUserProjectByRoleId(
     projectId: string,
     roleId: string,
   ): Promise<UserProjectDocument[]> {
@@ -223,12 +223,12 @@ export class UserProjectService {
     userUpdatedId: string,
   ): Promise<UserProjectDocument> {
     const { userId, projectId, roleId } = updateUserProjectDto;
-    const userOwner = await this.findUserProjects(
+    const userOwner = await this.findUserProject(
       userId,
       { _id: projectId },
       { name: RoleName.OWNER },
     );
-    const owners = await this.findUserProjectsByRoleId(
+    const owners = await this.findUserProjectByRoleId(
       projectId,
       userOwner[0]?.role._id,
     );
@@ -268,7 +268,7 @@ export class UserProjectService {
       throw new BadRequestException('User not found on this project');
 
     const { name: roleName, _id: roleId } = userProject.role;
-    const userRole = await this.findUserProjectsByRoleId(projectId, roleId);
+    const userRole = await this.findUserProjectByRoleId(projectId, roleId);
     if (roleName === RoleName.OWNER && userRole.length < 2) {
       throw new BadRequestException(
         'This user is the only owner of this project',
@@ -281,11 +281,11 @@ export class UserProjectService {
     return userProject;
   }
 
-  async deleteAllUserProjects(projectId: string): Promise<void> {
-    const userProjects = await this.userProjectRepository.findAll({
+  async deleteAllUserProject(projectId: string): Promise<void> {
+    const userProject = await this.userProjectRepository.findAll({
       project: projectId,
     });
-    const ids: string[] = userProjects.data.map(
+    const ids: string[] = userProject.data.map(
       (userProject) => userProject._id,
     );
     await this.userProjectBulkRepository.softDeleteManyById(ids);

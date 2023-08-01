@@ -2,19 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/shared/dto';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
-import { UsersRepository } from 'src/modules/users/repositories/users.repository';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
 import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class ProfileService {
   constructor(
-    private usersRepository: UsersRepository,
+    private userRepository: UserRepository,
     private awsS3Service: AwsS3Service,
   ) {}
 
   async findProfile(id: string): Promise<ProfileResponseDto> {
-    const user = await this.usersRepository.findOneById(id);
+    const user = await this.userRepository.findOneById(id);
     return {
       _id: user._id,
       createdAt: user.createdAt,
@@ -49,12 +49,12 @@ export class ProfileService {
 
     const userValues = { ...data, picture: pictureFile };
 
-    const oldUser = await this.usersRepository.findOneById(id);
+    const oldUser = await this.userRepository.findOneById(id);
     if (oldUser.picture?.completedPath) {
       await this.awsS3Service.deleteItemInBucket(oldUser.picture.completedPath);
     }
 
-    let user = await this.usersRepository.updateOneById(id, userValues);
+    let user = await this.userRepository.updateOneById(id, userValues);
     if (password || passwordConfirm) {
       user.password = password;
       user.passwordConfirm = passwordConfirm;
@@ -74,7 +74,7 @@ export class ProfileService {
   }
 
   async deleteProfile(id: string): Promise<StatusMessageDto> {
-    await this.usersRepository.softDeleteOneById(id);
+    await this.userRepository.softDeleteOneById(id);
     return { message: 'Success' };
   }
 }

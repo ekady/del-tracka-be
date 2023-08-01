@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DatabaseMongoRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-repository.abstract';
-import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
-import { RoleEntity } from 'src/modules/roles/entities/role.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
+import { ProjectEntity } from 'src/modules/project/schema/project.entity';
+import { RoleEntity } from 'src/modules/role/entities/role.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
   UserProjectDocument,
   UserProjectEntity,

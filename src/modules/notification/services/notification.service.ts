@@ -13,7 +13,7 @@ import { NotificationBulkRepository } from '../repositories/notification.bulk.re
 import { StatusMessageDto } from 'src/shared/dto';
 import { LoggerService } from 'src/common/logger/services/logger.service';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
-import { UsersRepository } from 'src/modules/users/repositories/users.repository';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
 
 firebase.initializeApp({
   credential: firebase.credential.cert(
@@ -28,7 +28,7 @@ export class NotificationService {
   constructor(
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
-    private userRepository: UsersRepository,
+    private userRepository: UserRepository,
     private loggerService: LoggerService,
   ) {}
 

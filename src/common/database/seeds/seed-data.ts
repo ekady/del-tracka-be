@@ -4,18 +4,18 @@ import {
   PermissionDocument,
   PermissionSchema,
   PermissionDatabaseName,
-} from 'src/modules/permissions/entities/permission.entity';
+} from 'src/modules/permission/entities/permission.entity';
 import {
   RoleDocument,
   RoleSchema,
   RoleDatabaseName,
-} from 'src/modules/roles/entities/role.entity';
+} from 'src/modules/role/entities/role.entity';
 import { RolePermissionsConstant } from './data/role-permission.contant';
 import {
   ProjectDocument,
   ProjectSchema,
   ProjectDatabaseName,
-} from 'src/modules/projects/schema/project.entity';
+} from 'src/modules/project/schema/project.entity';
 import {
   UserProjectEntity,
   UserProjectDocument,
@@ -25,17 +25,17 @@ import {
   StageDocument,
   StageSchema,
   StageDatabaseName,
-} from 'src/modules/stages/entities/stage.entity';
+} from 'src/modules/stage/entities/stage.entity';
 import {
   TaskDocument,
   TaskSchema,
   TaskDatabaseName,
-} from 'src/modules/tasks/entities/task.entity';
+} from 'src/modules/task/entities/task.entity';
 import {
   CommentDocument,
   CommentSchema,
   CommentDatabaseName,
-} from 'src/modules/comments/entities/comment.entity';
+} from 'src/modules/comment/entities/comment.entity';
 
 const RoleModel = model<RoleDocument>(RoleDatabaseName, RoleSchema);
 const PermissionModel = model<PermissionDocument>(

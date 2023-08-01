@@ -1,12 +1,12 @@
-import { PermissionDatabaseName } from 'src/modules/permissions/entities/permission.entity';
-import { RoleDatabaseName } from 'src/modules/roles/entities/role.entity';
+import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
+import { RoleDatabaseName } from 'src/modules/role/entities/role.entity';
 import { UserProjectDatabaseName } from 'src/modules/user-project/entities/user-project.entity';
 import { ProjectMenu } from 'src/shared/enums';
 import { NAME_FIELD, USER_FIELD } from '../constants/my-task.constant';
 import { Types } from 'mongoose';
-import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
-import { ProjectDatabaseName } from 'src/modules/projects/schema/project.entity';
-import { UserDatabaseName } from 'src/modules/users/entities/user.entity';
+import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
+import { ProjectDatabaseName } from 'src/modules/project/schema/project.entity';
+import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
 
 export const helperLookupUserProject = (userId: string | Types.ObjectId) => {
   const lookupPermission = {

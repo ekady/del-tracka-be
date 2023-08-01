@@ -18,15 +18,15 @@ import {
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/modules/email/services/email.service';
-import { UsersRepository } from 'src/modules/users/repositories/users.repository';
-import { UsersService } from 'src/modules/users/services/users.service';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { UserService } from 'src/modules/user/services/user.service';
 import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersRepository: UsersRepository,
-    private userService: UsersService,
+    private userRepository: UserRepository,
+    private userService: UserService,
     private tokenService: TokenService,
     private emailService: EmailService,
     private awsS3Service: AwsS3Service,
@@ -34,7 +34,7 @@ export class AuthService {
   ) {}
 
   async signIn(signInDto: SignInRequestDto): Promise<TokensDto> {
-    const user = await this.usersRepository.findOne(
+    const user = await this.userRepository.findOne(
       { email: signInDto.email },
       { select: { password: 1, email: 1, picture: 1 } },
     );
@@ -67,7 +67,7 @@ export class AuthService {
     if (!userJwt?.email || !userJwt.given_name)
       throw new TokenInvalidException();
 
-    let user = await this.usersRepository.findOne({ email: userJwt.email });
+    let user = await this.userRepository.findOne({ email: userJwt.email });
     if (!user) {
       const imageUrl =
         userJwt.picture ??
@@ -86,7 +86,7 @@ export class AuthService {
         },
         { path: '/private/profile' },
       );
-      user = await this.usersRepository.create({
+      user = await this.userRepository.create({
         email: userJwt.email,
         firstName: userJwt.given_name,
         lastName: userJwt.family_name,
@@ -109,10 +109,10 @@ export class AuthService {
   }
 
   async signUp(signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
-    const user = await this.usersRepository.findOne({ email: signUpDto.email });
+    const user = await this.userRepository.findOne({ email: signUpDto.email });
     if (user) throw new EmailUsernameExistException();
 
-    const newUser = await this.usersRepository.create({
+    const newUser = await this.userRepository.create({
       ...signUpDto,
       isViaProvider: false,
       picture: `${this.config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
@@ -131,7 +131,7 @@ export class AuthService {
   }
 
   async signOut(userId: string): Promise<StatusMessageDto> {
-    await this.usersRepository.updateOneById(userId, {
+    await this.userRepository.updateOneById(userId, {
       hashedRefreshToken: null,
     });
 
@@ -140,7 +140,7 @@ export class AuthService {
   }
 
   async refreshToken(userId: string, refreshToken: string): Promise<TokensDto> {
-    const user = await this.usersRepository.findOneById(userId, {
+    const user = await this.userRepository.findOneById(userId, {
       select: { email: 1, hashedRefreshToken: 1 },
     });
     if (!user?.hashedRefreshToken) {
@@ -167,7 +167,7 @@ export class AuthService {
     forgotPasswordDto: ForgotPasswordDto,
   ): Promise<StatusMessageDto> {
     const resetToken = this.tokenService.generateResetPasswordToken();
-    const user = await this.usersRepository.updateOne(
+    const user = await this.userRepository.updateOne(
       { email: forgotPasswordDto.email },
       {
         passwordResetToken: resetToken.hashedResetToken,

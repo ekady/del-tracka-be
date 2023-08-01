@@ -13,7 +13,7 @@ import {
 import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('My Tasks')
-@Controller('my-tasks')
+@Controller('my-task')
 export class MyTaskController {
   constructor(private myTaskService: MyTaskService) {}
 
