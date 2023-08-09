@@ -11,6 +11,8 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule, {});
+  SwaggerSetup(app, AppModule.version);
+
   app.use(helmet());
   app.enableCors({
     origin: AppModule.corsOrigin,
@@ -28,8 +30,7 @@ async function bootstrap() {
     new CastErrorException(),
   );
 
-  SwaggerSetup(app, AppModule.version);
-  await app.listen(AppModule.port);
+  await app.listen(process.env.PORT || AppModule.port);
 }
 bootstrap().catch(() => {
   //
