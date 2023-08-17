@@ -8,9 +8,12 @@ import {
   ValidationException,
   CastErrorException,
 } from './common/database/exception';
+import { ConfigService } from '@nestjs/config';
+import { setupFirebase } from './config/firebase.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule, {});
+  const config: ConfigService = app.get(ConfigService);
   SwaggerSetup(app, AppModule.version);
 
   app.use(helmet());
@@ -30,6 +33,7 @@ async function bootstrap() {
     new CastErrorException(),
   );
 
+  setupFirebase(config);
   await app.listen(process.env.PORT || AppModule.port);
 }
 bootstrap().catch(() => {

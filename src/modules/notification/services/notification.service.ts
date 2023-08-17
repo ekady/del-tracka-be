@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
-import * as path from 'path';
+import { messaging } from 'firebase-admin';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import {
@@ -14,12 +13,6 @@ import { StatusMessageDto } from 'src/shared/dto';
 import { LoggerService } from 'src/common/logger/services/logger.service';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
-
-firebase.initializeApp({
-  credential: firebase.credential.cert(
-    path.join(__dirname, '..', '..', '..', '..', 'firebase-adminsdk.json'),
-  ),
-});
 
 const ERROR_SEND_PUSH_NOTIFICATION = 'ERROR_SEND_PUSH_NOTIFICATION';
 
@@ -37,7 +30,7 @@ export class NotificationService {
     deviceId: string,
   ): Promise<void> {
     try {
-      await firebase.messaging().send({
+      await messaging().send({
         data: { ...notification },
         notification: { title: notification.title, body: notification.body },
         token: deviceId,
