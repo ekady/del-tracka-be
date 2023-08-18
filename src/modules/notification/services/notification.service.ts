@@ -110,6 +110,7 @@ export class NotificationService {
               deletedAt: notification.task.deletedAt,
               _id: notification.task._id,
               detail: notification.task.detail,
+              dueDate: notification.task.dueDate,
               feature: notification.task.feature,
               priority: notification.task.priority,
               status: notification.task.status,

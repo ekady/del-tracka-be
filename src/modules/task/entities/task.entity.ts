@@ -28,6 +28,9 @@ export class TaskEntity extends DatabaseTimestampsAbstract {
   @Prop({ required: true, type: String })
   feature: string;
 
+  @Prop({ type: Date, default: null })
+  dueDate: Date;
+
   @Prop({ required: true, type: String })
   title: string;
 

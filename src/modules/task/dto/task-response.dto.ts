@@ -22,6 +22,9 @@ export class TaskResponseDto
   updatedAt: Date;
 
   @ApiResponseProperty()
+  dueDate: Date;
+
+  @ApiResponseProperty()
   deletedAt: Date;
 
   @ApiResponseProperty()

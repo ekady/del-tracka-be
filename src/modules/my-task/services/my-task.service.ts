@@ -89,6 +89,7 @@ export class MyTaskService {
             },
             permissions: '$stage.project.userproject.role.permissions',
             updatedAt: 1,
+            dueDate: 1,
             result: 1,
           },
         },

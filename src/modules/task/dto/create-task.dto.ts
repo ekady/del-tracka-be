@@ -47,6 +47,10 @@ export class CreateTaskRequestDto {
   @ApiPropertyOptional({ type: 'string' })
   @IsOptional()
   oldImages: string;
+
+  @ApiPropertyOptional({ type: Date })
+  @IsOptional()
+  dueDate: Date;
 }
 
 export class CreateTaskDto extends OmitType(CreateTaskRequestDto, ['images']) {
