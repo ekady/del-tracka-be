@@ -76,10 +76,19 @@ export class TokenService {
       ) {
         throw new AccessTokenExpiredException();
       }
+
       if (
         secret === TokenJwtConfig.RefreshToken &&
         error.name === 'TokenExpiredError'
       ) {
+        const parseToken = this.jwtService.verify<IJwtPayload>(token, {
+          secret: this.config.get(secret),
+          ignoreExpiration: true,
+        });
+        this.userRepository.updateOneById(parseToken.id, {
+          hashedRefreshToken: null,
+          deviceId: null,
+        });
         throw new RefreshTokenExpiredException();
       }
       throw new UnauthorizedException();

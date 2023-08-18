@@ -133,9 +133,8 @@ export class AuthService {
   async signOut(userId: string): Promise<StatusMessageDto> {
     await this.userRepository.updateOneById(userId, {
       hashedRefreshToken: null,
+      deviceId: null,
     });
-
-    await this.userService.removeDevice(userId);
     return { message: 'Success' };
   }
 
