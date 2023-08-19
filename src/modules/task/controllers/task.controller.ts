@@ -143,11 +143,7 @@ export class TaskController {
       stageShortId,
       projectShortId,
     };
-    return this.taskService.updateStatusBulk(
-      ids,
-      user.id,
-      updateStatusBulkDto,
-    );
+    return this.taskService.updateStatusBulk(ids, user.id, updateStatusBulkDto);
   }
 
   @Put(':shortId')

@@ -129,9 +129,8 @@ export class ProjectService {
     shortId: string,
     queries?: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<ActivityResponseDto[]>> {
-    const project = await this.projectHelperService.findProjectByShortId(
-      shortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(shortId);
     return this.activityService.findActivityByProjectId(project._id, queries);
   }
 

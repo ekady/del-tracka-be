@@ -30,9 +30,8 @@ export class ProjectMemberService {
     addMemberDto: AddMemberDto,
   ): Promise<StatusMessageDto> {
     const { email, roleName } = addMemberDto;
-    const project = await this.projectHelperService.findProjectByShortId(
-      shortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(shortId);
     const user = await this.userService.findByEmail(email);
     const role = await this.roleService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
@@ -62,9 +61,8 @@ export class ProjectMemberService {
     updateMemberDto: UpdateMemberDto,
   ): Promise<StatusMessageDto> {
     const { userId, roleName } = updateMemberDto;
-    const project = await this.projectHelperService.findProjectByShortId(
-      shortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(shortId);
     const user = await this.userService.findOne(userId);
     const role = await this.roleService.findOneRole({ name: roleName });
     const updateUserProjectDto: UpdateUserProjectDto = {
@@ -89,9 +87,8 @@ export class ProjectMemberService {
   }
 
   async getMember(shortId: string): Promise<ProjectUserResponseDto[]> {
-    const project = await this.projectHelperService.findProjectByShortId(
-      shortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(shortId);
     return this.userProjectService.findUsersByProjectId(project._id);
   }
 
@@ -100,9 +97,8 @@ export class ProjectMemberService {
     removeMemberDto: RemoveMemberRequest,
   ): Promise<StatusMessageDto> {
     const user = await this.userService.findOne(removeMemberDto.userId);
-    const project = await this.projectHelperService.findProjectByShortId(
-      shortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(shortId);
     await this.userProjectService.deleteUserProject({
       projectId: project._id,
       userId: user._id,

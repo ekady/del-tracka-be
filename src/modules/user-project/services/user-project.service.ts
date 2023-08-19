@@ -203,9 +203,8 @@ export class UserProjectService {
   ): Promise<UserProjectDocument> {
     const { userId, projectId, roleId } = createUserProjectDto;
     const userIdProjectId = { user: userId, project: projectId };
-    const userProject = await this.userProjectRepository.findOne(
-      userIdProjectId,
-    );
+    const userProject =
+      await this.userProjectRepository.findOne(userIdProjectId);
     if (userProject)
       throw new DocumentExistException('User already exist on this project');
 

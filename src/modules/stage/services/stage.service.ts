@@ -54,9 +54,8 @@ export class StageService {
     createStageDto: CreateStageDto,
   ): Promise<StatusMessageDto> {
     const { projectShortId, ...payload } = createStageDto;
-    const project = await this.projectHelperService.findProjectByShortId(
-      projectShortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(projectShortId);
 
     await this.checkStageNameExist({
       name: payload.name,
@@ -82,9 +81,8 @@ export class StageService {
   async findAll(
     projectShortId: string,
   ): Promise<StageResponseWithoutProjectDto[]> {
-    const project = await this.projectHelperService.findProjectByShortId(
-      projectShortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(projectShortId);
     const stages = await this.stageRepository.findAll(
       { project: project._id },
       {

@@ -29,9 +29,8 @@ export class StageHelperService {
     stageId: string,
     projectShortId: string,
   ): Promise<StageDocument> {
-    const project = await this.projectHelperService.findProjectByShortId(
-      projectShortId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(projectShortId);
     const stage = await this.stageRepository.findOne(
       { project: project._id, shortId: stageId },
       { populate: true },
