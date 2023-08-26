@@ -8,17 +8,17 @@ import { DatabaseModule } from './common/database/database.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { HttpModule } from './common/http/http.module';
 import { AwsModule } from './common/aws/aws.module';
-import { UsersModule } from './modules/users/users.module';
+import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserProjectModule } from './modules/user-project/user-project.module';
 import { EmailModule } from './modules/email/email.module';
-import { ProjectsModule } from './modules/projects/projects.module';
-import { RolesModule } from './modules/roles/roles.module';
-import { StagesModule } from './modules/stages/stages.module';
-import { TasksModule } from './modules/tasks/tasks.module';
-import { CommentsModule } from './modules/comments/comments.module';
-import { ActivitiesModule } from './modules/activities/activities.module';
-import { PermissionsModule } from './modules/permissions/permission.module';
+import { ProjectModule } from './modules/project/project.module';
+import { RoleModule } from './modules/role/role.module';
+import { StageModule } from './modules/stage/stage.module';
+import { TaskModule } from './modules/task/task.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { ActivityModule } from './modules/activity/activity.module';
+import { PermissionsModule } from './modules/permission/permission.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { FileStreamModule } from './modules/file-stream/file-stream.module';
@@ -29,20 +29,20 @@ import { FileMulterModule } from './common/file-multer/file-multer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
+    ThrottlerModule.forRoot({ ttl: 60, limit: 30 }),
     FileMulterModule,
     DatabaseModule,
     HttpModule,
-    UsersModule,
+    UserModule,
     AuthModule,
     UserProjectModule,
     EmailModule,
-    ProjectsModule,
-    RolesModule,
-    StagesModule,
-    TasksModule,
-    CommentsModule,
-    ActivitiesModule,
+    ProjectModule,
+    RoleModule,
+    StageModule,
+    TaskModule,
+    CommentModule,
+    ActivityModule,
     PermissionsModule,
     NotificationModule,
     LoggerModule.forRoot(),

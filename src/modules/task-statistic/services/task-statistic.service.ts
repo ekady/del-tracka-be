@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PipelineStage } from 'mongoose';
-import { ProjectsHelperService } from 'src/modules/projects/services';
+import { ProjectHelperService } from 'src/modules/project/services';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import {
   TaskProjectCountDto,
@@ -9,16 +9,16 @@ import {
   TaskStatusStatisticDto,
 } from '../dto';
 import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
-import { StageDatabaseName } from 'src/modules/stages/entities/stage.entity';
-import { TaskDatabaseName } from 'src/modules/tasks/entities/task.entity';
-import { STATS_INITIAL_RESPONSE } from 'src/modules/tasks/constants/stats-initial-response.constant';
+import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
+import { TaskDatabaseName } from 'src/modules/task/entities/task.entity';
+import { STATS_INITIAL_RESPONSE } from 'src/modules/task/constants/stats-initial-response.constant';
 import { TaskStatus } from 'src/shared/enums';
 
 @Injectable()
 export class TaskStatisticService {
   constructor(
     private userProjectRepository: UserProjectRepository,
-    private projectsHelperService: ProjectsHelperService,
+    private projectHelperService: ProjectHelperService,
     private userProjectService: UserProjectService,
   ) {}
 
@@ -98,7 +98,7 @@ export class TaskStatisticService {
   async getTotalProjectAndTask(userId: string): Promise<TaskProjectCountDto> {
     const userProject: PipelineStage.Match = { $match: { user: userId } };
     const task = await this.getTasksStatisticByStatus(userProject);
-    const project = await this.userProjectService.findUserProjects(userId);
+    const project = await this.userProjectService.findUserProject(userId);
 
     return {
       totalProject: project.length,
@@ -106,13 +106,12 @@ export class TaskStatisticService {
     };
   }
 
-  async getTasksStatisticByProjectId(
+  async getTasksStatisticByProjectShortId(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStatisticDto[]> {
-    const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(projectShortId);
     const userProject: PipelineStage.Match = {
       $match: { user: userId, project: project._id },
     };
@@ -121,11 +120,10 @@ export class TaskStatisticService {
 
   async getTasksStatisticByStages(
     userId: string,
-    projectId: string,
+    projectShortId: string,
   ): Promise<TaskStageStatisticDto[]> {
-    const project = await this.projectsHelperService.findProjectByShortId(
-      projectId,
-    );
+    const project =
+      await this.projectHelperService.findProjectByShortId(projectShortId);
     const match: PipelineStage.Match = {
       $match: { user: userId, project: project._id },
     };

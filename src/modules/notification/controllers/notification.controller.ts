@@ -8,6 +8,7 @@ import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
 import { StatusMessageDto } from 'src/shared/dto';
 import { Throttle } from '@nestjs/throttler';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Notification')
 @Controller('notification')
@@ -17,6 +18,7 @@ export class NotificationController {
   @Get()
   @Throttle(60, 60)
   @ApiResProperty([NotificationResponseDto], 200)
+  @QueryPagination()
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
     @Query() queries: Record<string, string> & PaginationOptions,

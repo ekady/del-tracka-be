@@ -7,7 +7,7 @@ export class UpdateProfileDto extends OmitType(SignUpRequestDto, [
   'passwordConfirm',
 ]) {
   @ApiPropertyOptional({ format: 'binary', type: 'string' })
-  picture: Express.Multer.File;
+  picture?: Express.Multer.File;
 
   @ApiPropertyOptional()
   @IsOptional()

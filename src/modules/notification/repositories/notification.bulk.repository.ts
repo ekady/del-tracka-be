@@ -5,10 +5,10 @@ import {
   NotificationEntity,
 } from '../entities/notification.entity';
 import { Model } from 'mongoose';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
-import { TaskEntity } from 'src/modules/tasks/entities/task.entity';
-import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
-import { StageEntity } from 'src/modules/stages/entities/stage.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { TaskEntity } from 'src/modules/task/entities/task.entity';
+import { ProjectEntity } from 'src/modules/project/schema/project.entity';
+import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 
 export class NotificationBulkRepository extends DatabaseMongoBulkRepositoryAbstract<NotificationDocument> {
   constructor(

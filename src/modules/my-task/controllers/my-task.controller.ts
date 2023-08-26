@@ -10,19 +10,21 @@ import {
   PaginationOptions,
   PaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('My Tasks')
-@Controller('my-tasks')
+@Controller('my-task')
 export class MyTaskController {
-  constructor(private MyTaskService: MyTaskService) {}
+  constructor(private myTaskService: MyTaskService) {}
 
   @Get()
   @Throttle(60, 60)
   @ApiResProperty(MyTaskResponseDto, 200)
+  @QueryPagination()
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
     @Query() queries: Record<string, string> & PaginationOptions,
   ): Promise<PaginationResponse<MyTaskResponseDto[]>> {
-    return this.MyTaskService.findMyTask(user.id, queries);
+    return this.myTaskService.findMyTask(user.id, queries);
   }
 }

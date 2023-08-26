@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as firebase from 'firebase-admin';
-import * as path from 'path';
-import { UsersService } from 'src/modules/users/services/users.service';
+import { messaging } from 'firebase-admin';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
 import {
@@ -14,12 +12,7 @@ import { NotificationBulkRepository } from '../repositories/notification.bulk.re
 import { StatusMessageDto } from 'src/shared/dto';
 import { LoggerService } from 'src/common/logger/services/logger.service';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
-
-firebase.initializeApp({
-  credential: firebase.credential.cert(
-    path.join(__dirname, '..', '..', '..', '..', 'firebase-adminsdk.json'),
-  ),
-});
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
 
 const ERROR_SEND_PUSH_NOTIFICATION = 'ERROR_SEND_PUSH_NOTIFICATION';
 
@@ -28,7 +21,7 @@ export class NotificationService {
   constructor(
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
-    private usersService: UsersService,
+    private userRepository: UserRepository,
     private loggerService: LoggerService,
   ) {}
 
@@ -37,7 +30,7 @@ export class NotificationService {
     deviceId: string,
   ): Promise<void> {
     try {
-      await firebase.messaging().send({
+      await messaging().send({
         data: { ...notification },
         notification: { title: notification.title, body: notification.body },
         token: deviceId,
@@ -61,7 +54,9 @@ export class NotificationService {
     userId: string,
     createNotificationDto: CreateNotificationDto,
   ): Promise<boolean> {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.userRepository.findOneById(userId, {
+      select: { deviceId: 1 },
+    });
     if (!user.deviceId) return false;
 
     await this.notificationRepository.create({
@@ -115,6 +110,7 @@ export class NotificationService {
               deletedAt: notification.task.deletedAt,
               _id: notification.task._id,
               detail: notification.task.detail,
+              dueDate: notification.task.dueDate,
               feature: notification.task.feature,
               priority: notification.task.priority,
               status: notification.task.status,

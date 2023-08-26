@@ -6,10 +6,10 @@ import {
 } from '../entities/notification.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { TaskEntity } from 'src/modules/tasks/entities/task.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
-import { ProjectEntity } from 'src/modules/projects/schema/project.entity';
-import { StageEntity } from 'src/modules/stages/entities/stage.entity';
+import { TaskEntity } from 'src/modules/task/entities/task.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { ProjectEntity } from 'src/modules/project/schema/project.entity';
+import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 
 @Injectable()
 export class NotificationRepository extends DatabaseMongoRepositoryAbstract<NotificationDocument> {

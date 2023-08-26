@@ -12,7 +12,7 @@ import {
 import { TaskStatisticService } from 'src/modules/task-statistic/services/task-statistic.service';
 
 @ApiTags('Tasks Statistic')
-@Controller('tasks-statistic')
+@Controller('task-statistic')
 export class TaskStatisticController {
   constructor(private taskStatisticService: TaskStatisticService) {}
 
@@ -40,27 +40,27 @@ export class TaskStatisticController {
     return this.taskStatisticService.getTasksStatisticByUser(user.id);
   }
 
-  @Get('project/:projectId')
+  @Get('project/:projectShortId')
   @ApiResProperty([TaskStatisticDto], 200)
   getTasksStatisticByProjectId(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<TaskStatisticDto[]> {
-    return this.taskStatisticService.getTasksStatisticByProjectId(
+    return this.taskStatisticService.getTasksStatisticByProjectShortId(
       user.id,
-      projectId,
+      projectShortId,
     );
   }
 
-  @Get('project/:projectId/stages')
+  @Get('project/:projectShortId/stage')
   @ApiResProperty([TaskStageStatisticDto], 200)
   getTasksStatisticByStages(
     @JwtPayloadReq() user: IJwtPayload,
-    @Param('projectId') projectId: string,
+    @Param('projectShortId') projectShortId: string,
   ): Promise<TaskStageStatisticDto[]> {
     return this.taskStatisticService.getTasksStatisticByStages(
       user.id,
-      projectId,
+      projectShortId,
     );
   }
 }
