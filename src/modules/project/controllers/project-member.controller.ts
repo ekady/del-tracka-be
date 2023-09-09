@@ -25,7 +25,7 @@ export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}
 
   @Post(':shortId/member')
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   addMember(

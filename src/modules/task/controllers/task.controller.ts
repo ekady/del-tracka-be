@@ -63,7 +63,7 @@ export class TaskController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([TaskResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   @QueryPagination()
@@ -93,7 +93,7 @@ export class TaskController {
   }
 
   @Get(':shortId/activity')
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([ActivityResponseDto], 200)
   @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
   @QueryPagination()

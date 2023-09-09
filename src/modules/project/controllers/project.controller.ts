@@ -45,7 +45,7 @@ export class ProjectController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([ProjectResponseWithStagesDto], 200)
   findAll(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
@@ -65,7 +65,7 @@ export class ProjectController {
   }
 
   @Get(':shortId/activity')
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @QueryPagination()

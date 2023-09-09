@@ -54,7 +54,7 @@ export class StageController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
   findAll(
@@ -74,7 +74,7 @@ export class StageController {
   }
 
   @Get(':shortId/activity')
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @QueryPagination()

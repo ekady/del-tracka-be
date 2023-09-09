@@ -29,7 +29,7 @@ import { FileMulterModule } from './common/file-multer/file-multer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    ThrottlerModule.forRoot({ ttl: 60, limit: 30 }),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 30 }]),
     FileMulterModule,
     DatabaseModule,
     HttpModule,

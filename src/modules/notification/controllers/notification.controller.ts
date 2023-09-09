@@ -16,7 +16,7 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([NotificationResponseDto], 200)
   @QueryPagination()
   findAll(

@@ -43,7 +43,7 @@ export class CommentController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([CommentResponse], 201)
   @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
   @QueryPagination()

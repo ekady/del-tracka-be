@@ -30,7 +30,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('sign-in')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @Post('with-provider')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(TokensDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -50,7 +50,7 @@ export class AuthController {
   }
 
   @Post('sign-up')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(StatusMessageDto, 201, { isDisableAuth: true })
   @SkipAuth()
   async signUp(@Body() signUpDto: SignUpRequestDto): Promise<StatusMessageDto> {
@@ -77,7 +77,7 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -86,7 +86,7 @@ export class AuthController {
   }
 
   @Get('verify-reset-token')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)
@@ -97,7 +97,7 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  @Throttle(5, 3600)
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiResProperty(StatusMessageDto, 200, { isDisableAuth: true })
   @SkipAuth()
   @HttpCode(200)

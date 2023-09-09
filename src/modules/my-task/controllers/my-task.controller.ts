@@ -18,7 +18,7 @@ export class MyTaskController {
   constructor(private myTaskService: MyTaskService) {}
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty(MyTaskResponseDto, 200)
   @QueryPagination()
   findAll(
