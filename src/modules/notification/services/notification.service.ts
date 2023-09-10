@@ -57,7 +57,6 @@ export class NotificationService {
     const user = await this.userRepository.findOneById(userId, {
       select: { deviceId: 1 },
     });
-    if (!user.deviceId) return false;
 
     await this.notificationRepository.create({
       ...createNotificationDto,
@@ -65,6 +64,7 @@ export class NotificationService {
       user: user._id,
     });
 
+    if (!user.deviceId) return false;
     for (const deviceId of user.deviceId) {
       await this.sendPushNotification(createNotificationDto, deviceId);
     }
