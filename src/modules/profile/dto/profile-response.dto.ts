@@ -27,4 +27,7 @@ export class ProfileResponseDto
 
   @ApiResponseProperty()
   deletedAt: Date;
+
+  @ApiResponseProperty()
+  isDemo?: boolean;
 }

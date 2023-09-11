@@ -24,6 +24,7 @@ export class ProfileService {
       firstName: user.firstName,
       lastName: user.lastName,
       deletedAt: user.deletedAt,
+      isDemo: user.isDemo,
     };
   }
 
