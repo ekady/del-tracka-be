@@ -1,4 +1,8 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  StreamableFile,
+} from '@nestjs/common';
 import { IContent, IJsonSheet } from 'json-as-xlsx';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -120,8 +124,14 @@ export class ProjectService {
   }
 
   async remove(shortId: string): Promise<StatusMessageDto> {
-    const project = await this.projectRepository.softDeleteOne({ shortId });
-    await this.userProjectService.deleteAllUserProject(project._id);
+    const project = await this.projectRepository.findOne({ shortId });
+    if (project.isDemo)
+      throw new BadRequestException('Cannot remove demo project');
+
+    const deletedProject = await this.projectRepository.softDeleteOne({
+      shortId,
+    });
+    await this.userProjectService.deleteAllUserProject(deletedProject._id);
     return { message: 'Success' };
   }
 

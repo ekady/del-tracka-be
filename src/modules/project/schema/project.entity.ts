@@ -27,6 +27,9 @@ export class ProjectEntity extends DatabaseTimestampsAbstract {
 
   @Prop({ type: String, unique: true })
   shortId: string;
+
+  @Prop({ default: false })
+  isDemo: boolean;
 }
 
 export type ProjectDocument = ProjectEntity & Document;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/shared/dto';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
@@ -75,6 +75,9 @@ export class ProfileService {
   }
 
   async deleteProfile(id: string): Promise<StatusMessageDto> {
+    const user = await this.userRepository.findOneById(id);
+    if (user.isDemo)
+      throw new BadRequestException('Cannot remove demo account');
     await this.userRepository.softDeleteOneById(id);
     return { message: 'Success' };
   }

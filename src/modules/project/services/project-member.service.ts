@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { StatusMessageDto } from 'src/shared/dto';
 import { RoleService } from 'src/modules/role/services/role.service';
 import {
@@ -33,6 +33,13 @@ export class ProjectMemberService {
     const project =
       await this.projectHelperService.findProjectByShortId(shortId);
     const user = await this.userService.findByEmail(email);
+
+    if (project.isDemo && !user.isDemo)
+      throw new BadRequestException('Cannot add this user to demo project');
+
+    if (!project.isDemo && user.isDemo)
+      throw new BadRequestException('Cannot add demo user to this project');
+
     const role = await this.roleService.findOneRole({ name: roleName });
     const createUserProjectDto: CreateUserProjectDto = {
       projectId: project._id,

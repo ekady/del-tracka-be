@@ -19,5 +19,6 @@ export const ProjectDemoSeed = [
       $oid: '64f7ae680d3d0f4944657a14',
     },
     shortId: 'kOYgLbtgRT',
+    isDemo: true,
   },
 ];

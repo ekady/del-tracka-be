@@ -128,6 +128,7 @@ const addDemoData = async (): Promise<void> => {
   await activityDropIndex();
   await ActivityModel.insertMany(EJSON.deserialize(ActivityDemoSeed));
   await NotificationModel.insertMany(EJSON.deserialize(NotificationDemoSeed));
+  await activityDropIndex();
 };
 
 const importData = async (): Promise<void> => {
@@ -156,8 +157,8 @@ const deleteData = async (): Promise<void> => {
     await TaskModel.deleteMany({}).exec();
     await CommentModel.deleteMany({}).exec();
     await NotificationModel.deleteMany({}).exec();
-    await activityDropIndex();
     await ActivityModel.deleteMany({}).exec();
+    await activityDropIndex();
 
     console.log('Delete data success');
   } catch (_) {
