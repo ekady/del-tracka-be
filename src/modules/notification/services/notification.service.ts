@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { messaging } from 'firebase-admin';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { CreateNotificationDto } from '../dto/create-notification.dto';
@@ -22,7 +22,7 @@ export class NotificationService {
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
     private userRepository: UserRepository,
-    private loggerService: LoggerService,
+    @Optional() private loggerService: LoggerService,
   ) {}
 
   private async sendPushNotification(

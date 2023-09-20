@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  Optional,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
@@ -14,7 +15,7 @@ import { decodeJwt } from 'src/shared/helpers';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
-  constructor(private readonly loggerService: LoggerService) {}
+  constructor(@Optional() private readonly loggerService: LoggerService) {}
 
   private saveToLogger(
     exception: HttpException,
