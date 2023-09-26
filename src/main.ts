@@ -14,7 +14,7 @@ import { setupFirebase } from './config/firebase.config';
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule, {});
   const config: ConfigService = app.get(ConfigService);
-  SwaggerSetup(app, AppModule.version);
+  if (AppModule.enableSwagger) SwaggerSetup(app, AppModule.version);
 
   app.use(helmet());
   app.enableCors({
