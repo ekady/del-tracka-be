@@ -258,10 +258,13 @@ export class UserProjectService {
     updateUserProjectDto: UpdateUserProjectDto,
   ): Promise<UserProjectDocument> {
     const { userId, projectId } = updateUserProjectDto;
-    const userProject = await this.userProjectRepository.findOne({
-      user: userId,
-      project: projectId,
-    });
+    const userProject = await this.userProjectRepository.findOne(
+      {
+        user: userId,
+        project: projectId,
+      },
+      { populate: true },
+    );
 
     if (!userProject)
       throw new BadRequestException('User not found on this project');
