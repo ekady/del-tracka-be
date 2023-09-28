@@ -25,6 +25,7 @@ import { FileStreamModule } from './modules/file-stream/file-stream.module';
 import { MyTaskModule } from './modules/my-task/my-task.module';
 import { TaskStatisticModule } from './modules/task-statistic/task-statistic.module';
 import { FileMulterModule } from './common/file-multer/file-multer.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { FileMulterModule } from './common/file-multer/file-multer.module';
     MyTaskModule,
     TaskStatisticModule,
   ],
+  controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {
