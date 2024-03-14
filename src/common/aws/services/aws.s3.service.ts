@@ -48,6 +48,7 @@ import {
   CompleteMultipartUploadCommandOutput,
   AbortMultipartUploadCommandOutput,
   _Object,
+  ObjectCannedACL,
 } from '@aws-sdk/client-s3';
 import { generateShortId } from 'src/shared/helpers';
 
@@ -165,7 +166,7 @@ export class AwsS3Service {
   ): Promise<AwsS3Serialization> {
     const filename = `${generateShortId(15)}.${contentOptions.extension}`;
     let path: string = options?.path;
-    const acl: string = options?.acl ? options.acl : 'public-read';
+    const acl: ObjectCannedACL = options?.acl ? options.acl : 'public-read';
 
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
@@ -291,7 +292,7 @@ export class AwsS3Service {
     options?: IAwsS3PutItemOptions,
   ): Promise<AwsS3MultipartSerialization> {
     let path: string = options?.path;
-    const acl: string = options?.acl ? options.acl : 'public-read';
+    const acl: ObjectCannedACL = options?.acl ? options.acl : 'public-read';
 
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
