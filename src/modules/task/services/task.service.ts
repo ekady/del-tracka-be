@@ -159,96 +159,6 @@ export class TaskService {
     }
   }
 
-  private async update(
-    ids: ITaskShortIds & { userId: string },
-    updateRequestDto: UpdateTaskRequestDto,
-    type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
-  ): Promise<TaskDocument> {
-    const { projectShortId, stageShortId, userId } = ids;
-    const stage = await this.stageHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
-    );
-    const taskFound = await this.taskHelperService.findTaskByShortId(ids);
-    await this.checkTaskExist(
-      { projectId: stage.project._id, stageId: stage._id },
-      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
-    );
-    const { images, oldImages, assignee, reporter, ...taskValues } =
-      updateRequestDto;
-
-    const { reporter: userReporter, assignee: userAssignee } =
-      await this.findReporterAndAssignee(
-        reporter,
-        assignee,
-        stage.project.shortId,
-      );
-
-    const oldImagesArray: AwsS3Serialization[] = oldImages
-      ? JSON.parse(oldImages)
-      : [];
-    const oldImagePaths =
-      oldImagesArray?.map((image) => image.completedPath) ?? [];
-    const imagesToBeDeleted = taskFound.images
-      .filter((image) => !oldImagePaths.includes(image.completedPath))
-      .map((image) => image.completedPath);
-
-    const imageUploaded = await this.putImageToS3(images);
-    await this.deleteImagesFromS3(imagesToBeDeleted);
-
-    const payload: UpdateTaskDto = {
-      ...taskValues,
-      updatedBy: userId,
-      reporter: userReporter?.user._id,
-      assignee: userAssignee?.user._id,
-      images: [...imageUploaded, ...oldImagesArray],
-    };
-    const taskUpdate = await this.taskRepository.updateOne(
-      { _id: taskFound._id, stage: stage._id },
-      payload,
-      { populate: true },
-    );
-
-    const user = await this.userService.findOne(userId);
-    const notifPayload: CreateNotificationDto = {
-      title:
-        type === ActivityName.UPDATE_TASK
-          ? 'Update Task'
-          : 'Update Task Status',
-      body: TransformActivityMessage[type]({
-        taskBefore: taskFound,
-        taskAfter: taskUpdate,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        createdBy: user,
-      }),
-      type,
-      webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
-      task: taskUpdate._id.toString(),
-    };
-
-    this.createUserNotification(
-      {
-        assigneeId: taskUpdate?.assignee?._id,
-        reporterId: taskUpdate?.reporter?._id,
-        userId,
-      },
-      notifPayload,
-    );
-
-    await this.createTaskActivity({
-      type,
-      createdBy: taskUpdate.updatedBy._id,
-      project: stage.project._id,
-      stageBefore: stage.depopulate(),
-      stageAfter: taskUpdate.stage,
-      taskBefore: taskFound.depopulate(),
-      taskAfter: taskUpdate.depopulate(),
-    });
-
-    return taskFound;
-  }
-
   async moveToStage(
     ids: IStageShortIds,
     moveToStageDto: MoveToStageDto,
@@ -479,11 +389,85 @@ export class TaskService {
     userId: string,
     updateRequestDto: UpdateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    await this.update(
-      { ...ids, userId },
-      updateRequestDto,
-      ActivityName.UPDATE_TASK,
+    const { projectShortId, stageShortId } = ids;
+    const stage = await this.stageHelperService.findStageByShortId(
+      stageShortId,
+      projectShortId,
     );
+    const taskFound = await this.taskHelperService.findTaskByShortId(ids);
+    await this.checkTaskExist(
+      { projectId: stage.project._id, stageId: stage._id },
+      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
+    );
+    const { images, oldImages, assignee, reporter, ...taskValues } =
+      updateRequestDto;
+
+    const { reporter: userReporter, assignee: userAssignee } =
+      await this.findReporterAndAssignee(
+        reporter,
+        assignee,
+        stage.project.shortId,
+      );
+
+    const oldImagesArray: AwsS3Serialization[] = oldImages
+      ? JSON.parse(oldImages)
+      : [];
+    const oldImagePaths =
+      oldImagesArray?.map((image) => image.completedPath) ?? [];
+    const imagesToBeDeleted = taskFound.images
+      .filter((image) => !oldImagePaths.includes(image.completedPath))
+      .map((image) => image.completedPath);
+
+    const imageUploaded = await this.putImageToS3(images);
+    await this.deleteImagesFromS3(imagesToBeDeleted);
+
+    const payload: UpdateTaskDto = {
+      ...taskValues,
+      updatedBy: userId,
+      reporter: userReporter?.user._id,
+      assignee: userAssignee?.user._id,
+      images: [...imageUploaded, ...oldImagesArray],
+    };
+    const taskUpdate = await this.taskRepository.updateOne(
+      { _id: taskFound._id, stage: stage._id },
+      payload,
+      { populate: true },
+    );
+
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title: 'Update Task',
+      body: TransformActivityMessage[ActivityName.UPDATE_TASK]({
+        taskBefore: taskFound,
+        taskAfter: taskUpdate,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+      }),
+      type: ActivityName.UPDATE_TASK,
+      webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+      task: taskUpdate._id.toString(),
+    };
+
+    this.createUserNotification(
+      {
+        assigneeId: taskUpdate?.assignee?._id,
+        reporterId: taskUpdate?.reporter?._id,
+        userId,
+      },
+      notifPayload,
+    );
+
+    await this.createTaskActivity({
+      type: ActivityName.UPDATE_TASK,
+      createdBy: taskUpdate.updatedBy._id,
+      project: stage.project._id,
+      stageBefore: stage.depopulate(),
+      stageAfter: taskUpdate.stage,
+      taskBefore: taskFound.depopulate(),
+      taskAfter: taskUpdate.depopulate(),
+    });
+
     return { message: 'Success' };
   }
 
@@ -493,11 +477,56 @@ export class TaskService {
     updateStatusDto: UpdateStatusTaskDto,
   ): Promise<StatusMessageDto> {
     try {
-      await this.update(
-        { ...ids, userId },
-        updateStatusDto,
-        ActivityName.UPDATE_TASK_STATUS,
+      const { projectShortId, stageShortId } = ids;
+      const stage = await this.stageHelperService.findStageByShortId(
+        stageShortId,
+        projectShortId,
       );
+      const taskFound = await this.taskHelperService.findTaskByShortId(ids);
+      const payload: UpdateTaskDto = {
+        updatedBy: userId,
+        ...updateStatusDto,
+      };
+      const taskUpdate = await this.taskRepository.updateOne(
+        { _id: taskFound._id, stage: stage._id },
+        payload,
+        { populate: true },
+      );
+
+      const user = await this.userService.findOne(userId);
+      const notifPayload: CreateNotificationDto = {
+        title: 'Update Task Status',
+        body: TransformActivityMessage.UPDATE_TASK_STATUS({
+          taskBefore: taskFound,
+          taskAfter: taskUpdate,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: user,
+        }),
+        type: ActivityName.UPDATE_TASK_STATUS,
+        webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+        task: taskUpdate._id.toString(),
+      };
+
+      this.createUserNotification(
+        {
+          assigneeId: taskUpdate?.assignee?._id,
+          reporterId: taskUpdate?.reporter?._id,
+          userId,
+        },
+        notifPayload,
+      );
+
+      await this.createTaskActivity({
+        type: ActivityName.UPDATE_TASK_STATUS,
+        createdBy: taskUpdate.updatedBy._id,
+        project: stage.project._id,
+        stageBefore: stage.depopulate(),
+        stageAfter: taskUpdate.stage,
+        taskBefore: taskFound.depopulate(),
+        taskAfter: taskUpdate.depopulate(),
+      });
+
       return { message: 'Success' };
     } catch {
       return { message: 'Failed' };
