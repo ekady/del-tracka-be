@@ -24,7 +24,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
-@Controller('auth')
+@Controller('authentication')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
