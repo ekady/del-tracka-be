@@ -131,10 +131,14 @@ export class AuthService {
   }
 
   async signOut(userId: string): Promise<StatusMessageDto> {
-    await this.userRepository.updateOneById(userId, {
-      hashedRefreshToken: null,
-      deviceId: null,
-    });
+    try {
+      await this.userRepository.updateOneById(userId, {
+        hashedRefreshToken: null,
+        deviceId: null,
+      });
+    } catch {
+      //
+    }
     return { message: 'Success' };
   }
 
