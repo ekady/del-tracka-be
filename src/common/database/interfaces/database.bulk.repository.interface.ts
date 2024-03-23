@@ -1,44 +1,44 @@
 import {
-  DatabaseCreateManyOptions,
-  DatabaseManyOptions,
-  DatabaseSoftDeleteManyOptions,
-  DatabaseRestoreManyOptions,
+  TDatabaseCreateManyOptions,
+  TDatabaseManyOptions,
+  TDatabaseSoftDeleteManyOptions,
+  TDatabaseRestoreManyOptions,
 } from './database.interface';
 
-export interface DatabaseBulkRepositoryAbstract {
+export interface IDatabaseBulkRepositoryAbstract {
   createMany<N>(
     data: N[],
-    options?: DatabaseCreateManyOptions,
+    options?: TDatabaseCreateManyOptions,
   ): Promise<boolean>;
 
   deleteManyById(
     _id: string[],
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean>;
 
   deleteMany(
     find: Record<string, any>,
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean>;
 
   softDeleteManyById(
     _id: string[],
-    options?: DatabaseSoftDeleteManyOptions,
+    options?: TDatabaseSoftDeleteManyOptions,
   ): Promise<boolean>;
 
   softDeleteMany(
     find: Record<string, any>,
-    options?: DatabaseSoftDeleteManyOptions,
+    options?: TDatabaseSoftDeleteManyOptions,
   ): Promise<boolean>;
 
   restore(
     _id: string[],
-    options?: DatabaseRestoreManyOptions,
+    options?: TDatabaseRestoreManyOptions,
   ): Promise<boolean>;
 
   updateMany<N>(
     find: Record<string, any>,
     data: N,
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean>;
 }

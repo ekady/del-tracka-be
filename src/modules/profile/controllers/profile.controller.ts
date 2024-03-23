@@ -9,13 +9,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ProfileService } from '../services/profile.service';
+
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/shared/decorators';
-import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { StatusMessageDto } from 'src/shared/dto';
+import { ProfileService } from '../services/profile.service';
+import { ProfileResponseDto } from '../dto/profile-response.dto';
 
 @Controller('profile')
 @ApiTags('Profile')

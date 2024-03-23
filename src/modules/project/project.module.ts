@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserModule } from 'src/modules/user/user.module';
+import { UserProjectModule } from 'src/modules/user-project/user-project.module';
+import { RoleModule } from 'src/modules/role/role.module';
+import { ActivityModule } from 'src/modules/activity/activity.module';
 import {
   ProjectMemberService,
   ProjectHelperService,
   ProjectService,
 } from './services';
 import { ProjectController } from './controllers/project.controller';
-import { UserModule } from 'src/modules/user/user.module';
-import { UserProjectModule } from 'src/modules/user-project/user-project.module';
-import { RoleModule } from 'src/modules/role/role.module';
-import { ActivityModule } from 'src/modules/activity/activity.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ProjectSchemaProvider } from './schema/project-entity.provider';
 import { ProjectRepository } from './repositories/project.repository';
 import { ProjectMemberController } from './controllers/project-member.controller';

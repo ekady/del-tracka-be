@@ -1,14 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  IAwsS3ContentOptions,
-  IAwsS3PutItemOptions,
-} from 'src/common/aws/interfaces/aws.interface';
-import {
-  AwsS3MultipartPartsSerialization,
-  AwsS3MultipartSerialization,
-} from 'src/common/aws/serializations/aws.s3-multipart.serialization';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import { Readable } from 'stream';
 import {
   S3Client,
@@ -50,7 +41,17 @@ import {
   _Object,
   ObjectCannedACL,
 } from '@aws-sdk/client-s3';
+
 import { generateShortId } from 'src/shared/helpers';
+import {
+  IAwsS3ContentOptions,
+  IAwsS3PutItemOptions,
+} from 'src/common/aws/interfaces/aws.interface';
+import {
+  AwsS3MultipartPartsSerialization,
+  AwsS3MultipartSerialization,
+} from 'src/common/aws/serializations/aws.s3-multipart.serialization';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class AwsS3Service {

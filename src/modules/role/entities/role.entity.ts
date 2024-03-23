@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { RoleName } from 'src/shared/enums';
+import { ERoleName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 
 export const RoleDatabaseName = 'roles';
@@ -9,7 +9,7 @@ export const RoleDatabaseName = 'roles';
 export class RoleEntity extends DatabaseTimestampsAbstract {
   _id: string;
 
-  @Prop({ required: true, enum: RoleName, unique: true })
+  @Prop({ required: true, enum: ERoleName, unique: true })
   name: string;
 
   @Prop({ required: true, default: false })
@@ -19,7 +19,7 @@ export class RoleEntity extends DatabaseTimestampsAbstract {
   priority: number;
 }
 
-export type RoleDocument = RoleEntity & Document;
+export type TRoleDocument = RoleEntity & Document;
 
 export const RoleSchema = SchemaFactory.createForClass(RoleEntity);
 

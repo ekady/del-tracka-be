@@ -6,13 +6,19 @@ import {
 import { IContent, IJsonSheet } from 'json-as-xlsx';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
 import { StatusMessageDto } from 'src/shared/dto';
-import { RoleName } from 'src/shared/enums';
+import { ERoleName } from 'src/shared/enums';
 import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { ActivityResponseDto } from 'src/modules/activity/dto';
 import { RoleService } from 'src/modules/role/services/role.service';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import { ActivityService } from 'src/modules/activity/services/activity.service';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { PermissionService } from 'src/modules/permission/services/permission.service';
 import {
   CreateProjectDto,
   ProjectResponseDto,
@@ -21,11 +27,6 @@ import {
 } from '../dto';
 import { ProjectHelperService } from './project-helper.service';
 import { ProjectRepository } from '../repositories/project.repository';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { PermissionService } from 'src/modules/permission/services/permission.service';
 import { TransformActivityMessage } from '../helpers/transform-activity.helper';
 import { generateExcel } from '../helpers/generate-excel.helper';
 
@@ -50,7 +51,7 @@ export class ProjectService {
       updatedBy: userId,
     };
     const role = await this.roleService.findOneRole({
-      name: RoleName.OWNER,
+      name: ERoleName.OWNER,
     });
     const project = await this.projectRepository.create(payload);
 
@@ -137,8 +138,8 @@ export class ProjectService {
 
   async findActivity(
     shortId: string,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const project =
       await this.projectHelperService.findProjectByShortId(shortId);
     return this.activityService.findActivityByProjectId(project._id, queries);
@@ -146,7 +147,7 @@ export class ProjectService {
 
   async getActivityPdf(
     shortId: string,
-    queries?: Record<string, string> & PaginationOptions,
+    queries?: Record<string, string> & IPaginationOptions,
   ): Promise<StreamableFile> {
     const activities = await this.findActivity(shortId, queries);
 
@@ -190,7 +191,7 @@ export class ProjectService {
 
   async getActivityExcel(
     shortId: string,
-    queries?: Record<string, string> & PaginationOptions,
+    queries?: Record<string, string> & IPaginationOptions,
   ): Promise<StreamableFile> {
     const activities = await this.findActivity(shortId, queries);
 

@@ -1,7 +1,7 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { EntityResponseDto } from 'src/shared/dto';
-import { UpdateProfileDto } from './update-profile.dto';
+import { IEntityResponseDto } from 'src/shared/dto';
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { UpdateProfileDto } from './update-profile.dto';
 
 export class ProfileResponseDto
   extends PartialType(
@@ -11,7 +11,7 @@ export class ProfileResponseDto
       'passwordConfirm',
     ] as const),
   )
-  implements EntityResponseDto
+  implements IEntityResponseDto
 {
   @ApiResponseProperty()
   picture: AwsS3Serialization;

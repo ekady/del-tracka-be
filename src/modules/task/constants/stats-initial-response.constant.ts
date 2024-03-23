@@ -1,11 +1,11 @@
-import { TaskStatus } from 'src/shared/enums';
+import { ETaskStatus } from 'src/shared/enums';
 
 export const STATS_INITIAL_RESPONSE = {
-  [TaskStatus.Open]: 0,
-  [TaskStatus.InProgress]: 0,
-  [TaskStatus.ReadyForTest]: 0,
-  [TaskStatus.Review]: 0,
-  [TaskStatus.Failed]: 0,
-  [TaskStatus.Closed]: 0,
-  [TaskStatus.Hold]: 0,
+  [ETaskStatus.Open]: 0,
+  [ETaskStatus.InProgress]: 0,
+  [ETaskStatus.ReadyForTest]: 0,
+  [ETaskStatus.Review]: 0,
+  [ETaskStatus.Failed]: 0,
+  [ETaskStatus.Closed]: 0,
+  [ETaskStatus.Hold]: 0,
 };

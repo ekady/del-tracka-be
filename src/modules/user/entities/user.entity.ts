@@ -67,7 +67,7 @@ export class UserEntity extends DatabaseTimestampsAbstract {
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
 
-export type UserDocument = UserEntity & Document;
+export type TUserDocument = UserEntity & Document;
 
 export const UserFeature: ModelDefinition = {
   name: UserEntity.name,

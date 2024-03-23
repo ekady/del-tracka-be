@@ -1,4 +1,4 @@
-export enum PermissionMenu {
+export enum EPermissionMenu {
   Create = 'create',
   Read = 'read',
   Update = 'update',

@@ -11,21 +11,22 @@ import {
   Header,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { ProjectService } from '../services';
-import { CreateProjectDto } from '../dto/create-project.dto';
-import { UpdateProjectDto } from '../dto/update-project.dto';
+import { ApiTags } from '@nestjs/swagger';
+
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
-import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
-import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/role/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activity/dto';
+import { ProjectService } from '../services';
+import { CreateProjectDto } from '../dto/create-project.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
+import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
 import {
-  PaginationOptions,
-  PaginationResponse,
+  IPaginationOptions,
+  IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
 import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
@@ -55,7 +56,7 @@ export class ProjectController {
   }
 
   @Get(':shortId')
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Read)
   @ApiResProperty(ProjectResponseWithStagesDto, 200)
   findOne(
     @Param('shortId') shortId: string,
@@ -66,28 +67,28 @@ export class ProjectController {
 
   @Get(':shortId/activity')
   @Throttle({ default: { limit: 60, ttl: 60000 } })
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @QueryPagination()
   findActivity(
     @Param('shortId') shortId: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query() queries: Record<string, string> & IPaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     queries.startDate = startDate;
     queries.endDate = endDate;
     return this.projectService.findActivity(shortId, queries);
   }
 
   @Post(':shortId/activity/pdf')
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Read)
   @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="Project Activity.pdf"')
   createActivityPdf(
     @Param('shortId') shortId: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query() queries: Record<string, string> & IPaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ): Promise<StreamableFile> {
@@ -98,13 +99,13 @@ export class ProjectController {
   }
 
   @Post(':shortId/activity/xlsx')
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Read)
   @ApiResProperty(StreamableFile, 200, { defaultStructure: false })
   @Header('Content-Type', 'application/octet-stream')
   @Header('Content-Disposition', 'attachment; filename="Activity.xlsx"')
   createActivityExcel(
     @Param('shortId') shortId: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query() queries: Record<string, string> & IPaginationOptions,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ): Promise<StreamableFile> {
@@ -115,7 +116,7 @@ export class ProjectController {
   }
 
   @Put(':shortId')
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
@@ -127,7 +128,7 @@ export class ProjectController {
   }
 
   @Delete(':shortId')
-  @RolePermission(ProjectMenu.Project, PermissionMenu.Delete)
+  @RolePermission(EProjectMenu.Project, EPermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   remove(@Param('shortId') shortId: string): Promise<StatusMessageDto> {
     return this.projectService.remove(shortId);

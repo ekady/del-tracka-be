@@ -32,7 +32,7 @@ export class ProjectEntity extends DatabaseTimestampsAbstract {
   isDemo: boolean;
 }
 
-export type ProjectDocument = ProjectEntity & Document;
+export type TProjectDocument = ProjectEntity & Document;
 
 export const ProjectSchema = SchemaFactory.createForClass(ProjectEntity);
 

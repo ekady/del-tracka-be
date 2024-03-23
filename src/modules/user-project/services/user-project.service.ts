@@ -1,18 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
-import { RoleName } from 'src/shared/enums';
+
+import { ERoleName } from 'src/shared/enums';
 import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
 import {
   ProjectDatabaseName,
-  ProjectDocument,
+  TProjectDocument,
 } from 'src/modules/project/schema/project.entity';
 import {
   RoleDatabaseName,
-  RoleDocument,
+  TRoleDocument,
 } from 'src/modules/role/entities/role.entity';
 import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
-import { UserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
+import { TUserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
 import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
 import {
   CreateUserProjectDto,
@@ -32,8 +33,8 @@ export class UserProjectService {
 
   async findUserProject(
     userId: string,
-    queryProject?: FilterQuery<ProjectDocument>,
-    queryRole?: FilterQuery<RoleDocument>,
+    queryProject?: FilterQuery<TProjectDocument>,
+    queryRole?: FilterQuery<TRoleDocument>,
   ): Promise<UserProjectResponseDto[]> {
     const objectUserId = new Types.ObjectId(userId);
     const matchProject = queryProject ?? {};
@@ -148,7 +149,7 @@ export class UserProjectService {
     return userProject;
   }
 
-  async findProjectByUserId(userId: string): Promise<UserProjectDocument[]> {
+  async findProjectByUserId(userId: string): Promise<TUserProjectDocument[]> {
     const projects = await this.userProjectRepository.findAll(
       { user: userId },
       { limit: undefined, page: undefined, disablePagination: true },
@@ -186,7 +187,7 @@ export class UserProjectService {
   async findUserProjectByRoleId(
     projectId: string,
     roleId: string,
-  ): Promise<UserProjectDocument[]> {
+  ): Promise<TUserProjectDocument[]> {
     const data = await this.userProjectRepository.findAll(
       {
         project: projectId,
@@ -200,7 +201,7 @@ export class UserProjectService {
   async addUserProject(
     createUserProjectDto: CreateUserProjectDto,
     userCreatedId: string,
-  ): Promise<UserProjectDocument> {
+  ): Promise<TUserProjectDocument> {
     const { userId, projectId, roleId } = createUserProjectDto;
     const userIdProjectId = { user: userId, project: projectId };
     const userProject =
@@ -220,12 +221,12 @@ export class UserProjectService {
   async updateUserProject(
     updateUserProjectDto: UpdateUserProjectDto,
     userUpdatedId: string,
-  ): Promise<UserProjectDocument> {
+  ): Promise<TUserProjectDocument> {
     const { userId, projectId, roleId } = updateUserProjectDto;
     const userOwner = await this.findUserProject(
       userId,
       { _id: projectId },
-      { name: RoleName.OWNER },
+      { name: ERoleName.OWNER },
     );
     const owners = await this.findUserProjectByRoleId(
       projectId,
@@ -256,7 +257,7 @@ export class UserProjectService {
 
   async deleteUserProject(
     updateUserProjectDto: UpdateUserProjectDto,
-  ): Promise<UserProjectDocument> {
+  ): Promise<TUserProjectDocument> {
     const { userId, projectId } = updateUserProjectDto;
     const userProject = await this.userProjectRepository.findOne(
       {
@@ -271,7 +272,7 @@ export class UserProjectService {
 
     const { name: roleName, _id: roleId } = userProject.role;
     const userRole = await this.findUserProjectByRoleId(projectId, roleId);
-    if (roleName === RoleName.OWNER && userRole.length < 2) {
+    if (roleName === ERoleName.OWNER && userRole.length < 2) {
       throw new BadRequestException(
         'This user is the only owner of this project',
       );

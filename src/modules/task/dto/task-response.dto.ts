@@ -1,16 +1,16 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { EntityResponseDto } from 'src/shared/dto';
+import { IEntityResponseDto } from 'src/shared/dto';
 import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { CreateTaskRequestDto } from './create-task.dto';
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { CreateTaskRequestDto } from './create-task.dto';
 
 export class TaskResponseDto
   extends PartialType(
     OmitType(CreateTaskRequestDto, ['images', 'assignee', 'reporter']),
   )
-  implements EntityResponseDto
+  implements IEntityResponseDto
 {
   @ApiResponseProperty()
   _id?: string;

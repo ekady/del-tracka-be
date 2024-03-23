@@ -1,4 +1,4 @@
-export enum TaskStatus {
+export enum ETaskStatus {
   Open = 'OPEN',
   InProgress = 'IN_PROGRESS',
   ReadyForTest = 'READY_FOR_TEST',
@@ -8,7 +8,7 @@ export enum TaskStatus {
   Hold = 'HOLD',
 }
 
-export type StatusType =
+export type TStatusType =
   | 'OPEN'
   | 'IN_PROGRESS'
   | 'REVIEW'
@@ -17,11 +17,11 @@ export type StatusType =
   | 'FAILED'
   | 'HOLD';
 
-export type StatusIndexable = {
-  [key in StatusType]: { value: string; name: string };
+export type TStatusIndexable = {
+  [key in TStatusType]: { value: string; name: string };
 };
 
-export const STATUS: StatusIndexable = {
+export const STATUS: TStatusIndexable = {
   OPEN: { value: 'OPEN', name: 'Open' },
   IN_PROGRESS: { value: 'IN_PROGRESS', name: 'In Progress' },
   REVIEW: { value: 'REVIEW', name: 'Review' },

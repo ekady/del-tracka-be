@@ -1,5 +1,5 @@
 import { MongooseModuleOptions } from '@nestjs/mongoose';
 
-export interface DatabaseOptionsService {
+export interface IDatabaseOptionsService {
   createMongooseOptions(): MongooseModuleOptions;
 }

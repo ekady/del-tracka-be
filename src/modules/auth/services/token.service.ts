@@ -2,20 +2,21 @@ import * as crypto from 'crypto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { OAuth2Client } from 'google-auth-library';
+import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
+
 import {
   AccessTokenExpiredException,
   CredentialInvalidException,
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/shared/http-exceptions/exceptions';
-import { UserDocument } from 'src/modules/user/entities/user.entity';
+import { TUserDocument } from 'src/modules/user/entities/user.entity';
 import { HashHelper } from 'src/shared/helpers';
-import { TokensDto } from '../dto';
-import { TokenJwtConfig } from '../enum';
-import { OAuth2Client } from 'google-auth-library';
-import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
-import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { TokensDto } from '../dto';
+import { ETokenJwtConfig } from '../enum';
+import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 
 @Injectable()
 export class TokenService {
@@ -63,7 +64,7 @@ export class TokenService {
     return payload;
   }
 
-  verifyToken(token: string, secret: TokenJwtConfig) {
+  verifyToken(token: string, secret: ETokenJwtConfig) {
     try {
       return this.jwtService.verify(token, {
         secret: this.config.get(secret),
@@ -71,14 +72,14 @@ export class TokenService {
       });
     } catch (error) {
       if (
-        secret === TokenJwtConfig.AccessToken &&
+        secret === ETokenJwtConfig.AccessToken &&
         error.name === 'TokenExpiredError'
       ) {
         throw new AccessTokenExpiredException();
       }
 
       if (
-        secret === TokenJwtConfig.RefreshToken &&
+        secret === ETokenJwtConfig.RefreshToken &&
         error.name === 'TokenExpiredError'
       ) {
         const parseToken = this.jwtService.verify<IJwtPayload>(token, {
@@ -107,7 +108,7 @@ export class TokenService {
     return { resetToken, hashedResetToken, expiresToken };
   }
 
-  async verifyResetPasswordToken(token: string): Promise<UserDocument> {
+  async verifyResetPasswordToken(token: string): Promise<TUserDocument> {
     try {
       const hashedToken = crypto
         .createHash('sha256')

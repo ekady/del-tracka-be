@@ -8,6 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
+
 import { ApiResProperty } from 'src/shared/decorators/api-res-property.decorator';
 import { StatusMessageDto } from 'src/shared/dto';
 import { JwtPayloadReq, SkipAuth } from '../decorators';
@@ -20,7 +22,6 @@ import {
   TokensDto,
 } from '../dto';
 import { AuthJwtRefreshGuard } from '../guard';
-import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 

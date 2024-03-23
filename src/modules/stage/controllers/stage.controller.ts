@@ -9,6 +9,20 @@ import {
   Query,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
+
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { ApiResProperty } from 'src/shared/decorators';
+import { StatusMessageDto } from 'src/shared/dto';
+import { RolePermission } from 'src/modules/role/decorator';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
+import { ActivityResponseDto } from 'src/modules/activity/dto';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 import { StageService } from '../services';
 import {
   CreateStageDto,
@@ -18,20 +32,7 @@ import {
   UpdateStageDto,
   UpdateStageRequestDto,
 } from '../dto';
-import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { ApiResProperty } from 'src/shared/decorators';
-import { StatusMessageDto } from 'src/shared/dto';
-import { RolePermission } from 'src/modules/role/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
-import { ApiTags } from '@nestjs/swagger';
-import { ActivityResponseDto } from 'src/modules/activity/dto';
 import { IStageShortIds } from '../interfaces/stageShortIds.interface';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Stages')
 @Controller('project/:projectShortId/stage')
@@ -39,7 +40,7 @@ export class StageController {
   constructor(private readonly stageService: StageService) {}
 
   @Post()
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Create)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   create(
     @JwtPayloadReq() user: IJwtPayload,
@@ -55,7 +56,7 @@ export class StageController {
 
   @Get()
   @Throttle({ default: { limit: 60, ttl: 60000 } })
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Read)
   @ApiResProperty([StageResponseDto], 200)
   findAll(
     @Param('projectShortId') projectShortId: string,
@@ -64,7 +65,7 @@ export class StageController {
   }
 
   @Get(':shortId')
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Read)
   @ApiResProperty(StageResponseDto, 200)
   findOne(
     @Param('shortId') shortId: string,
@@ -75,7 +76,7 @@ export class StageController {
 
   @Get(':shortId/activity')
   @Throttle({ default: { limit: 60, ttl: 60000 } })
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Read)
   @ApiResProperty([ActivityResponseDto], 200)
   @QueryPagination()
   findActivity(
@@ -83,8 +84,8 @@ export class StageController {
     @Param('projectShortId') projectShortId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    @Query() queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     queries.startDate = startDate;
     queries.endDate = endDate;
     return this.stageService.findStageActivity(
@@ -95,7 +96,7 @@ export class StageController {
   }
 
   @Put(':shortId')
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 200)
   update(
     @JwtPayloadReq() user: IJwtPayload,
@@ -112,7 +113,7 @@ export class StageController {
   }
 
   @Delete(':shortId')
-  @RolePermission(ProjectMenu.Stage, PermissionMenu.Delete)
+  @RolePermission(EProjectMenu.Stage, EPermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   remove(
     @JwtPayloadReq() user: IJwtPayload,

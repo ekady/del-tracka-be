@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+
 import { MyTaskResponseDto } from 'src/modules/my-task/dto/my-task-response.dto';
 import { TaskRepository } from 'src/modules/task/repositories/task.repository';
 import {
-  PaginationOptions,
-  PaginationResponse,
+  IPaginationOptions,
+  IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
 import {
   helperLookupStage,
@@ -17,8 +18,8 @@ export class MyTaskService {
 
   async findMyTask(
     userId: string,
-    queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<MyTaskResponseDto[]>> {
+    queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<MyTaskResponseDto[]>> {
     const user = new Types.ObjectId(userId);
 
     if (queries.sortBy) {

@@ -1,4 +1,4 @@
-export enum RoleName {
+export enum ERoleName {
   OWNER = 'OWNER',
   MAINTAINER = 'MAINTAINER',
   DEVELOPER = 'DEVELOPER',

@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { renderFile } from 'pug';
-import { ISendEmail } from '../interfaces/send-email.interface';
+
 import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
+import { ISendEmail } from '../interfaces/send-email.interface';
 
 @Injectable()
 export class EmailService {

@@ -1,6 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { TaskPriority, TaskStatus } from 'src/shared/enums';
+import { ETaskPriority, ETaskStatus } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
@@ -37,7 +37,7 @@ export class TaskEntity extends DatabaseTimestampsAbstract {
   @Prop({ type: String, default: null })
   detail: string;
 
-  @Prop({ required: true, enum: TaskPriority })
+  @Prop({ required: true, enum: ETaskPriority })
   priority: string;
 
   @Prop({ type: Types.ObjectId, ref: UserEntity.name, default: null })
@@ -46,7 +46,7 @@ export class TaskEntity extends DatabaseTimestampsAbstract {
   @Prop({ required: true, type: Types.ObjectId, ref: UserEntity.name })
   reporter: UserEntity;
 
-  @Prop({ required: true, enum: TaskStatus })
+  @Prop({ required: true, enum: ETaskStatus })
   status: string;
 
   @Prop({ type: Array, default: [] })
@@ -56,7 +56,7 @@ export class TaskEntity extends DatabaseTimestampsAbstract {
   shortId: string;
 }
 
-export type TaskDocument = TaskEntity & Document;
+export type TTaskDocument = TaskEntity & Document;
 
 export const TaskSchema = SchemaFactory.createForClass(TaskEntity);
 

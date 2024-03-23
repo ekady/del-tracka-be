@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
+
 import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
-import { PermissionDocument } from '../entities/permission.entity';
+import { TPermissionDocument } from '../entities/permission.entity';
 import { PermissionRepository } from '../repositories/permission.repository';
 import { RolePermissionResponseDto } from '../dto/permission-response.dto';
 
@@ -10,8 +11,8 @@ export class PermissionService {
   constructor(private permissionRepository: PermissionRepository) {}
 
   async findAll(
-    queryOptions: FilterQuery<PermissionDocument>,
-  ): Promise<PermissionDocument[]> {
+    queryOptions: FilterQuery<TPermissionDocument>,
+  ): Promise<TPermissionDocument[]> {
     const permision = await this.permissionRepository.findAll(queryOptions, {
       disablePagination: true,
       limit: undefined,
@@ -42,8 +43,8 @@ export class PermissionService {
   }
 
   async findOne(
-    queryOptions: FilterQuery<PermissionDocument>,
-  ): Promise<PermissionDocument> {
+    queryOptions: FilterQuery<TPermissionDocument>,
+  ): Promise<TPermissionDocument> {
     const permision = await this.permissionRepository.findOne(queryOptions);
     if (!permision) throw new DocumentNotFoundException('Permission not found');
     return permision;

@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
 import { StatusMessageDto } from 'src/shared/dto';
-import { ActivityName } from 'src/shared/enums';
+import { EActivityName } from 'src/shared/enums';
 import { ActivityService } from 'src/modules/activity/services/activity.service';
 import {
   ActivityResponseDto,
   CreateActivityDto,
 } from 'src/modules/activity/dto';
 import { ProjectHelperService } from 'src/modules/project/services';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import {
   CreateStageDto,
   StageResponseDto,
@@ -16,13 +22,7 @@ import {
 import { IStageShortIds } from '../interfaces/stageShortIds.interface';
 import { StageHelperService } from './stage-helper.service';
 import { StageRepository } from '../repositories/stage.repository';
-import { StageDocument, StageEntity } from '../entities/stage.entity';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { FilterQuery } from 'mongoose';
-import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
+import { TStageDocument, StageEntity } from '../entities/stage.entity';
 
 @Injectable()
 export class StageService {
@@ -34,7 +34,7 @@ export class StageService {
   ) {}
 
   private async checkStageNameExist(
-    query: FilterQuery<StageDocument>,
+    query: FilterQuery<TStageDocument>,
   ): Promise<void> {
     const stage = await this.stageRepository.findOne(query, {
       populate: true,
@@ -69,7 +69,7 @@ export class StageService {
     });
 
     await this.createStageActivity({
-      type: ActivityName.CREATE_STAGE,
+      type: EActivityName.CREATE_STAGE,
       stageBefore: null,
       stageAfter: stage as StageEntity,
       createdBy: userId,
@@ -147,7 +147,7 @@ export class StageService {
     });
 
     await this.createStageActivity({
-      type: ActivityName.UPDATE_STAGE,
+      type: EActivityName.UPDATE_STAGE,
       stageBefore: stage.depopulate('project'),
       stageAfter: stageUpdate,
       createdBy: userId,
@@ -170,7 +170,7 @@ export class StageService {
     await this.stageRepository.softDeleteOneById(stage._id);
 
     await this.createStageActivity({
-      type: ActivityName.DELETE_STAGE,
+      type: EActivityName.DELETE_STAGE,
       stageBefore: stage.depopulate('project'),
       stageAfter: null,
       createdBy: userId,
@@ -182,8 +182,8 @@ export class StageService {
   async findStageActivity(
     shortId: string,
     projectShortId: string,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const stage = await this.stageHelperService.findStageByShortId(
       shortId,
       projectShortId,

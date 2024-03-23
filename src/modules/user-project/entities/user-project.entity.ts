@@ -31,7 +31,7 @@ export class UserProjectEntity extends DatabaseTimestampsAbstract {
   role: RoleEntity;
 }
 
-export type UserProjectDocument = UserProjectEntity & Document;
+export type TUserProjectDocument = UserProjectEntity & Document;
 
 export const UserProjectSchema =
   SchemaFactory.createForClass(UserProjectEntity);

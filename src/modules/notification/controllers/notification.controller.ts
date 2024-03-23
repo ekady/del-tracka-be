@@ -1,14 +1,15 @@
 import { Controller, Get, Param, Put, Query } from '@nestjs/common';
-import { NotificationService } from '../services/notification.service';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+
 import { ApiResProperty } from 'src/shared/decorators';
-import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
+import { IPaginationOptions } from 'src/shared/interfaces/pagination.interface';
 import { StatusMessageDto } from 'src/shared/dto';
-import { Throttle } from '@nestjs/throttler';
 import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { NotificationResponseDto } from '../dto/notification-response.dto';
+import { NotificationService } from '../services/notification.service';
 
 @ApiTags('Notification')
 @Controller('notification')
@@ -21,7 +22,7 @@ export class NotificationController {
   @QueryPagination()
   findAll(
     @JwtPayloadReq() user: IJwtPayload,
-    @Query() queries: Record<string, string> & PaginationOptions,
+    @Query() queries: Record<string, string> & IPaginationOptions,
   ) {
     return this.notificationService.findAll(user.id, queries);
   }

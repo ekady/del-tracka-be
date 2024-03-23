@@ -2,53 +2,53 @@ import { connect, model } from 'mongoose';
 import { EJSON } from 'bson';
 import * as dotenv from 'dotenv';
 import {
-  PermissionDocument,
+  TPermissionDocument,
   PermissionSchema,
   PermissionDatabaseName,
 } from 'src/modules/permission/entities/permission.entity';
 import {
-  RoleDocument,
+  TRoleDocument,
   RoleSchema,
   RoleDatabaseName,
 } from 'src/modules/role/entities/role.entity';
 import {
-  ProjectDocument,
+  TProjectDocument,
   ProjectSchema,
   ProjectDatabaseName,
 } from 'src/modules/project/schema/project.entity';
 import {
   UserProjectEntity,
-  UserProjectDocument,
+  TUserProjectDocument,
   UserProjectSchema,
 } from 'src/modules/user-project/entities/user-project.entity';
 import {
-  StageDocument,
+  TStageDocument,
   StageSchema,
   StageDatabaseName,
 } from 'src/modules/stage/entities/stage.entity';
 import {
-  TaskDocument,
+  TTaskDocument,
   TaskSchema,
   TaskDatabaseName,
 } from 'src/modules/task/entities/task.entity';
 import {
-  CommentDocument,
+  TCommentDocument,
   CommentSchema,
   CommentDatabaseName,
 } from 'src/modules/comment/entities/comment.entity';
 import {
   NotificationDatabaseName,
-  NotificationDocument,
+  TNotificationDocument,
   NotificationSchema,
 } from 'src/modules/notification/entities/notification.entity';
 import {
   ActivityDatabaseName,
-  ActivityDocument,
+  TActivityDocument,
   ActivitySchema,
 } from 'src/modules/activity/entities/activity.entity';
 import {
   UserDatabaseName,
-  UserDocument,
+  TUserDocument,
   UserSchema,
 } from 'src/modules/user/entities/user.entity';
 import { UserDemoConstant } from './data/user-demo-seed.constant';
@@ -62,25 +62,31 @@ import { CommentDemoSeed } from './data/comment-demo-seed.constant';
 import { ActivityDemoSeed } from './data/activity-demo-seed.constant';
 import { NotificationDemoSeed } from './data/notification-demo-seed.constant';
 
-const RoleModel = model<RoleDocument>(RoleDatabaseName, RoleSchema);
-const PermissionModel = model<PermissionDocument>(
+const RoleModel = model<TRoleDocument>(RoleDatabaseName, RoleSchema);
+const PermissionModel = model<TPermissionDocument>(
   PermissionDatabaseName,
   PermissionSchema,
 );
-const ProjectModel = model<ProjectDocument>(ProjectDatabaseName, ProjectSchema);
-const UserProjectModel = model<UserProjectDocument>(
+const ProjectModel = model<TProjectDocument>(
+  ProjectDatabaseName,
+  ProjectSchema,
+);
+const UserProjectModel = model<TUserProjectDocument>(
   UserProjectEntity.name,
   UserProjectSchema,
 );
-const UserModel = model<UserDocument>(UserDatabaseName, UserSchema);
-const StageModel = model<StageDocument>(StageDatabaseName, StageSchema);
-const TaskModel = model<TaskDocument>(TaskDatabaseName, TaskSchema);
-const CommentModel = model<CommentDocument>(CommentDatabaseName, CommentSchema);
-const NotificationModel = model<NotificationDocument>(
+const UserModel = model<TUserDocument>(UserDatabaseName, UserSchema);
+const StageModel = model<TStageDocument>(StageDatabaseName, StageSchema);
+const TaskModel = model<TTaskDocument>(TaskDatabaseName, TaskSchema);
+const CommentModel = model<TCommentDocument>(
+  CommentDatabaseName,
+  CommentSchema,
+);
+const NotificationModel = model<TNotificationDocument>(
   NotificationDatabaseName,
   NotificationSchema,
 );
-const ActivityModel = model<ActivityDocument>(
+const ActivityModel = model<TActivityDocument>(
   ActivityDatabaseName,
   ActivitySchema,
 );
@@ -115,7 +121,7 @@ const addDemoData = async (): Promise<void> => {
   await PermissionModel.insertMany(EJSON.deserialize(PermissionSeed));
   const password = process.env.USER_DEMO_PASSWORD;
   const userSeed = EJSON.deserialize(UserDemoConstant);
-  userSeed.forEach?.((user: UserDocument) => {
+  userSeed.forEach?.((user: TUserDocument) => {
     user.password = password;
     user.passwordConfirm = password;
   });

@@ -1,6 +1,6 @@
-import { ErrorType } from '../enums';
+import { EErrorType } from '../enums';
 
 export class ErrorDto {
   message: string | string[];
-  errorType: ErrorType | string;
+  errorType: EErrorType | string;
 }

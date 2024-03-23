@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { RoleName } from 'src/shared/enums';
+import { ERoleName } from 'src/shared/enums';
 
 export class AddMemberDto {
   @ApiProperty()
@@ -11,7 +11,7 @@ export class AddMemberDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  roleName: RoleName;
+  roleName: ERoleName;
 }
 
 export class UpdateMemberDto {
@@ -23,5 +23,5 @@ export class UpdateMemberDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  roleName: RoleName;
+  roleName: ERoleName;
 }

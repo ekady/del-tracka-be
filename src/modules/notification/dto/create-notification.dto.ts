@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { ActivityName } from 'src/shared/enums';
+import { EActivityName } from 'src/shared/enums';
 
 export class CreateNotificationDto {
   @IsString()
@@ -12,7 +12,7 @@ export class CreateNotificationDto {
   webUrl: string;
 
   @IsString()
-  @IsEnum(ActivityName)
+  @IsEnum(EActivityName)
   type: string;
 
   @IsOptional()

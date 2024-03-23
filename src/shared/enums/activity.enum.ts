@@ -1,4 +1,4 @@
-export enum ActivityName {
+export enum EActivityName {
   CREATE_STAGE = 'CREATE_STAGE',
   UPDATE_STAGE = 'UPDATE_STAGE',
   DELETE_STAGE = 'DELETE_STAGE',

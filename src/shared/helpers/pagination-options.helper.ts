@@ -1,10 +1,10 @@
 import { QueryWithHelpers } from 'mongoose';
-import { PaginationOptions } from 'src/shared/interfaces/pagination.interface';
-import { DatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
+import { IPaginationOptions } from 'src/shared/interfaces/pagination.interface';
+import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
 
 const paginationOptions = <T, V = T>(
   model: QueryWithHelpers<T, V>,
-  options: PaginationOptions & DatabaseFindOneOptions,
+  options: IPaginationOptions & IDatabaseFindOneOptions,
 ) => {
   const { limit, page, disablePagination, sort, select, session, projection } =
     options;

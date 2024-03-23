@@ -1,19 +1,19 @@
-import { ENUM_PAGINATION_AVAILABLE_SORT_TYPE } from '../enums/pagination.enum';
+import { EENUM_PAGINATION_AVAILABLE_SORT_TYPE } from '../enums/pagination.enum';
 
-export type PaginationSort = Record<
+export type TPaginationSort = Record<
   string,
-  ENUM_PAGINATION_AVAILABLE_SORT_TYPE
+  EENUM_PAGINATION_AVAILABLE_SORT_TYPE
 >;
 
-export interface PaginationOptions {
+export interface IPaginationOptions {
   limit: number;
   page: number;
   search?: string;
-  sort?: PaginationSort;
+  sort?: TPaginationSort;
   disablePagination?: boolean;
 }
 
-export interface PaginationResponse<T> {
+export interface IPaginationResponse<T> {
   data: T;
   pagination: {
     limit: number;
@@ -23,16 +23,17 @@ export interface PaginationResponse<T> {
   };
 }
 
-export interface PaginationFilterOptions {
+export interface IPaginationFilterOptions {
   required?: boolean;
 }
 
-export interface PaginationFilterDateOptions extends PaginationFilterOptions {
+export interface IPaginationFilterDateOptions extends IPaginationFilterOptions {
   asEndDate?: {
     moreThanField: string;
   };
 }
 
-export interface PaginationFilterStringOptions extends PaginationFilterOptions {
+export interface IPaginationFilterStringOptions
+  extends IPaginationFilterOptions {
   lowercase?: boolean;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ActivityName } from 'src/shared/enums';
+import { EActivityName } from 'src/shared/enums';
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 import { TaskEntity } from 'src/modules/task/entities/task.entity';
 
@@ -7,7 +7,7 @@ export class CreateActivityDto {
   @ApiProperty()
   createdBy?: string;
 
-  @ApiProperty({ enum: ActivityName })
+  @ApiProperty({ enum: EActivityName })
   type: string;
 
   @ApiProperty({ type: String })

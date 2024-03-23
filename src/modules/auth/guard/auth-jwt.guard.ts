@@ -7,9 +7,10 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
 import { Observable } from 'rxjs';
+
 import { TokenInvalidException } from 'src/shared/http-exceptions/exceptions';
 import { SKIP_AUTH } from '../constants';
-import { TokenJwtConfig } from '../enum';
+import { ETokenJwtConfig } from '../enum';
 import { TokenService } from '../services/token.service';
 
 @Injectable()
@@ -37,7 +38,7 @@ export class AuthJwtGuard extends AuthGuard('jwt') {
 
     const verifyToken = this.tokenService.verifyToken(
       accessToken,
-      TokenJwtConfig.AccessToken,
+      ETokenJwtConfig.AccessToken,
     );
     if (!verifyToken) throw new TokenInvalidException();
 

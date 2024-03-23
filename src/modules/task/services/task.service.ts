@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
+
 import { StatusMessageDto } from 'src/shared/dto';
-import { ActivityName, TaskStatus } from 'src/shared/enums';
+import { EActivityName, ETaskStatus } from 'src/shared/enums';
 import { ActivityService } from 'src/modules/activity/services/activity.service';
 import {
   ActivityResponseDto,
@@ -8,6 +10,20 @@ import {
 } from 'src/modules/activity/dto';
 import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
 import { StageHelperService } from 'src/modules/stage/services';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { TTaskDocument } from '../entities/task.entity';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
+import { UserProjectResponseDto } from 'src/modules/user-project/dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
+import { UserService } from 'src/modules/user/services/user.service';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import {
   CreateTaskDto,
   CreateTaskRequestDto,
@@ -21,22 +37,7 @@ import {
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TaskHelperService } from './task-helper.service';
 import { TaskRepository } from '../repositories/task.repository';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
 import { ITaskIds } from '../interfaces/taskIds.interface';
-import { FilterQuery } from 'mongoose';
-import { TaskDocument } from '../entities/task.entity';
-import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
-import { UserProjectResponseDto } from 'src/modules/user-project/dto';
-import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { NotificationService } from 'src/modules/notification/services/notification.service';
-import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
-import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
-import { UserService } from 'src/modules/user/services/user.service';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class TaskService {
@@ -53,7 +54,7 @@ export class TaskService {
 
   private async checkTaskExist(
     ids: Pick<ITaskIds, 'projectId' | 'stageId'>,
-    query: FilterQuery<TaskDocument>,
+    query: FilterQuery<TTaskDocument>,
   ): Promise<void> {
     const { projectId, stageId } = ids;
     const stage = await this.stageHelperService.findStageById(
@@ -219,12 +220,12 @@ export class TaskService {
       stage: stage._id,
       images: imageUploaded,
       project: stage.project._id,
-      status: taskValues.status || TaskStatus.Open,
+      status: taskValues.status || ETaskStatus.Open,
     };
     const task = await this.taskRepository.create(payload);
 
     await this.createTaskActivity({
-      type: ActivityName.CREATE_TASK,
+      type: EActivityName.CREATE_TASK,
       createdBy: userId,
       project: stage.project._id,
       stageBefore: stage,
@@ -243,7 +244,7 @@ export class TaskService {
         updatedAt: new Date(),
         createdBy: user,
       }),
-      type: ActivityName.CREATE_TASK,
+      type: EActivityName.CREATE_TASK,
       webUrl: `/app/project/${projectShortId}/${stageShortId}/${task.shortId}`,
       task: task._id.toString(),
     };
@@ -262,8 +263,8 @@ export class TaskService {
 
   async findAll(
     ids: IStageShortIds,
-    queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<TaskResponseDto[]>> {
+    queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<TaskResponseDto[]>> {
     const { projectShortId, stageShortId } = ids;
     const stage = await this.stageHelperService.findStageByShortId(
       stageShortId,
@@ -369,8 +370,8 @@ export class TaskService {
 
   async findTaskActivity(
     ids: ITaskShortIds,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const task = await this.taskHelperService.findTaskByShortId(ids);
     const stage = await this.stageHelperService.findStageByShortId(
       ids.stageShortId,
@@ -437,14 +438,14 @@ export class TaskService {
     const user = await this.userService.findOne(userId);
     const notifPayload: CreateNotificationDto = {
       title: 'Update Task',
-      body: TransformActivityMessage[ActivityName.UPDATE_TASK]({
+      body: TransformActivityMessage[EActivityName.UPDATE_TASK]({
         taskBefore: taskFound,
         taskAfter: taskUpdate,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy: user,
       }),
-      type: ActivityName.UPDATE_TASK,
+      type: EActivityName.UPDATE_TASK,
       webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
       task: taskUpdate._id.toString(),
     };
@@ -459,7 +460,7 @@ export class TaskService {
     );
 
     await this.createTaskActivity({
-      type: ActivityName.UPDATE_TASK,
+      type: EActivityName.UPDATE_TASK,
       createdBy: taskUpdate.updatedBy._id,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
@@ -503,7 +504,7 @@ export class TaskService {
           updatedAt: new Date(),
           createdBy: user,
         }),
-        type: ActivityName.UPDATE_TASK_STATUS,
+        type: EActivityName.UPDATE_TASK_STATUS,
         webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
         task: taskUpdate._id.toString(),
       };
@@ -518,7 +519,7 @@ export class TaskService {
       );
 
       await this.createTaskActivity({
-        type: ActivityName.UPDATE_TASK_STATUS,
+        type: EActivityName.UPDATE_TASK_STATUS,
         createdBy: taskUpdate.updatedBy._id,
         project: stage.project._id,
         stageBefore: stage.depopulate(),
@@ -563,7 +564,7 @@ export class TaskService {
     await this.taskRepository.softDeleteOneById(task._id);
 
     await this.createTaskActivity({
-      type: ActivityName.DELETE_TASK,
+      type: EActivityName.DELETE_TASK,
       createdBy: userId,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
@@ -582,7 +583,7 @@ export class TaskService {
         updatedAt: new Date(),
         createdBy: user,
       }),
-      type: ActivityName.DELETE_TASK,
+      type: EActivityName.DELETE_TASK,
       webUrl: `/app/project/${ids.projectShortId}/${ids.stageShortId}`,
       task: task._id.toString(),
     };
