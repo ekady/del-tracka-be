@@ -9,12 +9,10 @@ export class LoggerOptionService {
   constructor(private configService: ConfigService) {}
 
   createLogger(): LoggerOptions {
-    const writeIntoFile = this.configService.get<boolean>(
-      'LOGGER_SYSTEM_WRITE_INTO_FILE',
-    );
-    const writeIntoConsole = this.configService.get<boolean>(
-      'LOGGER_SYSTEM_WRITE_INTO_CONSOLE',
-    );
+    const writeIntoFile =
+      this.configService.get('LOGGER_SYSTEM_WRITE_INTO_FILE') === 'true';
+    const writeIntoConsole =
+      this.configService.get('LOGGER_SYSTEM_WRITE_INTO_CONSOLE') === 'true';
     const maxSize = this.configService.get<string>('LOGGER_SYSTEM_MAX_SIZE');
     const maxFiles = this.configService.get<string>('LOGGER_SYSTEM_MAX_FILES');
 

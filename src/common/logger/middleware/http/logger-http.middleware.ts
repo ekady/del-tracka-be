@@ -19,12 +19,10 @@ export class LoggerHttpMiddleware implements NestMiddleware {
   private readonly writeIntoConsole: boolean;
 
   constructor(private readonly configService: ConfigService) {
-    this.writeIntoFile = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_FILE',
-    );
-    this.writeIntoConsole = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_CONSOLE',
-    );
+    this.writeIntoFile =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_FILE') === 'true';
+    this.writeIntoConsole =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_CONSOLE') === 'true';
   }
 
   private customToken(): void {
@@ -59,9 +57,8 @@ export class LoggerHttpWriteIntoFileMiddleware implements NestMiddleware {
   private readonly maxFiles: number;
 
   constructor(private readonly configService: ConfigService) {
-    this.writeIntoFile = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_FILE',
-    );
+    this.writeIntoFile =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_FILE') === 'true';
     this.maxSize = this.configService.get('LOGGER_HTTP_MAX_SIZE');
     this.maxFiles = parseInt(this.configService.get('LOGGER_HTTP_MAX_FILES'));
   }
@@ -105,9 +102,8 @@ export class LoggerHttpWriteIntoConsoleMiddleware implements NestMiddleware {
   private readonly writeIntoConsole: boolean;
 
   constructor(private readonly configService: ConfigService) {
-    this.writeIntoConsole = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_CONSOLE',
-    );
+    this.writeIntoConsole =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_CONSOLE') === 'true';
   }
 
   private async httpLogger(): Promise<ILoggerHttpConfig> {
@@ -133,12 +129,10 @@ export class LoggerHttpResponseMiddleware implements NestMiddleware {
   private readonly writeIntoConsole: boolean;
 
   constructor(private readonly configService: ConfigService) {
-    this.writeIntoConsole = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_CONSOLE',
-    );
-    this.writeIntoFile = this.configService.get<boolean>(
-      'LOGGER_HTTP_WRITE_INTO_FILE',
-    );
+    this.writeIntoConsole =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_CONSOLE') === 'true';
+    this.writeIntoFile =
+      this.configService.get('LOGGER_HTTP_WRITE_INTO_FILE') === 'true';
   }
   use(req: Request, res: Response, next: NextFunction): void {
     if (this.writeIntoConsole || this.writeIntoFile) {
