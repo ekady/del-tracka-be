@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PipelineStage } from 'mongoose';
+
 import { ProjectHelperService } from 'src/modules/project/services';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
+import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
+import { TaskDatabaseName } from 'src/modules/task/entities/task.entity';
+import { STATS_INITIAL_RESPONSE } from 'src/modules/task/constants/stats-initial-response.constant';
+import { ETaskStatus } from 'src/shared/enums';
 import {
   TaskProjectCountDto,
   TaskStageStatisticDto,
   TaskStatisticDto,
   TaskStatusStatisticDto,
 } from '../dto';
-import { UserProjectRepository } from 'src/modules/user-project/repositories/user-project.repository';
-import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
-import { TaskDatabaseName } from 'src/modules/task/entities/task.entity';
-import { STATS_INITIAL_RESPONSE } from 'src/modules/task/constants/stats-initial-response.constant';
-import { TaskStatus } from 'src/shared/enums';
 
 @Injectable()
 export class TaskStatisticService {
@@ -73,7 +74,7 @@ export class TaskStatisticService {
     const response = { ...STATS_INITIAL_RESPONSE };
     const stats = await this.getTasksStatisticByStatus(userProject);
     stats.forEach((stat) => {
-      response[stat.name as TaskStatus] = stat.count;
+      response[stat.name as ETaskStatus] = stat.count;
     });
 
     return response;
@@ -89,7 +90,7 @@ export class TaskStatisticService {
     };
     const stats = await this.getTasksStatisticByStatus(userProject, task);
     stats.forEach((stat) => {
-      response[stat.name as TaskStatus] = stat.count;
+      response[stat.name as ETaskStatus] = stat.count;
     });
 
     return response;

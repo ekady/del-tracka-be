@@ -1,5 +1,5 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { EntityResponseDto, UserResponse } from 'src/shared/dto';
+import { IEntityResponseDto, UserResponse } from 'src/shared/dto';
 import { ProfileResponseDto } from 'src/modules/profile/dto/profile-response.dto';
 import { ProjectResponseDto } from 'src/modules/project/dto';
 import { RoleDto } from 'src/modules/role/dto';
@@ -8,7 +8,7 @@ import { ProjectPermissionResponseDto } from 'src/modules/project/dto/project-pe
 
 export class ProjectUserResponseDto
   extends ProfileResponseDto
-  implements Omit<EntityResponseDto, 'createdAt' | 'updatedAt'>
+  implements Omit<IEntityResponseDto, 'createdAt' | 'updatedAt'>
 {
   @ApiResponseProperty()
   createdBy: UserResponse;
@@ -17,7 +17,7 @@ export class ProjectUserResponseDto
   updatedBy: UserResponse;
 }
 
-export class UserProjectResponseDto implements EntityResponseDto {
+export class UserProjectResponseDto implements IEntityResponseDto {
   @ApiResponseProperty()
   _id?: string;
 

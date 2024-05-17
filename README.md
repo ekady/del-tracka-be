@@ -1,73 +1,86 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Tracka - Bug Tracking Application
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![Tracka Logo](https://res.cloudinary.com/dwixtayvd/image/upload/v1713677969/tracka-layout_dcbjaj.png)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Tracka is a web application designed to streamline your software development process by efficiently managing and tracking bugs and issues within your projects. 
 
-## Description
+### Feature Set
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Tracka offers a comprehensive suite of features to empower a smooth bug tracking workflow:
 
-## Installation
+| Feature                 | Description                                                                                                  |
+|-------------------------|--------------------------------------------------------------------------------------------------------------------|
+| **Dashboard**            | Provides a high-level view of all projects, user-assigned tasks, and overall user activity within the system.                     |
+| **Project Management**   | Manage and organize your projects, including sprints and detailed lists of associated issues and tasks.                          |
+| **Issue/Task Tracking**  | Create, assign, and track issues and tasks within specific projects, ensuring clear accountability and streamlined workflows.      |
+| **My Issues**             | View a dedicated section showcasing all issues and tasks currently assigned to you, facilitating focused bug resolution.        |
+| **Log Activities**        | Track and search for project activities within a designated time range, enabling comprehensive project audit trails.           |
 
-```bash
-$ npm install
-```
 
-## Running the app
+### Getting Started
+
+**Prerequisites**
+
+* **Node.js (version 18 or higher):** [https://nodejs.org/en](https://nodejs.org/en)
+* **pnpm package manager:** [https://pnpm.io/installation](https://pnpm.io/installation)
+* **Git version control system:** [https://git-scm.com/downloads](https://git-scm.com/downloads)
+
+**1. Clone the Repository:**
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/ekady/del-tracka-be.git
 ```
 
-## Test
+**2. Install Dependencies:**
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cd del-tracka-be
+pnpm install
 ```
 
-## Support
+**3. Run Development Server:**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+pnpm start:dev
+```
 
-## Stay in touch
+This command will initiate the development server at http://localhost:3333/.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**4. Build for Production:**
 
-## License
+* Install build dependencies:
 
-Nest is [MIT licensed](LICENSE).
+```bash
+pnpm install
+```
+
+* Build the application:
+
+```bash
+pnpm build
+```
+
+* Start the production server:
+
+```bash
+pnpm start:prod
+```
+
+### Contributing
+
+We highly encourage contributions from the community! If you're passionate about fixing bugs or enhancing existing features, here's how you can get involved:
+
+1. **Fork the Repository:** Create your personal copy of the Tracka repository on GitHub.
+2. **Create a Branch:**  Switch to a new dedicated branch for your changes (e.g., `git checkout -b improve-feature`).
+3. **Implement Changes:** Edit the relevant files to incorporate your contribution.
+4. **Add and Commit:** Stage your changes using `git add` and commit them with a clear and concise message (`git commit -am 'Improve feature'`).
+5. **Push to Branch:** Push your committed changes to your forked branch (`git push origin improve-feature`).
+6. **Pull Request:** Create a Pull Request from your branch to the `main` branch of the main Tracka repository. This allows us to review your contributions before merging them into the official codebase.
+
+**Merging to Production:**
+
+Following a successful review and approval of your Pull Request on the `main` branch, you can create a separate Pull Request from a new branch (e.g., `improve-feature`) to the `next` branch to deploy the changes to the production application.
+
+### License
+
+This project is distributed under the MIT License.

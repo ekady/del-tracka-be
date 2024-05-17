@@ -1,4 +1,4 @@
-export enum TaskPriority {
+export enum ETaskPriority {
   Low = 'LOW',
   Normal = 'NORMAL',
   High = 'HIGH',

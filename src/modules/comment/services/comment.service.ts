@@ -1,24 +1,25 @@
 import { Injectable } from '@nestjs/common';
+
 import { StatusMessageDto } from 'src/shared/dto';
-import { ActivityName } from 'src/shared/enums';
-import { CommentRepository } from '../repository/comment.repository';
+import { EActivityName } from 'src/shared/enums';
 import { StageHelperService } from 'src/modules/stage/services';
 import { ITaskShortIds } from 'src/modules/task/interfaces/taskShortIds.interface';
 import { TaskHelperService } from 'src/modules/task/services';
-import {
-  CommentResponse,
-  CreateCommentDto,
-  CreateCommentRequestDto,
-} from '../dto';
 import { ActivityService } from 'src/modules/activity/services/activity.service';
 import { NotificationService } from 'src/modules/notification/services/notification.service';
 import { UserService } from 'src/modules/user/services/user.service';
 import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
 import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
 import {
-  PaginationOptions,
-  PaginationResponse,
+  IPaginationOptions,
+  IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+import { CommentRepository } from '../repository/comment.repository';
+import {
+  CommentResponse,
+  CreateCommentDto,
+  CreateCommentRequestDto,
+} from '../dto';
 
 @Injectable()
 export class CommentService {
@@ -61,7 +62,7 @@ export class CommentService {
         createdBy: user,
         comment: createDto.comment,
       }),
-      type: ActivityName.CREATE_COMMENT,
+      type: EActivityName.CREATE_COMMENT,
       webUrl: `/app/project/${ids.projectShortId}/${ids.stageShortId}/${task.shortId}-`,
       task: task._id.toString(),
     };
@@ -81,7 +82,7 @@ export class CommentService {
       this.notificationService.create(task.assignee._id, notifPayload);
 
     await this.activityService.create({
-      type: ActivityName.CREATE_COMMENT,
+      type: EActivityName.CREATE_COMMENT,
       createdBy: userId,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
@@ -96,8 +97,8 @@ export class CommentService {
 
   async findAll(
     ids: ITaskShortIds,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<CommentResponse[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<CommentResponse[]>> {
     const task = await this.taskHelperService.findTaskByShortId(ids);
 
     if (queries.sortBy) {

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+
 import { StatusMessageDto } from 'src/shared/dto';
 import {
-  PaginationOptions,
-  PaginationResponse,
+  IPaginationOptions,
+  IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
@@ -32,8 +33,8 @@ export class ActivityService {
 
   async findActivityByProjectId(
     projectId: string,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const activities = await this.activityRepository.findAll(
       {
         project: new Types.ObjectId(projectId),
@@ -73,8 +74,8 @@ export class ActivityService {
   async findStageActivity(
     projectId: string,
     stageId: string,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
     const activities = await this.activityRepository.findAll(
@@ -120,8 +121,8 @@ export class ActivityService {
     projectId: string,
     stageId: string,
     taskId: string,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const objectProjectId = new Types.ObjectId(projectId);
     const objectStageId = new Types.ObjectId(stageId);
     const objectTaskId = new Types.ObjectId(taskId);

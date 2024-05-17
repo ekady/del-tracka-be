@@ -60,11 +60,14 @@ export class UserEntity extends DatabaseTimestampsAbstract {
 
   @Prop({ select: false })
   deviceId: string[];
+
+  @Prop({ default: false })
+  isDemo: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
 
-export type UserDocument = UserEntity & Document;
+export type TUserDocument = UserEntity & Document;
 
 export const UserFeature: ModelDefinition = {
   name: UserEntity.name,

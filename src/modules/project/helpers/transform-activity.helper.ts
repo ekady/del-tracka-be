@@ -1,4 +1,4 @@
-import { STATUS, StatusType } from 'src/shared/enums';
+import { STATUS, TStatusType } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activity/dto';
 
 export const TransformActivityMessage: Record<
@@ -53,8 +53,8 @@ export const TransformActivityMessage: Record<
         `${data.createdBy.firstName} ${data.createdBy.lastName}`,
       )
       .replace('{task}', `${data.taskAfter.title} (#${data.taskAfter.shortId})`)
-      .replace('{status1}', STATUS[data.taskBefore.status as StatusType].name)
-      .replace('{status2}', STATUS[data.taskAfter.status as StatusType].name);
+      .replace('{status1}', STATUS[data.taskBefore.status as TStatusType].name)
+      .replace('{status2}', STATUS[data.taskAfter.status as TStatusType].name);
   },
   DELETE_TASK: (data) =>
     '{name} has deleted task {task}'

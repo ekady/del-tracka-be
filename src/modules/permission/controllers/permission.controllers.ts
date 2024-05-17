@@ -1,8 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+
+import { ApiResProperty } from 'src/shared/decorators';
 import { RolePermissionResponseDto } from '../dto/permission-response.dto';
 import { PermissionService } from '../services/permission.service';
-import { ApiResProperty } from 'src/shared/decorators';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Permission')
 @Controller('permission')

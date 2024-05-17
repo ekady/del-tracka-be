@@ -1,9 +1,10 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ProjectMenu } from 'src/shared/enums';
+
+import { EProjectMenu } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import {
-  RoleDocument,
+  TRoleDocument,
   RoleEntity,
 } from 'src/modules/role/entities/role.entity';
 
@@ -15,7 +16,7 @@ export const PermissionDatabaseName = 'permissions';
   collection: PermissionDatabaseName,
 })
 export class PermissionEntity extends DatabaseTimestampsAbstract {
-  @Prop({ required: true, enum: ProjectMenu })
+  @Prop({ required: true, enum: EProjectMenu })
   menu: string;
 
   @Prop({ required: true })
@@ -31,10 +32,10 @@ export class PermissionEntity extends DatabaseTimestampsAbstract {
   delete: boolean;
 
   @Prop({ required: true, type: Types.ObjectId, ref: RoleEntity.name })
-  role: RoleDocument;
+  role: TRoleDocument;
 }
 
-export type PermissionDocument = PermissionEntity & Document;
+export type TPermissionDocument = PermissionEntity & Document;
 
 export const PermissionSchema = SchemaFactory.createForClass(PermissionEntity);
 

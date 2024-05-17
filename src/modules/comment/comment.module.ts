@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { CommentService } from './services/comment.service';
 import { CommentController } from './controllers/comment.controller';
 import { TaskModule } from '../task/task.module';
 import { StageModule } from '../stage/stage.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { CommentFeature } from './entities/comment.entity';
 import { CommentRepository } from './repository/comment.repository';
 import { ActivityModule } from '../activity/activity.module';

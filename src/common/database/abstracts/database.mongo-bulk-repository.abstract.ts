@@ -1,14 +1,14 @@
 import { Document, Model, PopulateOptions, Types } from 'mongoose';
-import { DatabaseBulkRepositoryAbstract } from 'src/common/database/interfaces/database.bulk.repository.interface';
+import { IDatabaseBulkRepositoryAbstract } from 'src/common/database/interfaces/database.bulk.repository.interface';
 import {
-  DatabaseCreateManyOptions,
-  DatabaseManyOptions,
-  DatabaseSoftDeleteManyOptions,
-  DatabaseRestoreManyOptions,
+  TDatabaseCreateManyOptions,
+  TDatabaseManyOptions,
+  TDatabaseSoftDeleteManyOptions,
+  TDatabaseRestoreManyOptions,
 } from 'src/common/database/interfaces/database.interface';
 
 export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
-  implements DatabaseBulkRepositoryAbstract
+  implements IDatabaseBulkRepositoryAbstract
 {
   protected _repository: Model<T>;
   protected _populateOnFind?: PopulateOptions | PopulateOptions[];
@@ -23,7 +23,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async createMany<N>(
     data: N[],
-    options?: DatabaseCreateManyOptions,
+    options?: TDatabaseCreateManyOptions,
   ): Promise<boolean> {
     const create = this._repository.insertMany(data, {
       session: options ? options.session : undefined,
@@ -39,7 +39,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async deleteManyById(
     _id: string[],
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean> {
     const map: Types.ObjectId[] = _id.map((val) => new Types.ObjectId(val));
 
@@ -62,7 +62,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async deleteMany(
     find: Record<string, any>,
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean> {
     const del = this._repository.deleteMany(find);
 
@@ -83,7 +83,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async softDeleteManyById(
     _id: string[],
-    options?: DatabaseSoftDeleteManyOptions,
+    options?: TDatabaseSoftDeleteManyOptions,
   ): Promise<boolean> {
     const map: Types.ObjectId[] = _id.map((val) => new Types.ObjectId(val));
 
@@ -106,7 +106,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async softDeleteMany(
     find: Record<string, any>,
-    options?: DatabaseSoftDeleteManyOptions,
+    options?: TDatabaseSoftDeleteManyOptions,
   ): Promise<boolean> {
     const softDel = this._repository
       .updateMany(find, { $set: { deletedAt: new Date() } })
@@ -127,7 +127,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
 
   async restore(
     _id: string[],
-    options?: DatabaseRestoreManyOptions,
+    options?: TDatabaseRestoreManyOptions,
   ): Promise<boolean> {
     const map: Types.ObjectId[] = _id.map((val) => new Types.ObjectId(val));
 
@@ -151,7 +151,7 @@ export abstract class DatabaseMongoBulkRepositoryAbstract<T extends Document>
   async updateMany<N>(
     find: Record<string, any>,
     data: N,
-    options?: DatabaseManyOptions,
+    options?: TDatabaseManyOptions,
   ): Promise<boolean> {
     const update = this._repository.updateMany(find, { $set: data });
 

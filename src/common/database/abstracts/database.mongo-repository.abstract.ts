@@ -5,25 +5,28 @@ import {
   PopulateOptions,
   Types,
 } from 'mongoose';
-import { PaginationResponse } from 'src/shared/interfaces/pagination.interface';
-import { DatabasePaginationOptionDefault } from '../enums/database.enum';
+
+import { IPaginationResponse } from 'src/shared/interfaces/pagination.interface';
 import {
-  DatabaseCreateOptions,
-  DatabaseSoftDeleteOptions,
-  DatabaseExistOptions,
-  DatabaseFindAllAggregateOptions,
-  DatabaseFindAllOptions,
-  DatabaseFindOneOptions,
-  DatabaseGetTotalAggregateOptions,
-  DatabaseOptions,
-  DatabaseRestoreOptions,
-  DatabaseAggregateOptions,
+  IDatabaseCreateOptions,
+  TDatabaseSoftDeleteOptions,
+  IDatabaseExistOptions,
+  IDatabaseFindAllAggregateOptions,
+  IDatabaseFindAllOptions,
+  IDatabaseFindOneOptions,
+  IDatabaseGetTotalAggregateOptions,
+  TDatabaseOptions,
+  TDatabaseRestoreOptions,
+  TDatabaseAggregateOptions,
 } from '../interfaces/database.interface';
-import { DatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
+import { IDatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
+
+import { EDatabasePaginationOptionDefault } from '../enums/database.enum';
+
 import paginationOptions from 'src/shared/helpers/pagination-options.helper';
 
 export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
-  implements DatabaseRepositoryAbstract<T>
+  implements IDatabaseRepositoryAbstract<T>
 {
   protected _repository: Model<T>;
   protected _populateOnFind?: PopulateOptions | PopulateOptions[];
@@ -38,8 +41,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async findAll(
     find?: Record<string, any>,
-    options?: DatabaseFindAllOptions,
-  ): Promise<PaginationResponse<T[]>> {
+    options?: IDatabaseFindAllOptions,
+  ): Promise<IPaginationResponse<T[]>> {
     const {
       search,
       searchField,
@@ -50,8 +53,8 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       populate,
       session,
       projection,
-      limit = DatabasePaginationOptionDefault.Limit,
-      page = DatabasePaginationOptionDefault.Page,
+      limit = EDatabasePaginationOptionDefault.Limit,
+      page = EDatabasePaginationOptionDefault.Page,
     } = options;
 
     if (search && searchField?.length) {
@@ -103,16 +106,16 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async findAllAggregate<N>(
     pipeline: PipelineStage[],
-    options?: DatabaseFindAllAggregateOptions,
-  ): Promise<PaginationResponse<N[]>> {
+    options?: IDatabaseFindAllAggregateOptions,
+  ): Promise<IPaginationResponse<N[]>> {
     const {
       withDeleted,
       sort,
       search,
       searchField,
       disablePagination,
-      limit = DatabasePaginationOptionDefault.Limit,
-      page = DatabasePaginationOptionDefault.Page,
+      limit = EDatabasePaginationOptionDefault.Limit,
+      page = EDatabasePaginationOptionDefault.Page,
     } = options || {};
 
     if (withDeleted) {
@@ -177,7 +180,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async findOne(
     find: Record<string, any>,
-    options?: DatabaseFindOneOptions,
+    options?: IDatabaseFindOneOptions,
   ): Promise<T> {
     const findOne = this._repository.findOne(find);
 
@@ -197,7 +200,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     return findOne.exec();
   }
 
-  async findOneById(_id: string, options?: DatabaseFindOneOptions): Promise<T> {
+  async findOneById(
+    _id: string,
+    options?: IDatabaseFindOneOptions,
+  ): Promise<T> {
     const findOne = this._repository.findById(_id);
 
     if (options?.withDeleted) findOne.where('deletedAt').ne(null);
@@ -218,7 +224,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async findOneAggregate<N>(
     pipeline: PipelineStage[],
-    options?: DatabaseAggregateOptions,
+    options?: TDatabaseAggregateOptions,
   ): Promise<N> {
     if (options?.withDeleted) {
       pipeline.unshift({
@@ -241,7 +247,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async getTotal(
     find?: Record<string, any>,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<number> {
     const count = this._repository.countDocuments(find);
 
@@ -256,7 +262,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   }
   async getTotalAggregate(
     pipeline: PipelineStage[],
-    options?: DatabaseGetTotalAggregateOptions,
+    options?: IDatabaseGetTotalAggregateOptions,
   ): Promise<number> {
     if (options?.withDeleted) {
       pipeline.unshift({
@@ -286,7 +292,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async exists(
     find: Record<string, any>,
-    options?: DatabaseExistOptions,
+    options?: IDatabaseExistOptions,
   ): Promise<boolean> {
     const exist = this._repository.exists({
       ...find,
@@ -308,7 +314,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async aggregate<N>(
     pipeline: Record<string, any>[],
-    options?: DatabaseAggregateOptions,
+    options?: TDatabaseAggregateOptions,
   ): Promise<N[]> {
     if (options?.withDeleted) {
       pipeline.unshift({
@@ -328,7 +334,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     return aggregate;
   }
 
-  async create<N>(data: N, options?: DatabaseCreateOptions): Promise<T> {
+  async create<N>(data: N, options?: IDatabaseCreateOptions): Promise<T> {
     const dataCreate: Record<string, any> = data;
     if (options?._id) {
       dataCreate._id = new Types.ObjectId(options._id);
@@ -344,7 +350,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async updateOneById<N>(
     _id: string,
     data: N,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<T> {
     const update = this._repository.findByIdAndUpdate(
       _id,
@@ -365,7 +371,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   async updateOne<N>(
     find: Record<string, any>,
     data: N,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<T> {
     const update = this._repository.findOneAndUpdate(
       find,
@@ -385,7 +391,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async deleteOne(
     find: Record<string, any>,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<T> {
     const del = this._repository.findOneAndDelete(find, { new: true });
 
@@ -399,7 +405,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     return del;
   }
 
-  async deleteOneById(_id: string, options?: DatabaseOptions): Promise<T> {
+  async deleteOneById(_id: string, options?: TDatabaseOptions): Promise<T> {
     const del = this._repository.findByIdAndDelete(_id, { new: true });
 
     if (options?.withDeleted) del.where('deletedAt').ne(null);
@@ -414,7 +420,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async softDeleteOneById(
     _id: string,
-    options?: DatabaseSoftDeleteOptions,
+    options?: TDatabaseSoftDeleteOptions,
   ): Promise<T> {
     const del = this._repository
       .findByIdAndUpdate(
@@ -434,7 +440,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
   async softDeleteOne(
     find: Record<string, any>,
-    options?: DatabaseSoftDeleteOptions,
+    options?: TDatabaseSoftDeleteOptions,
   ): Promise<T> {
     const del = this._repository
       .findOneAndUpdate(
@@ -452,7 +458,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
     return del;
   }
 
-  async restore(_id: string, options?: DatabaseRestoreOptions): Promise<T> {
+  async restore(_id: string, options?: TDatabaseRestoreOptions): Promise<T> {
     const rest = this._repository
       .findByIdAndUpdate(_id, { $set: { deletedAt: null } }, { new: true })
       .where('deletedAt')

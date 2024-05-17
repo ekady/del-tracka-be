@@ -1,7 +1,7 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
-import { HashHelper } from 'src/shared/helpers';
-import { UserEntity, UserDocument, UserSchema } from './user.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HashHelper } from 'src/shared/helpers';
+import { UserEntity, TUserDocument, UserSchema } from './user.entity';
 
 export const UserSchemaProvider: AsyncModelFactory = {
   name: UserEntity.name,
@@ -10,7 +10,7 @@ export const UserSchemaProvider: AsyncModelFactory = {
   useFactory: (config: ConfigService) => {
     const schema = UserSchema;
 
-    schema.pre<UserDocument>('save', async function () {
+    schema.pre<TUserDocument>('save', async function () {
       // If data is modified or create new data using provider, do nothing
       if (!this.isModified('password') || (this.isNew && this.isViaProvider))
         return;
@@ -21,13 +21,13 @@ export const UserSchemaProvider: AsyncModelFactory = {
       this.passwordChangedAt = new Date(Date.now());
     });
 
-    schema.post<UserDocument>('save', { document: true }, function () {
+    schema.post<TUserDocument>('save', { document: true }, function () {
       // Remove password and passwordChangedAt
       this.password = undefined;
       this.passwordChangedAt = undefined;
     });
 
-    schema.post<UserDocument>(
+    schema.post<TUserDocument>(
       /^findOne/,
       { document: true, query: true },
       function (doc) {

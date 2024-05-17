@@ -1,19 +1,20 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { DatabaseMongoBulkRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-bulk-repository.abstract';
-import {
-  NotificationDocument,
-  NotificationEntity,
-} from '../entities/notification.entity';
 import { Model } from 'mongoose';
+
+import { DatabaseMongoBulkRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-bulk-repository.abstract';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { TaskEntity } from 'src/modules/task/entities/task.entity';
 import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
+import {
+  TNotificationDocument,
+  NotificationEntity,
+} from '../entities/notification.entity';
 
-export class NotificationBulkRepository extends DatabaseMongoBulkRepositoryAbstract<NotificationDocument> {
+export class NotificationBulkRepository extends DatabaseMongoBulkRepositoryAbstract<TNotificationDocument> {
   constructor(
     @InjectModel(NotificationEntity.name)
-    private notificationBulkModel: Model<NotificationDocument>,
+    private notificationBulkModel: Model<TNotificationDocument>,
   ) {
     super(notificationBulkModel, [
       { path: 'user', model: UserEntity.name },

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { ActivityService } from './services/activity.service';
 import { ActivityFeature } from './entities/activity.entity';
 import { ActivityRepository } from './repositories/activity.repository';

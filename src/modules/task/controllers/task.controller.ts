@@ -11,13 +11,23 @@ import {
   Query,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { TaskService } from '../services';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
 import { RolePermission } from 'src/modules/role/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ActivityResponseDto } from 'src/modules/activity/dto';
+import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { TaskService } from '../services';
 import {
   CreateTaskRequestDto,
   MoveToStageDto,
@@ -26,16 +36,7 @@ import {
   UpdateStatusTaskDto,
   UpdateTaskRequestDto,
 } from '../dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { ActivityResponseDto } from 'src/modules/activity/dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
-import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
-import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Tasks')
 @Controller('project/:projectShortId/stage/:stageShortId/task')
@@ -45,7 +46,7 @@ export class TaskController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiResProperty(StatusMessageDto, 201)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Create)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Create)
   @UseInterceptors(FilesInterceptor('images'))
   create(
     @JwtPayloadReq() user: IJwtPayload,
@@ -63,22 +64,22 @@ export class TaskController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([TaskResponseDto], 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Read)
   @QueryPagination()
   findAll(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<TaskResponseDto[]>> {
+    @Query() queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<TaskResponseDto[]>> {
     const ids: IStageShortIds = { projectShortId, stageShortId };
     return this.taskService.findAll(ids, queries);
   }
 
   @Get(':shortId')
   @ApiResProperty(TaskResponseDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Read)
   findOne(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
@@ -93,9 +94,9 @@ export class TaskController {
   }
 
   @Get(':shortId/activity')
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([ActivityResponseDto], 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Read)
   @QueryPagination()
   findActivity(
     @Param('projectShortId') projectShortId: string,
@@ -103,8 +104,8 @@ export class TaskController {
     @Param('shortId') shortId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    @Query() queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const ids: ITaskShortIds = {
       taskShortId: shortId,
       stageShortId,
@@ -117,7 +118,7 @@ export class TaskController {
 
   @Put('move-stage')
   @ApiResProperty(StatusMessageDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Update)
   moveStage(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
@@ -132,7 +133,7 @@ export class TaskController {
 
   @Put('update-status')
   @ApiResProperty(StatusMessageDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Update)
   updateStatusBulk(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
@@ -149,7 +150,7 @@ export class TaskController {
   @Put(':shortId')
   @ApiConsumes('multipart/form-data')
   @ApiResProperty(StatusMessageDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Update)
   @UseInterceptors(FilesInterceptor('images'))
   update(
     @JwtPayloadReq() user: IJwtPayload,
@@ -170,7 +171,7 @@ export class TaskController {
 
   @Put(':shortId/update-status')
   @ApiResProperty(StatusMessageDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Update)
   updateStatus(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
@@ -188,7 +189,7 @@ export class TaskController {
 
   @Delete(':shortId')
   @ApiResProperty(StatusMessageDto, 200)
-  @RolePermission(ProjectMenu.Task, PermissionMenu.Delete)
+  @RolePermission(EProjectMenu.Task, EPermissionMenu.Delete)
   remove(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,

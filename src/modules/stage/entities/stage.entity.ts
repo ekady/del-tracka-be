@@ -29,7 +29,7 @@ export class StageEntity extends DatabaseTimestampsAbstract {
   shortId: string;
 }
 
-export type StageDocument = StageEntity & Document;
+export type TStageDocument = StageEntity & Document;
 
 export const StageSchema = SchemaFactory.createForClass(StageEntity);
 

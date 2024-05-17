@@ -25,11 +25,12 @@ import { FileStreamModule } from './modules/file-stream/file-stream.module';
 import { MyTaskModule } from './modules/my-task/my-task.module';
 import { TaskStatisticModule } from './modules/task-statistic/task-statistic.module';
 import { FileMulterModule } from './common/file-multer/file-multer.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    ThrottlerModule.forRoot({ ttl: 60, limit: 30 }),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 30 }]),
     FileMulterModule,
     DatabaseModule,
     HttpModule,
@@ -52,6 +53,7 @@ import { FileMulterModule } from './common/file-multer/file-multer.module';
     MyTaskModule,
     TaskStatisticModule,
   ],
+  controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {
@@ -59,11 +61,12 @@ export class AppModule {
   static version: string;
   static prefix: string;
   static corsOrigin: string;
+  static enableSwagger: boolean;
 
   constructor(private config: ConfigService) {
     AppModule.port = this.config.get('API_PORT') * 1;
-    AppModule.version = this.config.get('API_VERSION');
     AppModule.prefix = this.config.get('API_PREFIX');
     AppModule.corsOrigin = this.config.get('API_CORS_ORIGIN');
+    AppModule.enableSwagger = !!Number(this.config.get('ENABLE_SWAGGER'));
   }
 }

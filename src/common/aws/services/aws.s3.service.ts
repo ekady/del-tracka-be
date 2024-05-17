@@ -1,14 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  IAwsS3ContentOptions,
-  IAwsS3PutItemOptions,
-} from 'src/common/aws/interfaces/aws.interface';
-import {
-  AwsS3MultipartPartsSerialization,
-  AwsS3MultipartSerialization,
-} from 'src/common/aws/serializations/aws.s3-multipart.serialization';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import { Readable } from 'stream';
 import {
   S3Client,
@@ -48,8 +39,19 @@ import {
   CompleteMultipartUploadCommandOutput,
   AbortMultipartUploadCommandOutput,
   _Object,
+  ObjectCannedACL,
 } from '@aws-sdk/client-s3';
+
 import { generateShortId } from 'src/shared/helpers';
+import {
+  IAwsS3ContentOptions,
+  IAwsS3PutItemOptions,
+} from 'src/common/aws/interfaces/aws.interface';
+import {
+  AwsS3MultipartPartsSerialization,
+  AwsS3MultipartSerialization,
+} from 'src/common/aws/serializations/aws.s3-multipart.serialization';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class AwsS3Service {
@@ -165,7 +167,7 @@ export class AwsS3Service {
   ): Promise<AwsS3Serialization> {
     const filename = `${generateShortId(15)}.${contentOptions.extension}`;
     let path: string = options?.path;
-    const acl: string = options?.acl ? options.acl : 'public-read';
+    const acl: ObjectCannedACL = options?.acl ? options.acl : 'public-read';
 
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
@@ -291,7 +293,7 @@ export class AwsS3Service {
     options?: IAwsS3PutItemOptions,
   ): Promise<AwsS3MultipartSerialization> {
     let path: string = options?.path;
-    const acl: string = options?.acl ? options.acl : 'public-read';
+    const acl: ObjectCannedACL = options?.acl ? options.acl : 'public-read';
 
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 

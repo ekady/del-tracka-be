@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createTransport, Transporter } from 'nodemailer';
 import { renderFile } from 'pug';
-import { ISendEmail } from '../interfaces/send-email.interface';
+
 import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
+import { ISendEmail } from '../interfaces/send-email.interface';
 
 @Injectable()
 export class EmailService {
@@ -24,7 +25,7 @@ export class EmailService {
     const from = this.config.get('EMAIL_IDENTITY');
     try {
       const html = renderFile(
-        `${__dirname}\\..\\templates\\${options.templateName}.pug`,
+        `${__dirname}/../templates/${options.templateName}.pug`,
         {
           firstName: options.name,
           url: options.url ?? '',
@@ -36,9 +37,9 @@ export class EmailService {
         subject: `[Tracka] - ${options.subject}`,
         html,
       });
-    } catch (_) {
+    } catch (error) {
       throw new InternalServerErrorException({
-        message: 'Internal Server Error',
+        message: error?.message ?? 'Internal Server Error',
         errorType: HttpErrorType[500],
       });
     }

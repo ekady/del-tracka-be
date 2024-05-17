@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
-import { StatusMessageDto } from 'src/shared/dto';
+
 import {
   CredentialInvalidException,
   EmailUsernameExistException,
   TokenInvalidException,
 } from 'src/shared/http-exceptions/exceptions';
+import { StatusMessageDto } from 'src/shared/dto';
 import { HashHelper } from 'src/shared/helpers';
+import { EmailService } from 'src/modules/email/services/email.service';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { UserService } from 'src/modules/user/services/user.service';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
@@ -16,11 +22,6 @@ import {
   TokensDto,
 } from '../dto';
 import { TokenService } from './token.service';
-import { ConfigService } from '@nestjs/config';
-import { EmailService } from 'src/modules/email/services/email.service';
-import { UserRepository } from 'src/modules/user/repositories/user.repository';
-import { UserService } from 'src/modules/user/services/user.service';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
 export class AuthService {
@@ -131,10 +132,14 @@ export class AuthService {
   }
 
   async signOut(userId: string): Promise<StatusMessageDto> {
-    await this.userRepository.updateOneById(userId, {
-      hashedRefreshToken: null,
-      deviceId: null,
-    });
+    try {
+      await this.userRepository.updateOneById(userId, {
+        hashedRefreshToken: null,
+        deviceId: null,
+      });
+    } catch {
+      //
+    }
     return { message: 'Success' };
   }
 

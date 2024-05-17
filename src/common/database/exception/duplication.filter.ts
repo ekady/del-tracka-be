@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { ErrorResponseDto } from 'src/shared/dto';
 import { MongoServerError } from 'mongodb';
-import { ErrorType } from 'src/shared/enums';
+import { EErrorType } from 'src/shared/enums';
 
 @Catch(MongoServerError)
 export class DuplicationException implements ExceptionFilter<MongoServerError> {
@@ -10,16 +10,16 @@ export class DuplicationException implements ExceptionFilter<MongoServerError> {
     const response = ctx.getResponse();
     const duplicateCodeException = exception.code === 11000;
 
-    let errorType: ErrorType, message: string;
+    let errorType: EErrorType, message: string;
     if (duplicateCodeException) {
       const value = exception.errmsg
         .match(/(["'])(\\?.)*?\1/)?.[0]
         .replace(/"/g, '');
       message = `Duplicate field value: ${value}. Please use another value!`;
-      errorType = ErrorType.DuplicationError;
+      errorType = EErrorType.DuplicationError;
     } else {
       message = exception.errmsg;
-      errorType = ErrorType.MongoError;
+      errorType = EErrorType.MongoError;
     }
 
     response.status(400).json({

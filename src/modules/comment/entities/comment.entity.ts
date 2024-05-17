@@ -32,7 +32,7 @@ export class CommentEntity extends DatabaseTimestampsAbstract {
   task: TaskEntity;
 }
 
-export type CommentDocument = CommentEntity & Document;
+export type TCommentDocument = CommentEntity & Document;
 
 export const CommentSchema = SchemaFactory.createForClass(CommentEntity);
 

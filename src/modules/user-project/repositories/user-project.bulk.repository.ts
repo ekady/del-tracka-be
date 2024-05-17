@@ -6,15 +6,15 @@ import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import { RoleEntity } from 'src/modules/role/entities/role.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import {
-  UserProjectDocument,
+  TUserProjectDocument,
   UserProjectEntity,
 } from '../entities/user-project.entity';
 
 @Injectable()
-export class UserProjectBulkRepository extends DatabaseMongoBulkRepositoryAbstract<UserProjectDocument> {
+export class UserProjectBulkRepository extends DatabaseMongoBulkRepositoryAbstract<TUserProjectDocument> {
   constructor(
     @InjectModel(UserProjectEntity.name)
-    private userProjectBulkModel: Model<UserProjectDocument>,
+    private userProjectBulkModel: Model<TUserProjectDocument>,
   ) {
     super(userProjectBulkModel, [
       { path: 'createdBy', model: UserEntity.name },

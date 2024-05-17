@@ -1,15 +1,16 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { ApiResProperty } from 'src/shared/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { TaskStatisticService } from 'src/modules/task-statistic/services/task-statistic.service';
 import {
   TaskProjectCountDto,
   TaskStageStatisticDto,
   TaskStatisticDto,
   TaskStatusStatisticDto,
 } from '../dto';
-import { TaskStatisticService } from 'src/modules/task-statistic/services/task-statistic.service';
 
 @ApiTags('Tasks Statistic')
 @Controller('task-statistic')

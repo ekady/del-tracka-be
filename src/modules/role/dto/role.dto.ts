@@ -1,7 +1,7 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { EntityResponseDto } from 'src/shared/dto';
+import { IEntityResponseDto } from 'src/shared/dto';
 
-export class RoleDto implements Pick<EntityResponseDto, '_id'> {
+export class RoleDto implements Pick<IEntityResponseDto, '_id'> {
   @ApiResponseProperty()
   _id: string;
 

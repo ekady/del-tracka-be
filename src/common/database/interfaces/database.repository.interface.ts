@@ -1,84 +1,89 @@
 import { Document, PipelineStage } from 'mongoose';
-import { PaginationResponse } from 'src/shared/interfaces/pagination.interface';
+
+import { IPaginationResponse } from 'src/shared/interfaces/pagination.interface';
 import {
-  DatabaseCreateOptions,
-  DatabaseSoftDeleteOptions,
-  DatabaseExistOptions,
-  DatabaseFindAllAggregateOptions,
-  DatabaseFindAllOptions,
-  DatabaseFindOneOptions,
-  DatabaseGetTotalAggregateOptions,
-  DatabaseOptions,
-  DatabaseRestoreOptions,
-  DatabaseAggregateOptions,
+  IDatabaseCreateOptions,
+  TDatabaseSoftDeleteOptions,
+  IDatabaseExistOptions,
+  IDatabaseFindAllAggregateOptions,
+  IDatabaseFindAllOptions,
+  IDatabaseFindOneOptions,
+  IDatabaseGetTotalAggregateOptions,
+  TDatabaseOptions,
+  TDatabaseRestoreOptions,
+  TDatabaseAggregateOptions,
 } from './database.interface';
 
-export interface DatabaseRepositoryAbstract<T extends Document> {
+export interface IDatabaseRepositoryAbstract<T extends Document> {
   findAll(
     find?: Record<string, any>,
-    options?: DatabaseFindAllOptions,
-  ): Promise<PaginationResponse<T[]>>;
+    options?: IDatabaseFindAllOptions,
+  ): Promise<IPaginationResponse<T[]>>;
 
   findAllAggregate<N>(
     pipeline: PipelineStage[],
-    options?: DatabaseFindAllAggregateOptions,
-  ): Promise<PaginationResponse<N[]>>;
+    options?: IDatabaseFindAllAggregateOptions,
+  ): Promise<IPaginationResponse<N[]>>;
 
   findOne(
     find: Record<string, any>,
-    options?: DatabaseFindOneOptions,
+    options?: IDatabaseFindOneOptions,
   ): Promise<T>;
 
-  findOneById(_id: string, options?: DatabaseFindOneOptions): Promise<T>;
+  findOneById(_id: string, options?: IDatabaseFindOneOptions): Promise<T>;
 
   findOneAggregate<N>(
     pipeline: PipelineStage[],
-    options?: DatabaseAggregateOptions,
+    options?: TDatabaseAggregateOptions,
   ): Promise<N[]>;
 
   getTotal(
     find?: Record<string, any>,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<number>;
 
   getTotalAggregate(
     pipeline: PipelineStage[],
-    options?: DatabaseGetTotalAggregateOptions,
+    options?: IDatabaseGetTotalAggregateOptions,
   ): Promise<number>;
 
   exists(
     find: Record<string, any>,
-    options?: DatabaseExistOptions,
+    options?: IDatabaseExistOptions,
   ): Promise<boolean>;
 
   aggregate<N>(
     pipeline: Record<string, any>[],
-    options?: DatabaseAggregateOptions,
+    options?: TDatabaseAggregateOptions,
   ): Promise<N[]>;
 
-  create<N>(data: N, options?: DatabaseCreateOptions): Promise<T>;
+  create<N>(data: N, options?: IDatabaseCreateOptions): Promise<T>;
 
-  updateOneById<N>(_id: string, data: N, options?: DatabaseOptions): Promise<T>;
+  updateOneById<N>(
+    _id: string,
+    data: N,
+    options?: TDatabaseOptions,
+  ): Promise<T>;
 
   updateOne<N>(
     find: Record<string, any>,
     data: N,
-    options?: DatabaseOptions,
+    options?: TDatabaseOptions,
   ): Promise<T>;
 
-  deleteOne(find: Record<string, any>, options?: DatabaseOptions): Promise<T>;
+  deleteOne(find: Record<string, any>, options?: TDatabaseOptions): Promise<T>;
 
-  deleteOneById(_id: string, options?: DatabaseOptions): Promise<T>;
+  deleteOneById(_id: string, options?: TDatabaseOptions): Promise<T>;
 
   softDeleteOneById(
     _id: string,
-    options?: DatabaseSoftDeleteOptions,
+    options?: TDatabaseSoftDeleteOptions,
   ): Promise<T>;
 
   softDeleteOne(
     find: Record<string, any>,
-    options?: DatabaseSoftDeleteOptions,
+    options?: TDatabaseSoftDeleteOptions,
   ): Promise<T>;
 
-  restore(_id: string, options?: DatabaseRestoreOptions): Promise<T>;
+  restore(_id: string, options?: TDatabaseRestoreOptions): Promise<T>;
 }

@@ -8,16 +8,17 @@ import {
   Delete,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { ProjectMemberService } from '../services';
+import { ApiTags } from '@nestjs/swagger';
+
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
-import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
-import { ApiTags } from '@nestjs/swagger';
 import { RolePermission } from 'src/modules/role/decorator';
-import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
+import { ProjectMemberService } from '../services';
+import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
 
 @ApiTags('Project')
 @Controller('project')
@@ -25,8 +26,8 @@ export class ProjectMemberController {
   constructor(private readonly projectMemberService: ProjectMemberService) {}
 
   @Post(':shortId/member')
-  @Throttle(60, 60)
-  @RolePermission(ProjectMenu.Member, PermissionMenu.Create)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
+  @RolePermission(EProjectMenu.Member, EPermissionMenu.Create)
   @ApiResProperty(StatusMessageDto, 201)
   addMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
@@ -42,7 +43,7 @@ export class ProjectMemberController {
   }
 
   @Put(':shortId/member')
-  @RolePermission(ProjectMenu.Member, PermissionMenu.Update)
+  @RolePermission(EProjectMenu.Member, EPermissionMenu.Update)
   @ApiResProperty(StatusMessageDto, 201)
   updateMember(
     @JwtPayloadReq() jwtPayload: IJwtPayload,
@@ -58,7 +59,7 @@ export class ProjectMemberController {
   }
 
   @Get(':shortId/member')
-  @RolePermission(ProjectMenu.Member, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Member, EPermissionMenu.Read)
   @ApiResProperty(ProjectUserResponseDto, 200)
   getMember(
     @Param('shortId') shortId: string,
@@ -67,7 +68,7 @@ export class ProjectMemberController {
   }
 
   @Delete(':shortId/member')
-  @RolePermission(ProjectMenu.Member, PermissionMenu.Delete)
+  @RolePermission(EProjectMenu.Member, EPermissionMenu.Delete)
   @ApiResProperty(StatusMessageDto, 200)
   removeMember(
     @Param('shortId') shortId: string,

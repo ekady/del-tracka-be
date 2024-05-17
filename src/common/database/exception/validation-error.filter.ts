@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 
 import { Error } from 'mongoose';
 import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
-import { ErrorType } from 'src/shared/enums';
+import { EErrorType } from 'src/shared/enums';
 
 @Catch(Error.ValidationError)
 export class ValidationException
@@ -15,7 +15,7 @@ export class ValidationException
       message: err.message,
       field: err.path,
       value: err.value,
-      errorType: ErrorType.ValidationError,
+      errorType: EErrorType.ValidationError,
     }));
 
     response.status(400).json({

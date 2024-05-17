@@ -1,21 +1,22 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
-import { PermissionMenu, ProjectMenu } from 'src/shared/enums';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { RolePermission } from 'src/modules/role/decorator';
 import { ITaskShortIds } from 'src/modules/task/interfaces/taskShortIds.interface';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 import { CommentService } from '../services/comment.service';
 import { CommentResponse } from '../dto';
 import { CreateCommentRequestDto } from '../dto/create-comment.dto';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { Throttle } from '@nestjs/throttler';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
 
 @ApiTags('Task Comment')
 @Controller(
@@ -26,7 +27,7 @@ export class CommentController {
 
   @Post()
   @ApiResProperty(StatusMessageDto, 201)
-  @RolePermission(ProjectMenu.Comment, PermissionMenu.Create)
+  @RolePermission(EProjectMenu.Comment, EPermissionMenu.Create)
   create(
     @JwtPayloadReq() user: IJwtPayload,
     @Param('projectShortId') projectShortId: string,
@@ -43,16 +44,16 @@ export class CommentController {
   }
 
   @Get()
-  @Throttle(60, 60)
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiResProperty([CommentResponse], 201)
-  @RolePermission(ProjectMenu.Comment, PermissionMenu.Read)
+  @RolePermission(EProjectMenu.Comment, EPermissionMenu.Read)
   @QueryPagination()
   findAll(
     @Param('projectShortId') projectShortId: string,
     @Param('stageShortId') stageShortId: string,
     @Param('taskShortId') taskShortId: string,
-    @Query() queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<CommentResponse[]>> {
+    @Query() queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<CommentResponse[]>> {
     const ids: ITaskShortIds = {
       projectShortId,
       stageShortId,

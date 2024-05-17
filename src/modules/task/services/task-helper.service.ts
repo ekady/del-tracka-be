@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
+
 import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
-import { TaskDocument } from 'src/modules/task/entities/task.entity';
+import { TTaskDocument } from 'src/modules/task/entities/task.entity';
 import { StageHelperService } from 'src/modules/stage/services';
 import { ITaskIds } from '../interfaces/taskIds.interface';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TaskRepository } from '../repositories/task.repository';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class TaskHelperService {
@@ -17,7 +18,7 @@ export class TaskHelperService {
   async findTaskById(
     ids: ITaskIds,
     select?: Record<string, number>,
-  ): Promise<TaskDocument> {
+  ): Promise<TTaskDocument> {
     const { taskId, projectId, stageId } = ids;
     const stage = await this.stageHelperService.findStageById(
       stageId,
@@ -35,7 +36,7 @@ export class TaskHelperService {
     return task;
   }
 
-  async findTaskByShortId(ids: ITaskShortIds): Promise<TaskDocument> {
+  async findTaskByShortId(ids: ITaskShortIds): Promise<TTaskDocument> {
     const { taskShortId, projectShortId, stageShortId } = ids;
     const stage = await this.stageHelperService.findStageByShortId(
       stageShortId,

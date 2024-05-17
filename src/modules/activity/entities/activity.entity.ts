@@ -1,6 +1,7 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ActivityName } from 'src/shared/enums';
+
+import { EActivityName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import {
@@ -20,7 +21,7 @@ export class ActivityEntity extends DatabaseTimestampsAbstract {
   @Prop({ required: true, type: Types.ObjectId, ref: UserEntity.name })
   createdBy: UserEntity;
 
-  @Prop({ required: true, type: String, enum: ActivityName })
+  @Prop({ required: true, type: String, enum: EActivityName })
   type: string;
 
   @Prop({
@@ -47,7 +48,7 @@ export class ActivityEntity extends DatabaseTimestampsAbstract {
   comment: string;
 }
 
-export type ActivityDocument = ActivityEntity & Document;
+export type TActivityDocument = ActivityEntity & Document;
 
 export const ActivitySchema = SchemaFactory.createForClass(ActivityEntity);
 

@@ -1,12 +1,13 @@
+import { Types } from 'mongoose';
+
 import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
 import { RoleDatabaseName } from 'src/modules/role/entities/role.entity';
 import { UserProjectDatabaseName } from 'src/modules/user-project/entities/user-project.entity';
-import { ProjectMenu } from 'src/shared/enums';
-import { NAME_FIELD, USER_FIELD } from '../constants/my-task.constant';
-import { Types } from 'mongoose';
+import { EProjectMenu } from 'src/shared/enums';
 import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
 import { ProjectDatabaseName } from 'src/modules/project/schema/project.entity';
 import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
+import { NAME_FIELD, USER_FIELD } from '../constants/my-task.constant';
 
 export const helperLookupUserProject = (userId: string | Types.ObjectId) => {
   const lookupPermission = {
@@ -15,7 +16,7 @@ export const helperLookupUserProject = (userId: string | Types.ObjectId) => {
     foreignField: 'role',
     as: 'permissions',
     pipeline: [
-      { $match: { menu: ProjectMenu.Task } },
+      { $match: { menu: EProjectMenu.Task } },
       { $project: { menu: 1, create: 1, update: 1, delete: 1, read: 1 } },
     ],
   };

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Error } from 'mongoose';
 import { ErrorResponseDto } from 'src/shared/dto';
-import { ErrorType } from 'src/shared/enums';
+import { EErrorType } from 'src/shared/enums';
 
 @Catch(Error.CastError)
 export class CastErrorException implements ExceptionFilter<Error.CastError> {
@@ -11,7 +11,7 @@ export class CastErrorException implements ExceptionFilter<Error.CastError> {
     const { path, value } = exception;
 
     const message = `Invalid ${path}: ${value}.`;
-    const errorType = ErrorType.CastError;
+    const errorType = EErrorType.CastError;
 
     response.status(400).json({
       statusCode: 400,

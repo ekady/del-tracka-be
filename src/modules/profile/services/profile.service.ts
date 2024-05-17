@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+
 import { StatusMessageDto } from 'src/shared/dto';
-import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
 import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { ProfileResponseDto } from '../dto/profile-response.dto';
 
 @Injectable()
 export class ProfileService {
@@ -24,6 +25,7 @@ export class ProfileService {
       firstName: user.firstName,
       lastName: user.lastName,
       deletedAt: user.deletedAt,
+      isDemo: user.isDemo,
     };
   }
 
@@ -74,6 +76,9 @@ export class ProfileService {
   }
 
   async deleteProfile(id: string): Promise<StatusMessageDto> {
+    const user = await this.userRepository.findOneById(id);
+    if (user.isDemo)
+      throw new BadRequestException('Cannot remove demo account');
     await this.userRepository.softDeleteOneById(id);
     return { message: 'Success' };
   }

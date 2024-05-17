@@ -1,18 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { messaging } from 'firebase-admin';
-import { NotificationRepository } from '../repositories/notification.repository';
-import { CreateNotificationDto } from '../dto/create-notification.dto';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
-import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { Types } from 'mongoose';
-import { NotificationBulkRepository } from '../repositories/notification.bulk.repository';
+
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
 import { StatusMessageDto } from 'src/shared/dto';
 import { LoggerService } from 'src/common/logger/services/logger.service';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { NotificationResponseDto } from '../dto/notification-response.dto';
+import { NotificationBulkRepository } from '../repositories/notification.bulk.repository';
+import { NotificationRepository } from '../repositories/notification.repository';
+import { CreateNotificationDto } from '../dto/create-notification.dto';
 
 const ERROR_SEND_PUSH_NOTIFICATION = 'ERROR_SEND_PUSH_NOTIFICATION';
 
@@ -22,7 +23,7 @@ export class NotificationService {
     private notificationRepository: NotificationRepository,
     private notificationBulkRepository: NotificationBulkRepository,
     private userRepository: UserRepository,
-    private loggerService: LoggerService,
+    @Optional() private loggerService: LoggerService,
   ) {}
 
   private async sendPushNotification(
@@ -57,7 +58,6 @@ export class NotificationService {
     const user = await this.userRepository.findOneById(userId, {
       select: { deviceId: 1 },
     });
-    if (!user.deviceId) return false;
 
     await this.notificationRepository.create({
       ...createNotificationDto,
@@ -65,6 +65,7 @@ export class NotificationService {
       user: user._id,
     });
 
+    if (!user.deviceId) return false;
     for (const deviceId of user.deviceId) {
       await this.sendPushNotification(createNotificationDto, deviceId);
     }
@@ -74,8 +75,8 @@ export class NotificationService {
 
   async findAll(
     userId: string,
-    queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<NotificationResponseDto[]>> {
+    queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<NotificationResponseDto[]>> {
     const { limit, disablePagination, page } = queries;
 
     const filter: { isRead?: boolean } = {};

@@ -1,6 +1,6 @@
 import { ApiResponseProperty, PartialType } from '@nestjs/swagger';
 
-import { EntityResponseDto, UserResponse } from 'src/shared/dto';
+import { IEntityResponseDto, UserResponse } from 'src/shared/dto';
 import { StageResponseDto } from 'src/modules/stage/dto/stage-response.dto';
 import { CreateProjectDto } from './create-project.dto';
 import { ProjectPermissionResponseDto } from './project-permission.dto';
@@ -21,7 +21,7 @@ export class ProjectDto {
 
 export class ProjectResponseDto
   extends PartialType(CreateProjectDto)
-  implements EntityResponseDto
+  implements IEntityResponseDto
 {
   @ApiResponseProperty()
   createdBy?: UserResponse;

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
+
 import { ActivityRepository } from '../repositories/activity.repository';
 import { ActivityStatisticDto } from '../dto/activity-statistics.dto';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class ActivityStatisticService {

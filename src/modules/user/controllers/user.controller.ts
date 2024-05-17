@@ -1,10 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { UserService } from '../services/user.service';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
+import { UserService } from '../services/user.service';
 import { RegisterDeviceDto } from '../dto/register-device-id.dto';
 
 @ApiTags('User')

@@ -1,4 +1,4 @@
-export enum ErrorType {
+export enum EErrorType {
   BadRequest = 'BAD_REQUEST',
   InvalidToken = 'INVALID_TOKEN',
   AccessTokenExpired = 'ACCESS_TOKEN_EXPIRED',

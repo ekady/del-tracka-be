@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { Types } from 'mongoose';
+
 import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
-import { StageDocument } from 'src/modules/stage/entities/stage.entity';
+import { TStageDocument } from 'src/modules/stage/entities/stage.entity';
 import { ProjectHelperService } from 'src/modules/project/services';
 import { StageRepository } from '../repositories/stage.repository';
-import { Types } from 'mongoose';
 
 @Injectable()
 export class StageHelperService {
@@ -12,7 +13,7 @@ export class StageHelperService {
     private projectHelperService: ProjectHelperService,
   ) {}
 
-  async findStageById(id: string, projectId: string): Promise<StageDocument> {
+  async findStageById(id: string, projectId: string): Promise<TStageDocument> {
     const project = await this.projectHelperService.findProjectById(projectId);
     const stage = await this.stageRepository.findOne(
       {
@@ -28,7 +29,7 @@ export class StageHelperService {
   async findStageByShortId(
     stageId: string,
     projectShortId: string,
-  ): Promise<StageDocument> {
+  ): Promise<TStageDocument> {
     const project =
       await this.projectHelperService.findProjectByShortId(projectShortId);
     const stage = await this.stageRepository.findOne(

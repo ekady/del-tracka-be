@@ -1,5 +1,5 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { TaskStatus } from 'src/shared/enums';
+import { ETaskStatus } from 'src/shared/enums';
 
 export class TaskStatisticDto {
   @ApiResponseProperty()
@@ -25,19 +25,19 @@ export class TaskStageStatisticDto {
 
 export class TaskStatusStatisticDto {
   @ApiResponseProperty()
-  [TaskStatus.Open]: number;
+  [ETaskStatus.Open]: number;
   @ApiResponseProperty()
-  [TaskStatus.InProgress]: number;
+  [ETaskStatus.InProgress]: number;
   @ApiResponseProperty()
-  [TaskStatus.ReadyForTest]: number;
+  [ETaskStatus.ReadyForTest]: number;
   @ApiResponseProperty()
-  [TaskStatus.Review]: number;
+  [ETaskStatus.Review]: number;
   @ApiResponseProperty()
-  [TaskStatus.Failed]: number;
+  [ETaskStatus.Failed]: number;
   @ApiResponseProperty()
-  [TaskStatus.Closed]: number;
+  [ETaskStatus.Closed]: number;
   @ApiResponseProperty()
-  [TaskStatus.Hold]: number;
+  [ETaskStatus.Hold]: number;
 }
 
 export class TaskProjectCountDto {

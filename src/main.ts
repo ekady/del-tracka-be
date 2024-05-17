@@ -1,6 +1,8 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestApplication, NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+
 import { AppModule } from './app.module';
 import { SwaggerSetup } from './config';
 import {
@@ -8,13 +10,11 @@ import {
   ValidationException,
   CastErrorException,
 } from './common/database/exception';
-import { ConfigService } from '@nestjs/config';
 import { setupFirebase } from './config/firebase.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(AppModule, {});
   const config: ConfigService = app.get(ConfigService);
-  SwaggerSetup(app, AppModule.version);
 
   app.use(helmet());
   app.enableCors({
@@ -25,13 +25,20 @@ async function bootstrap() {
     exposedHeaders: ['X-Request-Id'],
   });
 
-  app.setGlobalPrefix(`/${AppModule.prefix}/v${AppModule.version}`);
+  app.setGlobalPrefix(`/${AppModule.prefix}`);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(
     new ValidationException(),
     new DuplicationException(),
     new CastErrorException(),
   );
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
+
+  if (AppModule.enableSwagger) SwaggerSetup(app);
 
   setupFirebase(config);
   await app.listen(process.env.PORT || AppModule.port);

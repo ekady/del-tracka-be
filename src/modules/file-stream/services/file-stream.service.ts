@@ -1,6 +1,7 @@
 import { Injectable, StreamableFile } from '@nestjs/common';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import { Readable } from 'stream';
+
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 
 @Injectable()
 export class FileStreamService {

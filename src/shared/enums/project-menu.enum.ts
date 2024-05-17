@@ -1,4 +1,4 @@
-export enum ProjectMenu {
+export enum EProjectMenu {
   Project = 'PROJECT',
   Member = 'MEMBER',
   Stage = 'STAGE',

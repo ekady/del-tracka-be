@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { FilterQuery } from 'mongoose';
+
 import { StatusMessageDto } from 'src/shared/dto';
-import { ActivityName, TaskStatus } from 'src/shared/enums';
+import { EActivityName, ETaskStatus } from 'src/shared/enums';
 import { ActivityService } from 'src/modules/activity/services/activity.service';
 import {
   ActivityResponseDto,
@@ -8,6 +10,20 @@ import {
 } from 'src/modules/activity/dto';
 import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
 import { StageHelperService } from 'src/modules/stage/services';
+import {
+  IPaginationOptions,
+  IPaginationResponse,
+} from 'src/shared/interfaces/pagination.interface';
+import { TTaskDocument } from '../entities/task.entity';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
+import { UserProjectResponseDto } from 'src/modules/user-project/dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
+import { UserService } from 'src/modules/user/services/user.service';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import {
   CreateTaskDto,
   CreateTaskRequestDto,
@@ -21,22 +37,7 @@ import {
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
 import { TaskHelperService } from './task-helper.service';
 import { TaskRepository } from '../repositories/task.repository';
-import {
-  PaginationOptions,
-  PaginationResponse,
-} from 'src/shared/interfaces/pagination.interface';
 import { ITaskIds } from '../interfaces/taskIds.interface';
-import { FilterQuery } from 'mongoose';
-import { TaskDocument } from '../entities/task.entity';
-import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
-import { UserProjectResponseDto } from 'src/modules/user-project/dto';
-import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { NotificationService } from 'src/modules/notification/services/notification.service';
-import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
-import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
-import { UserService } from 'src/modules/user/services/user.service';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 @Injectable()
 export class TaskService {
@@ -53,7 +54,7 @@ export class TaskService {
 
   private async checkTaskExist(
     ids: Pick<ITaskIds, 'projectId' | 'stageId'>,
-    query: FilterQuery<TaskDocument>,
+    query: FilterQuery<TTaskDocument>,
   ): Promise<void> {
     const { projectId, stageId } = ids;
     const stage = await this.stageHelperService.findStageById(
@@ -159,96 +160,6 @@ export class TaskService {
     }
   }
 
-  private async update(
-    ids: ITaskShortIds & { userId: string },
-    updateRequestDto: UpdateTaskRequestDto,
-    type: ActivityName.UPDATE_TASK | ActivityName.UPDATE_TASK_STATUS,
-  ): Promise<TaskDocument> {
-    const { projectShortId, stageShortId, userId } = ids;
-    const stage = await this.stageHelperService.findStageByShortId(
-      stageShortId,
-      projectShortId,
-    );
-    const taskFound = await this.taskHelperService.findTaskByShortId(ids);
-    await this.checkTaskExist(
-      { projectId: stage.project._id, stageId: stage._id },
-      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
-    );
-    const { images, oldImages, assignee, reporter, ...taskValues } =
-      updateRequestDto;
-
-    const { reporter: userReporter, assignee: userAssignee } =
-      await this.findReporterAndAssignee(
-        reporter,
-        assignee,
-        stage.project.shortId,
-      );
-
-    const oldImagesArray: AwsS3Serialization[] = oldImages
-      ? JSON.parse(oldImages)
-      : [];
-    const oldImagePaths =
-      oldImagesArray?.map((image) => image.completedPath) ?? [];
-    const imagesToBeDeleted = taskFound.images
-      .filter((image) => !oldImagePaths.includes(image.completedPath))
-      .map((image) => image.completedPath);
-
-    const imageUploaded = await this.putImageToS3(images);
-    await this.deleteImagesFromS3(imagesToBeDeleted);
-
-    const payload: UpdateTaskDto = {
-      ...taskValues,
-      updatedBy: userId,
-      reporter: userReporter?.user._id,
-      assignee: userAssignee?.user._id,
-      images: [...imageUploaded, ...oldImagesArray],
-    };
-    const taskUpdate = await this.taskRepository.updateOne(
-      { _id: taskFound._id, stage: stage._id },
-      payload,
-      { populate: true },
-    );
-
-    const user = await this.userService.findOne(userId);
-    const notifPayload: CreateNotificationDto = {
-      title:
-        type === ActivityName.UPDATE_TASK
-          ? 'Update Task'
-          : 'Update Task Status',
-      body: TransformActivityMessage[type]({
-        taskBefore: taskFound,
-        taskAfter: taskUpdate,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        createdBy: user,
-      }),
-      type,
-      webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
-      task: taskUpdate._id.toString(),
-    };
-
-    this.createUserNotification(
-      {
-        assigneeId: taskUpdate?.assignee?._id,
-        reporterId: taskUpdate?.reporter?._id,
-        userId,
-      },
-      notifPayload,
-    );
-
-    await this.createTaskActivity({
-      type,
-      createdBy: taskUpdate.updatedBy._id,
-      project: stage.project._id,
-      stageBefore: stage.depopulate(),
-      stageAfter: taskUpdate.stage,
-      taskBefore: taskFound.depopulate(),
-      taskAfter: taskUpdate.depopulate(),
-    });
-
-    return taskFound;
-  }
-
   async moveToStage(
     ids: IStageShortIds,
     moveToStageDto: MoveToStageDto,
@@ -309,12 +220,12 @@ export class TaskService {
       stage: stage._id,
       images: imageUploaded,
       project: stage.project._id,
-      status: taskValues.status || TaskStatus.Open,
+      status: taskValues.status || ETaskStatus.Open,
     };
     const task = await this.taskRepository.create(payload);
 
     await this.createTaskActivity({
-      type: ActivityName.CREATE_TASK,
+      type: EActivityName.CREATE_TASK,
       createdBy: userId,
       project: stage.project._id,
       stageBefore: stage,
@@ -333,7 +244,7 @@ export class TaskService {
         updatedAt: new Date(),
         createdBy: user,
       }),
-      type: ActivityName.CREATE_TASK,
+      type: EActivityName.CREATE_TASK,
       webUrl: `/app/project/${projectShortId}/${stageShortId}/${task.shortId}`,
       task: task._id.toString(),
     };
@@ -352,8 +263,8 @@ export class TaskService {
 
   async findAll(
     ids: IStageShortIds,
-    queries: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<TaskResponseDto[]>> {
+    queries: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<TaskResponseDto[]>> {
     const { projectShortId, stageShortId } = ids;
     const stage = await this.stageHelperService.findStageByShortId(
       stageShortId,
@@ -459,8 +370,8 @@ export class TaskService {
 
   async findTaskActivity(
     ids: ITaskShortIds,
-    queries?: Record<string, string> & PaginationOptions,
-  ): Promise<PaginationResponse<ActivityResponseDto[]>> {
+    queries?: Record<string, string> & IPaginationOptions,
+  ): Promise<IPaginationResponse<ActivityResponseDto[]>> {
     const task = await this.taskHelperService.findTaskByShortId(ids);
     const stage = await this.stageHelperService.findStageByShortId(
       ids.stageShortId,
@@ -479,11 +390,85 @@ export class TaskService {
     userId: string,
     updateRequestDto: UpdateTaskRequestDto,
   ): Promise<StatusMessageDto> {
-    await this.update(
-      { ...ids, userId },
-      updateRequestDto,
-      ActivityName.UPDATE_TASK,
+    const { projectShortId, stageShortId } = ids;
+    const stage = await this.stageHelperService.findStageByShortId(
+      stageShortId,
+      projectShortId,
     );
+    const taskFound = await this.taskHelperService.findTaskByShortId(ids);
+    await this.checkTaskExist(
+      { projectId: stage.project._id, stageId: stage._id },
+      { title: updateRequestDto.title, _id: { $ne: taskFound._id } },
+    );
+    const { images, oldImages, assignee, reporter, ...taskValues } =
+      updateRequestDto;
+
+    const { reporter: userReporter, assignee: userAssignee } =
+      await this.findReporterAndAssignee(
+        reporter,
+        assignee,
+        stage.project.shortId,
+      );
+
+    const oldImagesArray: AwsS3Serialization[] = oldImages
+      ? JSON.parse(oldImages)
+      : [];
+    const oldImagePaths =
+      oldImagesArray?.map((image) => image.completedPath) ?? [];
+    const imagesToBeDeleted = taskFound.images
+      .filter((image) => !oldImagePaths.includes(image.completedPath))
+      .map((image) => image.completedPath);
+
+    const imageUploaded = await this.putImageToS3(images);
+    await this.deleteImagesFromS3(imagesToBeDeleted);
+
+    const payload: UpdateTaskDto = {
+      ...taskValues,
+      updatedBy: userId,
+      reporter: userReporter?.user._id,
+      assignee: userAssignee?.user._id,
+      images: [...imageUploaded, ...oldImagesArray],
+    };
+    const taskUpdate = await this.taskRepository.updateOne(
+      { _id: taskFound._id, stage: stage._id },
+      payload,
+      { populate: true },
+    );
+
+    const user = await this.userService.findOne(userId);
+    const notifPayload: CreateNotificationDto = {
+      title: 'Update Task',
+      body: TransformActivityMessage[EActivityName.UPDATE_TASK]({
+        taskBefore: taskFound,
+        taskAfter: taskUpdate,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        createdBy: user,
+      }),
+      type: EActivityName.UPDATE_TASK,
+      webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+      task: taskUpdate._id.toString(),
+    };
+
+    this.createUserNotification(
+      {
+        assigneeId: taskUpdate?.assignee?._id,
+        reporterId: taskUpdate?.reporter?._id,
+        userId,
+      },
+      notifPayload,
+    );
+
+    await this.createTaskActivity({
+      type: EActivityName.UPDATE_TASK,
+      createdBy: taskUpdate.updatedBy._id,
+      project: stage.project._id,
+      stageBefore: stage.depopulate(),
+      stageAfter: taskUpdate.stage,
+      taskBefore: taskFound.depopulate(),
+      taskAfter: taskUpdate.depopulate(),
+    });
+
     return { message: 'Success' };
   }
 
@@ -493,11 +478,56 @@ export class TaskService {
     updateStatusDto: UpdateStatusTaskDto,
   ): Promise<StatusMessageDto> {
     try {
-      await this.update(
-        { ...ids, userId },
-        updateStatusDto,
-        ActivityName.UPDATE_TASK_STATUS,
+      const { projectShortId, stageShortId } = ids;
+      const stage = await this.stageHelperService.findStageByShortId(
+        stageShortId,
+        projectShortId,
       );
+      const taskFound = await this.taskHelperService.findTaskByShortId(ids);
+      const payload: UpdateTaskDto = {
+        updatedBy: userId,
+        ...updateStatusDto,
+      };
+      const taskUpdate = await this.taskRepository.updateOne(
+        { _id: taskFound._id, stage: stage._id },
+        payload,
+        { populate: true },
+      );
+
+      const user = await this.userService.findOne(userId);
+      const notifPayload: CreateNotificationDto = {
+        title: 'Update Task Status',
+        body: TransformActivityMessage.UPDATE_TASK_STATUS({
+          taskBefore: taskFound,
+          taskAfter: taskUpdate,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: user,
+        }),
+        type: EActivityName.UPDATE_TASK_STATUS,
+        webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+        task: taskUpdate._id.toString(),
+      };
+
+      this.createUserNotification(
+        {
+          assigneeId: taskUpdate?.assignee?._id,
+          reporterId: taskUpdate?.reporter?._id,
+          userId,
+        },
+        notifPayload,
+      );
+
+      await this.createTaskActivity({
+        type: EActivityName.UPDATE_TASK_STATUS,
+        createdBy: taskUpdate.updatedBy._id,
+        project: stage.project._id,
+        stageBefore: stage.depopulate(),
+        stageAfter: taskUpdate.stage,
+        taskBefore: taskFound.depopulate(),
+        taskAfter: taskUpdate.depopulate(),
+      });
+
       return { message: 'Success' };
     } catch {
       return { message: 'Failed' };
@@ -534,7 +564,7 @@ export class TaskService {
     await this.taskRepository.softDeleteOneById(task._id);
 
     await this.createTaskActivity({
-      type: ActivityName.DELETE_TASK,
+      type: EActivityName.DELETE_TASK,
       createdBy: userId,
       project: stage.project._id,
       stageBefore: stage.depopulate(),
@@ -553,7 +583,7 @@ export class TaskService {
         updatedAt: new Date(),
         createdBy: user,
       }),
-      type: ActivityName.DELETE_TASK,
+      type: EActivityName.DELETE_TASK,
       webUrl: `/app/project/${ids.projectShortId}/${ids.stageShortId}`,
       task: task._id.toString(),
     };

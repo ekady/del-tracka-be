@@ -1,0 +1,9 @@
+Dockerfile
+docker-compose.yml
+.dockerignore
+node_modules
+logs
+dist
+.scannerwork
+.ebextensions
+*.env*
