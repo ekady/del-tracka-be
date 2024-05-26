@@ -6,7 +6,7 @@ export class EmailUsernameExistException extends BadRequestException {
   constructor() {
     super({
       errorType: EErrorType.BadRequest,
-      message: 'Email or username already exists',
+      message: 'Email already exists',
     } as ErrorDto);
   }
 }
