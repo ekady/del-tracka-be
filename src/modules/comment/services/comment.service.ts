@@ -63,7 +63,7 @@ export class CommentService {
         comment: createDto.comment,
       }),
       type: EActivityName.CREATE_COMMENT,
-      webUrl: `/app/project/${ids.projectShortId}/${ids.stageShortId}/${task.shortId}-`,
+      webUrl: `/app/projects/${ids.projectShortId}/${ids.stageShortId}/${task.shortId}-`,
       task: task._id.toString(),
     };
 

@@ -245,7 +245,7 @@ export class TaskService {
         createdBy: user,
       }),
       type: EActivityName.CREATE_TASK,
-      webUrl: `/app/project/${projectShortId}/${stageShortId}/${task.shortId}`,
+      webUrl: `/app/projects/${projectShortId}/${stageShortId}/${task.shortId}`,
       task: task._id.toString(),
     };
 
@@ -446,7 +446,7 @@ export class TaskService {
         createdBy: user,
       }),
       type: EActivityName.UPDATE_TASK,
-      webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+      webUrl: `/app/projects/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
       task: taskUpdate._id.toString(),
     };
 
@@ -505,7 +505,7 @@ export class TaskService {
           createdBy: user,
         }),
         type: EActivityName.UPDATE_TASK_STATUS,
-        webUrl: `/app/project/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
+        webUrl: `/app/projects/${projectShortId}/${stageShortId}/${taskFound.shortId}`,
         task: taskUpdate._id.toString(),
       };
 
@@ -584,7 +584,7 @@ export class TaskService {
         createdBy: user,
       }),
       type: EActivityName.DELETE_TASK,
-      webUrl: `/app/project/${ids.projectShortId}/${ids.stageShortId}`,
+      webUrl: `/app/projects/${ids.projectShortId}/${ids.stageShortId}`,
       task: task._id.toString(),
     };
 

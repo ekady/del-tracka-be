@@ -56,7 +56,7 @@ export class ProjectMemberService {
       title: 'Added to Project',
       body: `${user.firstName} ${user.lastName} has been added to ${project.name}`,
       type: EActivityName.ADDED_PROJECT,
-      webUrl: `/app/project/${project.shortId}`,
+      webUrl: `/app/projects/${project.shortId}`,
     };
     this.notificationService.create(user._id, notifPayload);
 
@@ -88,7 +88,7 @@ export class ProjectMemberService {
       title: 'Update Role',
       body: `${user.firstName} ${user.lastName} role of ${project.name} has been updated to ${roleName}`,
       type: EActivityName.UPDATED_ROLE,
-      webUrl: `/app/project/${project.shortId}`,
+      webUrl: `/app/projects/${project.shortId}`,
     };
     this.notificationService.create(user._id, notifPayload);
     return { message: 'Success' };
