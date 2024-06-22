@@ -55,7 +55,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       projection,
       limit = EDatabasePaginationOptionDefault.Limit,
       page = EDatabasePaginationOptionDefault.Page,
-    } = options;
+    } = options ?? {};
 
     if (search && searchField?.length) {
       const orConditions = searchField.map((field) => ({
