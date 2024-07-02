@@ -55,7 +55,7 @@ export class ActivityService {
 
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,
@@ -101,7 +101,7 @@ export class ActivityService {
     );
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,
@@ -160,7 +160,7 @@ export class ActivityService {
 
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,

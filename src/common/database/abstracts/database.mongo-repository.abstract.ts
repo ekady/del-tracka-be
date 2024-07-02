@@ -82,12 +82,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     const [data, count] = await Promise.all([
       findAll.exec(),
-      this._repository
-        .count({
-          ...find,
-          deletedAt: withDeleted ? { $ne: null } : { $eq: null },
-        })
-        .exec(),
+      await this._repository.countDocuments({
+        ...find,
+        deletedAt: withDeleted ? { $ne: null } : { $eq: null },
+      }),
     ]);
 
     const totalPages =
