@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FilterQuery, Types } from 'mongoose';
 
-import { ERoleName } from 'src/shared/enums';
-import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
 import {
   ProjectDatabaseName,
@@ -13,8 +11,11 @@ import {
   TRoleDocument,
 } from 'src/modules/role/entities/role.entity';
 import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
-import { TUserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
 import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
+import { TUserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
+import { ERoleName } from 'src/shared/enums';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
+
 import {
   CreateUserProjectDto,
   UpdateUserProjectDto,

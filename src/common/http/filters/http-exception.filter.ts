@@ -6,12 +6,13 @@ import {
   Optional,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
-import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
-import { LoggerService } from 'src/common/logger/services/logger.service';
+
 import { IHttpRequest } from 'src/common/http/interfaces/http-request.interface';
 import { ILoggerLog } from 'src/common/logger/interfaces/logger.interface';
+import { LoggerService } from 'src/common/logger/services/logger.service';
+import { ErrorDto, ErrorResponseDto } from 'src/shared/dto';
 import { decodeJwt } from 'src/shared/helpers';
+import { HttpErrorType } from 'src/shared/http-exceptions/constants/http-error-type.constant';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {

@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { jwtDecode } from 'jwt-decode';
 import { ExtractJwt } from 'passport-jwt';
+
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 
 const decodeJwt = (req: Request): IJwtPayload => {

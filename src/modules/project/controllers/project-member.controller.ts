@@ -7,18 +7,19 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
-import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { RolePermission } from 'src/modules/role/decorator';
+import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
-import { RolePermission } from 'src/modules/role/decorator';
 import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
-import { ProjectUserResponseDto } from 'src/modules/user-project/dto';
-import { ProjectMemberService } from '../services';
+
 import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
+import { ProjectMemberService } from '../services';
 
 @ApiTags('Project')
 @Controller('project')

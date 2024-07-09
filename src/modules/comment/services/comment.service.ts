@@ -1,25 +1,26 @@
 import { Injectable } from '@nestjs/common';
 
-import { StatusMessageDto } from 'src/shared/dto';
-import { EActivityName } from 'src/shared/enums';
+import { ActivityService } from 'src/modules/activity/services/activity.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
 import { StageHelperService } from 'src/modules/stage/services';
 import { ITaskShortIds } from 'src/modules/task/interfaces/taskShortIds.interface';
 import { TaskHelperService } from 'src/modules/task/services';
-import { ActivityService } from 'src/modules/activity/services/activity.service';
-import { NotificationService } from 'src/modules/notification/services/notification.service';
 import { UserService } from 'src/modules/user/services/user.service';
-import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
-import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
+import { StatusMessageDto } from 'src/shared/dto';
+import { EActivityName } from 'src/shared/enums';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { CommentRepository } from '../repository/comment.repository';
+
 import {
   CommentResponse,
   CreateCommentDto,
   CreateCommentRequestDto,
 } from '../dto';
+import { CommentRepository } from '../repository/comment.repository';
 
 @Injectable()
 export class CommentService {

@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { FileStreamService } from './services/file-stream.service';
-import { FileStreamController } from './controllers/file-stream.controller';
 import { AwsModule } from 'src/common/aws/aws.module';
+
+import { FileStreamController } from './controllers/file-stream.controller';
+import { FileStreamService } from './services/file-stream.service';
 
 @Module({
   providers: [FileStreamService],

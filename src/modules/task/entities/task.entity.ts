@@ -1,11 +1,12 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { ETaskPriority, ETaskStatus } from 'src/shared/enums';
+
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
+import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { ProjectEntity } from 'src/modules/project/schema/project.entity';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { ETaskPriority, ETaskStatus } from 'src/shared/enums';
 
 export const TaskDatabaseName = 'tasks';
 

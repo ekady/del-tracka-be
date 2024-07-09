@@ -1,15 +1,15 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { NestApplication, NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { NestApplication, NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { SwaggerSetup } from './config';
 import {
   DuplicationException,
   ValidationException,
   CastErrorException,
 } from './common/database/exception';
+import { SwaggerSetup } from './config';
 import { setupFirebase } from './config/firebase.config';
 
 async function bootstrap() {

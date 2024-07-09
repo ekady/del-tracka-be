@@ -1,6 +1,8 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { IEntityResponseDto } from 'src/shared/dto';
+
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { IEntityResponseDto } from 'src/shared/dto';
+
 import { UpdateProfileDto } from './update-profile.dto';
 
 export class ProfileResponseDto

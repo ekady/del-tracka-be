@@ -2,17 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse } from 'axios';
 
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+import { EmailService } from 'src/modules/email/services/email.service';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { UserService } from 'src/modules/user/services/user.service';
+import { StatusMessageDto } from 'src/shared/dto';
+import { HashHelper } from 'src/shared/helpers';
 import {
   CredentialInvalidException,
   EmailUsernameExistException,
   TokenInvalidException,
 } from 'src/shared/http-exceptions/exceptions';
-import { StatusMessageDto } from 'src/shared/dto';
-import { HashHelper } from 'src/shared/helpers';
-import { EmailService } from 'src/modules/email/services/email.service';
-import { UserRepository } from 'src/modules/user/repositories/user.repository';
-import { UserService } from 'src/modules/user/services/user.service';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
+
+import { TokenService } from './token.service';
 import {
   ContinueProviderRequestDto,
   ForgotPasswordDto,
@@ -21,7 +23,6 @@ import {
   SignUpRequestDto,
   TokensDto,
 } from '../dto';
-import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {

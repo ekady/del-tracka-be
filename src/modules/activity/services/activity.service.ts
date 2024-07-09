@@ -6,6 +6,7 @@ import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';

@@ -1,6 +1,7 @@
 import { ApiProperty, OmitType, PartialType, PickType } from '@nestjs/swagger';
-import { CreateTaskDto, CreateTaskRequestDto } from './create-task.dto';
 import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+
+import { CreateTaskDto, CreateTaskRequestDto } from './create-task.dto';
 
 export class UpdateTaskRequestDto extends PartialType(CreateTaskRequestDto) {}
 

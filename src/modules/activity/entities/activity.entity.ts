@@ -1,7 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-import { EActivityName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import { ProjectEntity } from 'src/modules/project/schema/project.entity';
 import {
@@ -10,6 +9,7 @@ import {
 } from 'src/modules/stage/entities/stage.entity';
 import { TaskEntity, TaskSchema } from 'src/modules/task/entities/task.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { EActivityName } from 'src/shared/enums';
 
 export const ActivityDatabaseName = 'activities';
 @Schema({

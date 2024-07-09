@@ -1,16 +1,17 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import { createStream } from 'rotating-file-stream';
-import { ConfigService } from '@nestjs/config';
-import {
-  ILoggerHttpConfig,
-  ILoggerHttpConfigOptions,
-} from 'src/common/logger/interfaces/logger.interface';
+
 import {
   LOGGER_HTTP_FORMAT,
   LOGGER_HTTP_NAME,
 } from 'src/common/logger/constants/logger.constant';
+import {
+  ILoggerHttpConfig,
+  ILoggerHttpConfigOptions,
+} from 'src/common/logger/interfaces/logger.interface';
 import { decodeJwt } from 'src/shared/helpers';
 
 @Injectable()

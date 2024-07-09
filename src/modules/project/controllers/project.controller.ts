@@ -10,25 +10,26 @@ import {
   StreamableFile,
   Header,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
-import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { JwtPayloadReq } from 'src/modules/auth/decorators';
-import { ApiResProperty } from 'src/shared/decorators';
-import { StatusMessageDto } from 'src/shared/dto';
-import { RolePermission } from 'src/modules/role/decorator';
-import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activity/dto';
-import { ProjectService } from '../services';
-import { CreateProjectDto } from '../dto/create-project.dto';
-import { UpdateProjectDto } from '../dto/update-project.dto';
-import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
+import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { RolePermission } from 'src/modules/role/decorator';
+import { ApiResProperty } from 'src/shared/decorators';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+
+import { ProjectResponseDto, ProjectResponseWithStagesDto } from '../dto';
+import { CreateProjectDto } from '../dto/create-project.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
+import { ProjectService } from '../services';
 
 @ApiTags('Project')
 @Controller('project')

@@ -1,5 +1,5 @@
-import { STATUS, TStatusType } from 'src/shared/enums';
 import { ActivityResponseDto } from 'src/modules/activity/dto';
+import { STATUS, TStatusType } from 'src/shared/enums';
 
 export const TransformActivityMessage: Record<
   string,

@@ -7,28 +7,29 @@ import { IContent, IJsonSheet } from 'json-as-xlsx';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
+import { ActivityResponseDto } from 'src/modules/activity/dto';
+import { ActivityService } from 'src/modules/activity/services/activity.service';
+import { PermissionService } from 'src/modules/permission/services/permission.service';
+import { RoleService } from 'src/modules/role/services/role.service';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
 import { StatusMessageDto } from 'src/shared/dto';
 import { ERoleName } from 'src/shared/enums';
 import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
-import { ActivityResponseDto } from 'src/modules/activity/dto';
-import { RoleService } from 'src/modules/role/services/role.service';
-import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { ActivityService } from 'src/modules/activity/services/activity.service';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { PermissionService } from 'src/modules/permission/services/permission.service';
+
+import { ProjectHelperService } from './project-helper.service';
 import {
   CreateProjectDto,
   ProjectResponseDto,
   ProjectResponseWithStagesDto,
   UpdateProjectDto,
 } from '../dto';
-import { ProjectHelperService } from './project-helper.service';
-import { ProjectRepository } from '../repositories/project.repository';
-import { TransformActivityMessage } from '../helpers/transform-activity.helper';
 import { generateExcel } from '../helpers/generate-excel.helper';
+import { TransformActivityMessage } from '../helpers/transform-activity.helper';
+import { ProjectRepository } from '../repositories/project.repository';
 
 @Injectable()
 export class ProjectService {

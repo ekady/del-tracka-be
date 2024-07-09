@@ -1,29 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 
-import { StatusMessageDto } from 'src/shared/dto';
-import { EActivityName, ETaskStatus } from 'src/shared/enums';
-import { ActivityService } from 'src/modules/activity/services/activity.service';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import {
   ActivityResponseDto,
   CreateActivityDto,
 } from 'src/modules/activity/dto';
+import { ActivityService } from 'src/modules/activity/services/activity.service';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
+import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
 import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
 import { StageHelperService } from 'src/modules/stage/services';
+import { UserService } from 'src/modules/user/services/user.service';
+import { UserProjectResponseDto } from 'src/modules/user-project/dto';
+import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { StatusMessageDto } from 'src/shared/dto';
+import { EActivityName, ETaskStatus } from 'src/shared/enums';
+import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { TTaskDocument } from '../entities/task.entity';
-import { DocumentExistException } from 'src/shared/http-exceptions/exceptions';
-import { UserProjectResponseDto } from 'src/modules/user-project/dto';
-import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { NotificationService } from 'src/modules/notification/services/notification.service';
-import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
-import { TransformActivityMessage } from 'src/modules/project/helpers/transform-activity.helper';
-import { UserService } from 'src/modules/user/services/user.service';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+
+import { TaskHelperService } from './task-helper.service';
 import {
   CreateTaskDto,
   CreateTaskRequestDto,
@@ -34,10 +35,10 @@ import {
   UpdateTaskDto,
   UpdateTaskRequestDto,
 } from '../dto';
-import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
-import { TaskHelperService } from './task-helper.service';
-import { TaskRepository } from '../repositories/task.repository';
+import { TTaskDocument } from '../entities/task.entity';
 import { ITaskIds } from '../interfaces/taskIds.interface';
+import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
+import { TaskRepository } from '../repositories/task.repository';
 
 @Injectable()
 export class TaskService {

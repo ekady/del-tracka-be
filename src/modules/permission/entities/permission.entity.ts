@@ -1,12 +1,12 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-import { EProjectMenu } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import {
   TRoleDocument,
   RoleEntity,
 } from 'src/modules/role/entities/role.entity';
+import { EProjectMenu } from 'src/shared/enums';
 
 export const PermissionDatabaseName = 'permissions';
 

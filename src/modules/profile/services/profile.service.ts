@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { StatusMessageDto } from 'src/shared/dto';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
 import { UpdateProfileDto } from 'src/modules/profile/dto/update-profile.dto';
 import { UserRepository } from 'src/modules/user/repositories/user.repository';
-import { AwsS3Service } from 'src/common/aws/services/aws.s3.service';
-import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
+import { StatusMessageDto } from 'src/shared/dto';
+
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 
 @Injectable()

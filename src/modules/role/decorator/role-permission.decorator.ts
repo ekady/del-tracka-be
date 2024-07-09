@@ -1,4 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
+
 import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 
 export const RolePermission = (

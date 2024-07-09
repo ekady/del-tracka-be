@@ -1,4 +1,5 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
+
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class UserResponse {

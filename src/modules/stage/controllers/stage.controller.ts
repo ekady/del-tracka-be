@@ -8,22 +8,22 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
+import { ActivityResponseDto } from 'src/modules/activity/dto';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { ApiResProperty } from 'src/shared/decorators';
-import { StatusMessageDto } from 'src/shared/dto';
 import { RolePermission } from 'src/modules/role/decorator';
+import { ApiResProperty } from 'src/shared/decorators';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
 import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
-import { ActivityResponseDto } from 'src/modules/activity/dto';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
-import { StageService } from '../services';
+
 import {
   CreateStageDto,
   CreateStageRequestDto,
@@ -33,6 +33,7 @@ import {
   UpdateStageRequestDto,
 } from '../dto';
 import { IStageShortIds } from '../interfaces/stageShortIds.interface';
+import { StageService } from '../services';
 
 @ApiTags('Stages')
 @Controller('project/:projectShortId/stage')

@@ -1,5 +1,5 @@
-import { RotatingFileStream } from 'rotating-file-stream';
 import { Response } from 'express';
+import { RotatingFileStream } from 'rotating-file-stream';
 
 export interface ILoggerLog {
   description: string;

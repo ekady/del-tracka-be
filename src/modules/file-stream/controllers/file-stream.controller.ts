@@ -2,6 +2,7 @@ import { Controller, Get, Header, Query, StreamableFile } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ApiResProperty } from 'src/shared/decorators';
+
 import { FileStreamService } from '../services/file-stream.service';
 
 @ApiTags('File Stream')

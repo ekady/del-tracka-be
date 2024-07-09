@@ -1,5 +1,6 @@
 import { ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+
 import { SignUpRequestDto } from 'src/modules/auth/dto';
 
 export class UpdateProfileDto extends OmitType(SignUpRequestDto, [

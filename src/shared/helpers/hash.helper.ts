@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+
 import * as bcrypt from 'bcryptjs';
 
 export default class HashHelper {
