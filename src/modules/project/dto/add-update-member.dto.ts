@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+
 import { ERoleName } from 'src/shared/enums';
 
 export class AddMemberDto {

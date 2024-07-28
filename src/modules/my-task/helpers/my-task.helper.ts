@@ -1,12 +1,13 @@
 import { Types } from 'mongoose';
 
 import { PermissionDatabaseName } from 'src/modules/permission/entities/permission.entity';
+import { ProjectDatabaseName } from 'src/modules/project/schema/project.entity';
 import { RoleDatabaseName } from 'src/modules/role/entities/role.entity';
+import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
+import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
 import { UserProjectDatabaseName } from 'src/modules/user-project/entities/user-project.entity';
 import { EProjectMenu } from 'src/shared/enums';
-import { StageDatabaseName } from 'src/modules/stage/entities/stage.entity';
-import { ProjectDatabaseName } from 'src/modules/project/schema/project.entity';
-import { UserDatabaseName } from 'src/modules/user/entities/user.entity';
+
 import { NAME_FIELD, USER_FIELD } from '../constants/my-task.constant';
 
 export const helperLookupUserProject = (userId: string | Types.ObjectId) => {

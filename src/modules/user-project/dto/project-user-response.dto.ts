@@ -1,10 +1,11 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-import { IEntityResponseDto, UserResponse } from 'src/shared/dto';
+
 import { ProfileResponseDto } from 'src/modules/profile/dto/profile-response.dto';
 import { ProjectResponseDto } from 'src/modules/project/dto';
+import { ProjectPermissionResponseDto } from 'src/modules/project/dto/project-permission.dto';
 import { RoleDto } from 'src/modules/role/dto';
 import { StageResponseDto } from 'src/modules/stage/dto';
-import { ProjectPermissionResponseDto } from 'src/modules/project/dto/project-permission.dto';
+import { IEntityResponseDto, UserResponse } from 'src/shared/dto';
 
 export class ProjectUserResponseDto
   extends ProfileResponseDto

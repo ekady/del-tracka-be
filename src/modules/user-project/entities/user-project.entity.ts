@@ -1,8 +1,9 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
-import { RoleEntity } from 'src/modules/role/entities/role.entity';
 import { ProjectEntity } from 'src/modules/project/schema/project.entity';
+import { RoleEntity } from 'src/modules/role/entities/role.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 
 export const UserProjectDatabaseName = 'userprojects';

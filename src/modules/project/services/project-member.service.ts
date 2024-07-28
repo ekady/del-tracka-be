@@ -1,19 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { StatusMessageDto } from 'src/shared/dto';
+import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { NotificationService } from 'src/modules/notification/services/notification.service';
 import { RoleService } from 'src/modules/role/services/role.service';
+import { UserService } from 'src/modules/user/services/user.service';
 import {
   ProjectUserResponseDto,
   UpdateUserProjectDto,
   CreateUserProjectDto,
 } from 'src/modules/user-project/dto';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
-import { UserService } from 'src/modules/user/services/user.service';
-import { NotificationService } from 'src/modules/notification/services/notification.service';
-import { CreateNotificationDto } from 'src/modules/notification/dto/create-notification.dto';
+import { StatusMessageDto } from 'src/shared/dto';
 import { EActivityName } from 'src/shared/enums';
-import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
+
 import { ProjectHelperService } from './project-helper.service';
+import { AddMemberDto, RemoveMemberRequest, UpdateMemberDto } from '../dto';
 
 @Injectable()
 export class ProjectMemberService {
@@ -56,7 +57,7 @@ export class ProjectMemberService {
       title: 'Added to Project',
       body: `${user.firstName} ${user.lastName} has been added to ${project.name}`,
       type: EActivityName.ADDED_PROJECT,
-      webUrl: `/app/project/${project.shortId}`,
+      webUrl: `/app/projects/${project.shortId}`,
     };
     this.notificationService.create(user._id, notifPayload);
 
@@ -88,7 +89,7 @@ export class ProjectMemberService {
       title: 'Update Role',
       body: `${user.firstName} ${user.lastName} role of ${project.name} has been updated to ${roleName}`,
       type: EActivityName.UPDATED_ROLE,
-      webUrl: `/app/project/${project.shortId}`,
+      webUrl: `/app/projects/${project.shortId}`,
     };
     this.notificationService.create(user._id, notifPayload);
     return { message: 'Success' };

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import winston, { LoggerOptions } from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+
 import { LOGGER_NAME } from 'src/common/logger/constants/logger.constant';
 
 @Injectable()

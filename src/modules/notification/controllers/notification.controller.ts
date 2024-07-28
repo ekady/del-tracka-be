@@ -2,12 +2,13 @@ import { Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
-import { ApiResProperty } from 'src/shared/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
-import { IPaginationOptions } from 'src/shared/interfaces/pagination.interface';
-import { StatusMessageDto } from 'src/shared/dto';
+import { ApiResProperty } from 'src/shared/decorators';
 import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
+import { IPaginationOptions } from 'src/shared/interfaces/pagination.interface';
+
 import { NotificationResponseDto } from '../dto/notification-response.dto';
 import { NotificationService } from '../services/notification.service';
 

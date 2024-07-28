@@ -1,31 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 // Modules
-import { DatabaseModule } from './common/database/database.module';
-import { LoggerModule } from './common/logger/logger.module';
-import { HttpModule } from './common/http/http.module';
+import { AppController } from './app.controller';
 import { AwsModule } from './common/aws/aws.module';
-import { UserModule } from './modules/user/user.module';
+import { DatabaseModule } from './common/database/database.module';
+import { FileMulterModule } from './common/file-multer/file-multer.module';
+import { HttpModule } from './common/http/http.module';
+import { LoggerModule } from './common/logger/logger.module';
+import { ActivityModule } from './modules/activity/activity.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserProjectModule } from './modules/user-project/user-project.module';
+import { CommentModule } from './modules/comment/comment.module';
 import { EmailModule } from './modules/email/email.module';
+import { FileStreamModule } from './modules/file-stream/file-stream.module';
+import { MyTaskModule } from './modules/my-task/my-task.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { PermissionsModule } from './modules/permission/permission.module';
+import { ProfileModule } from './modules/profile/profile.module';
 import { ProjectModule } from './modules/project/project.module';
 import { RoleModule } from './modules/role/role.module';
 import { StageModule } from './modules/stage/stage.module';
 import { TaskModule } from './modules/task/task.module';
-import { CommentModule } from './modules/comment/comment.module';
-import { ActivityModule } from './modules/activity/activity.module';
-import { PermissionsModule } from './modules/permission/permission.module';
-import { NotificationModule } from './modules/notification/notification.module';
-import { ProfileModule } from './modules/profile/profile.module';
-import { FileStreamModule } from './modules/file-stream/file-stream.module';
-import { MyTaskModule } from './modules/my-task/my-task.module';
 import { TaskStatisticModule } from './modules/task-statistic/task-statistic.module';
-import { FileMulterModule } from './common/file-multer/file-multer.module';
-import { AppController } from './app.controller';
+import { UserModule } from './modules/user/user.module';
+import { UserProjectModule } from './modules/user-project/user-project.module';
 
 @Module({
   imports: [

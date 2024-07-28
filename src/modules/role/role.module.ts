@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { UserProjectModule } from '../user-project/user-project.module';
-import { RolePermissionGuard } from './guard';
-import { RoleService } from './services/role.service';
 import { RoleFeature } from './entities/role.entity';
+import { RolePermissionGuard } from './guard';
 import { RoleRepository } from './repositories/role.repository';
+import { RoleService } from './services/role.service';
 import { PermissionsModule } from '../permission/permission.module';
+import { UserProjectModule } from '../user-project/user-project.module';
 
 @Module({
   providers: [

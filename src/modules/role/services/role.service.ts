@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery } from 'mongoose';
 
-import { ERoleName } from 'src/shared/enums';
-import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
 import { TRoleDocument } from 'src/modules/role/entities/role.entity';
 import { TUserProjectDocument } from 'src/modules/user-project/entities/user-project.entity';
 import { UserProjectService } from 'src/modules/user-project/services/user-project.service';
+import { ERoleName } from 'src/shared/enums';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
+
 import { RoleRepository } from '../repositories/role.repository';
 
 @Injectable()

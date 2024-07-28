@@ -1,36 +1,12 @@
-import { connect, model } from 'mongoose';
 import { EJSON } from 'bson';
 import * as dotenv from 'dotenv';
+import { connect, model } from 'mongoose';
+
 import {
-  TPermissionDocument,
-  PermissionSchema,
-  PermissionDatabaseName,
-} from 'src/modules/permission/entities/permission.entity';
-import {
-  TRoleDocument,
-  RoleSchema,
-  RoleDatabaseName,
-} from 'src/modules/role/entities/role.entity';
-import {
-  TProjectDocument,
-  ProjectSchema,
-  ProjectDatabaseName,
-} from 'src/modules/project/schema/project.entity';
-import {
-  UserProjectEntity,
-  TUserProjectDocument,
-  UserProjectSchema,
-} from 'src/modules/user-project/entities/user-project.entity';
-import {
-  TStageDocument,
-  StageSchema,
-  StageDatabaseName,
-} from 'src/modules/stage/entities/stage.entity';
-import {
-  TTaskDocument,
-  TaskSchema,
-  TaskDatabaseName,
-} from 'src/modules/task/entities/task.entity';
+  ActivityDatabaseName,
+  TActivityDocument,
+  ActivitySchema,
+} from 'src/modules/activity/entities/activity.entity';
 import {
   TCommentDocument,
   CommentSchema,
@@ -42,25 +18,51 @@ import {
   NotificationSchema,
 } from 'src/modules/notification/entities/notification.entity';
 import {
-  ActivityDatabaseName,
-  TActivityDocument,
-  ActivitySchema,
-} from 'src/modules/activity/entities/activity.entity';
+  TPermissionDocument,
+  PermissionSchema,
+  PermissionDatabaseName,
+} from 'src/modules/permission/entities/permission.entity';
+import {
+  TProjectDocument,
+  ProjectSchema,
+  ProjectDatabaseName,
+} from 'src/modules/project/schema/project.entity';
+import {
+  TRoleDocument,
+  RoleSchema,
+  RoleDatabaseName,
+} from 'src/modules/role/entities/role.entity';
+import {
+  TStageDocument,
+  StageSchema,
+  StageDatabaseName,
+} from 'src/modules/stage/entities/stage.entity';
+import {
+  TTaskDocument,
+  TaskSchema,
+  TaskDatabaseName,
+} from 'src/modules/task/entities/task.entity';
 import {
   UserDatabaseName,
   TUserDocument,
   UserSchema,
 } from 'src/modules/user/entities/user.entity';
-import { UserDemoConstant } from './data/user-demo-seed.constant';
-import { RoleSeed } from './data/role-seed.constant';
+import {
+  UserProjectEntity,
+  TUserProjectDocument,
+  UserProjectSchema,
+} from 'src/modules/user-project/entities/user-project.entity';
+
+import { ActivityDemoSeed } from './data/activity-demo-seed.constant';
+import { CommentDemoSeed } from './data/comment-demo-seed.constant';
+import { NotificationDemoSeed } from './data/notification-demo-seed.constant';
 import { PermissionSeed } from './data/permission-seed.constant';
 import { ProjectDemoSeed } from './data/project-demo-seed.constant';
-import { UserProjectDemoSeed } from './data/user-project-demo-seed.constant';
+import { RoleSeed } from './data/role-seed.constant';
 import { StageDemoSeed } from './data/stage-demo-seed.constant';
 import { TaskDemoSeed } from './data/task-demo-seed.constant';
-import { CommentDemoSeed } from './data/comment-demo-seed.constant';
-import { ActivityDemoSeed } from './data/activity-demo-seed.constant';
-import { NotificationDemoSeed } from './data/notification-demo-seed.constant';
+import { UserDemoConstant } from './data/user-demo-seed.constant';
+import { UserProjectDemoSeed } from './data/user-project-demo-seed.constant';
 
 const RoleModel = model<TRoleDocument>(RoleDatabaseName, RoleSchema);
 const PermissionModel = model<TPermissionDocument>(

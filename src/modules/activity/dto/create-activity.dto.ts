@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EActivityName } from 'src/shared/enums';
+
 import { StageEntity } from 'src/modules/stage/entities/stage.entity';
 import { TaskEntity } from 'src/modules/task/entities/task.entity';
+import { EActivityName } from 'src/shared/enums';
 
 export class CreateActivityDto {
   @ApiProperty()

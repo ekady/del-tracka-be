@@ -9,6 +9,7 @@ import { ExtractJwt } from 'passport-jwt';
 import { Observable } from 'rxjs';
 
 import { TokenInvalidException } from 'src/shared/http-exceptions/exceptions';
+
 import { SKIP_AUTH } from '../constants';
 import { ETokenJwtConfig } from '../enum';
 import { TokenService } from '../services/token.service';

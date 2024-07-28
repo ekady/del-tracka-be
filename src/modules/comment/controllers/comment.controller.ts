@@ -2,21 +2,22 @@ import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
-import { ApiResProperty } from 'src/shared/decorators';
-import { StatusMessageDto } from 'src/shared/dto';
-import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { RolePermission } from 'src/modules/role/decorator';
 import { ITaskShortIds } from 'src/modules/task/interfaces/taskShortIds.interface';
+import { ApiResProperty } from 'src/shared/decorators';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
-import { CommentService } from '../services/comment.service';
+
 import { CommentResponse } from '../dto';
 import { CreateCommentRequestDto } from '../dto/create-comment.dto';
+import { CommentService } from '../services/comment.service';
 
 @ApiTags('Task Comment')
 @Controller(

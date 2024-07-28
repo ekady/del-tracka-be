@@ -1,4 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
+
 import { EActivityName } from 'src/shared/enums';
 
 export class CreateNotificationDto {

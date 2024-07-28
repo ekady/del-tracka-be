@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 
 import { DatabaseMongoRepositoryAbstract } from 'src/common/database/abstracts/database.mongo-repository.abstract';
 import { RoleEntity } from 'src/modules/role/entities/role.entity';
+
 import {
   TPermissionDocument,
   PermissionEntity,
