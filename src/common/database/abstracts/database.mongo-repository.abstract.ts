@@ -6,7 +6,10 @@ import {
   Types,
 } from 'mongoose';
 
+import paginationOptions from 'src/shared/helpers/pagination-options.helper';
 import { IPaginationResponse } from 'src/shared/interfaces/pagination.interface';
+
+import { EDatabasePaginationOptionDefault } from '../enums/database.enum';
 import {
   IDatabaseCreateOptions,
   TDatabaseSoftDeleteOptions,
@@ -20,10 +23,6 @@ import {
   TDatabaseAggregateOptions,
 } from '../interfaces/database.interface';
 import { IDatabaseRepositoryAbstract } from '../interfaces/database.repository.interface';
-
-import { EDatabasePaginationOptionDefault } from '../enums/database.enum';
-
-import paginationOptions from 'src/shared/helpers/pagination-options.helper';
 
 export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
   implements IDatabaseRepositoryAbstract<T>
@@ -55,7 +54,7 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
       projection,
       limit = EDatabasePaginationOptionDefault.Limit,
       page = EDatabasePaginationOptionDefault.Page,
-    } = options;
+    } = options ?? {};
 
     if (search && searchField?.length) {
       const orConditions = searchField.map((field) => ({
@@ -82,12 +81,10 @@ export abstract class DatabaseMongoRepositoryAbstract<T extends Document>
 
     const [data, count] = await Promise.all([
       findAll.exec(),
-      this._repository
-        .count({
-          ...find,
-          deletedAt: withDeleted ? { $ne: null } : { $eq: null },
-        })
-        .exec(),
+      await this._repository.countDocuments({
+        ...find,
+        deletedAt: withDeleted ? { $ne: null } : { $eq: null },
+      }),
     ]);
 
     const totalPages =

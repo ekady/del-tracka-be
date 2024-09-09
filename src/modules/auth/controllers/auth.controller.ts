@@ -7,11 +7,12 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { ApiResProperty } from 'src/shared/decorators/api-res-property.decorator';
 import { StatusMessageDto } from 'src/shared/dto';
+
 import { JwtPayloadReq, SkipAuth } from '../decorators';
 import {
   ContinueProviderRequestDto,
@@ -22,8 +23,8 @@ import {
   TokensDto,
 } from '../dto';
 import { AuthJwtRefreshGuard } from '../guard';
-import { AuthService } from '../services/auth.service';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
+import { AuthService } from '../services/auth.service';
 
 @Controller('authentication')
 @ApiTags('Auth')

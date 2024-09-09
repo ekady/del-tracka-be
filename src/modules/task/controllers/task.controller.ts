@@ -10,24 +10,24 @@ import {
   UploadedFiles,
   Query,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-
-import { ApiResProperty } from 'src/shared/decorators';
-import { StatusMessageDto } from 'src/shared/dto';
-import { RolePermission } from 'src/modules/role/decorator';
-import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
-import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+
 import { ActivityResponseDto } from 'src/modules/activity/dto';
-import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
+import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { RolePermission } from 'src/modules/role/decorator';
+import { IStageShortIds } from 'src/modules/stage/interfaces/stageShortIds.interface';
+import { ApiResProperty } from 'src/shared/decorators';
+import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
+import { StatusMessageDto } from 'src/shared/dto';
+import { EPermissionMenu, EProjectMenu } from 'src/shared/enums';
 import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
-import { QueryPagination } from 'src/shared/decorators/query-pagination.decorator';
-import { TaskService } from '../services';
+
 import {
   CreateTaskRequestDto,
   MoveToStageDto,
@@ -37,6 +37,7 @@ import {
   UpdateTaskRequestDto,
 } from '../dto';
 import { ITaskShortIds } from '../interfaces/taskShortIds.interface';
+import { TaskService } from '../services';
 
 @ApiTags('Tasks')
 @Controller('project/:projectShortId/stage/:stageShortId/task')

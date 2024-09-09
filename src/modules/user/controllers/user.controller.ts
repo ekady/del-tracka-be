@@ -5,8 +5,9 @@ import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
 import { ApiResProperty } from 'src/shared/decorators';
 import { StatusMessageDto } from 'src/shared/dto';
-import { UserService } from '../services/user.service';
+
 import { RegisterDeviceDto } from '../dto/register-device-id.dto';
+import { UserService } from '../services/user.service';
 
 @ApiTags('User')
 @Controller('user')

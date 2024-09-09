@@ -1,5 +1,6 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 

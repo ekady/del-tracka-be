@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
+
 import { TProjectDocument } from 'src/modules/project/schema/project.entity';
+import { DocumentNotFoundException } from 'src/shared/http-exceptions/exceptions';
+
 import { ProjectRepository } from '../repositories/project.repository';
 
 @Injectable()

@@ -1,5 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Error } from 'mongoose';
+
 import { ErrorResponseDto } from 'src/shared/dto';
 import { EErrorType } from 'src/shared/enums';
 

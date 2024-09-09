@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { ApiResProperty } from 'src/shared/decorators';
 import { JwtPayloadReq } from 'src/modules/auth/decorators';
 import { IJwtPayload } from 'src/modules/auth/interfaces/jwt-payload.interface';
+import { ApiResProperty } from 'src/shared/decorators';
 
-import { ActivityStatisticService } from '../services/activity-statistic.service';
 import { ActivityStatisticDto } from '../dto/activity-statistics.dto';
+import { ActivityStatisticService } from '../services/activity-statistic.service';
 
 @ApiTags('Activity')
 @Controller('activity')

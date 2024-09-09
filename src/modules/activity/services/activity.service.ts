@@ -6,6 +6,7 @@ import {
   IPaginationOptions,
   IPaginationResponse,
 } from 'src/shared/interfaces/pagination.interface';
+
 import { ActivityProjection } from '../constants';
 import { ActivityResponseDto } from '../dto';
 import { CreateActivityDto } from '../dto/create-activity.dto';
@@ -55,7 +56,7 @@ export class ActivityService {
 
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,
@@ -101,7 +102,7 @@ export class ActivityService {
     );
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,
@@ -160,7 +161,7 @@ export class ActivityService {
 
     return {
       data: activities.data.map((activity) => ({
-        _id: activity._id,
+        _id: activity._id as string,
         createdAt: activity.createdAt,
         updatedAt: activity.updatedAt,
         comment: activity.comment,

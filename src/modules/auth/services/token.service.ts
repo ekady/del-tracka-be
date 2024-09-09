@@ -1,19 +1,21 @@
 import * as crypto from 'crypto';
+
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 
+import { TUserDocument } from 'src/modules/user/entities/user.entity';
+import { UserRepository } from 'src/modules/user/repositories/user.repository';
+import { HashHelper } from 'src/shared/helpers';
 import {
   AccessTokenExpiredException,
   CredentialInvalidException,
   RefreshTokenExpiredException,
   TokenInvalidException,
 } from 'src/shared/http-exceptions/exceptions';
-import { TUserDocument } from 'src/modules/user/entities/user.entity';
-import { HashHelper } from 'src/shared/helpers';
-import { UserRepository } from 'src/modules/user/repositories/user.repository';
+
 import { TokensDto } from '../dto';
 import { ETokenJwtConfig } from '../enum';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';

@@ -16,7 +16,7 @@ export const NotificationDemoSeed = [
     user: {
       $oid: '64f7b18d0350bcfaf12b64c4',
     },
-    webUrl: '/app/project/kOYgLbtgRT',
+    webUrl: '/app/projects/kOYgLbtgRT',
     type: 'ADDED_PROJECT',
   },
   {
@@ -37,7 +37,7 @@ export const NotificationDemoSeed = [
       $oid: '64f7b1a50350bcfaf12b64c7',
     },
     task: '64fc5bb84f9990845265b55f',
-    webUrl: '/app/project/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
+    webUrl: '/app/projects/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
     type: 'CREATE_TASK',
   },
   {
@@ -58,7 +58,7 @@ export const NotificationDemoSeed = [
       $oid: '64f7b1a50350bcfaf12b64c7',
     },
     task: '64fc5bb84f9990845265b55f',
-    webUrl: '/app/project/kOYgLbtgRT/FcsHix71so/shjHuPsavL-',
+    webUrl: '/app/projects/kOYgLbtgRT/FcsHix71so/shjHuPsavL-',
     type: 'CREATE_COMMENT',
   },
   {
@@ -79,7 +79,7 @@ export const NotificationDemoSeed = [
       $oid: '64f7b18d0350bcfaf12b64c4',
     },
     task: '64fc5bb84f9990845265b55f',
-    webUrl: '/app/project/kOYgLbtgRT/FcsHix71so/shjHuPsavL-',
+    webUrl: '/app/projects/kOYgLbtgRT/FcsHix71so/shjHuPsavL-',
     type: 'CREATE_COMMENT',
   },
   {
@@ -100,7 +100,7 @@ export const NotificationDemoSeed = [
       $oid: '64f7b18d0350bcfaf12b64c4',
     },
     task: '64fc5bb84f9990845265b55f',
-    webUrl: '/app/project/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
+    webUrl: '/app/projects/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
     type: 'UPDATE_TASK_STATUS',
   },
   {
@@ -121,7 +121,7 @@ export const NotificationDemoSeed = [
       $oid: '64f7b18d0350bcfaf12b64c4',
     },
     task: '64fc5bb84f9990845265b55f',
-    webUrl: '/app/project/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
+    webUrl: '/app/projects/kOYgLbtgRT/FcsHix71so/shjHuPsavL',
     type: 'UPDATE_TASK_STATUS',
   },
 ];

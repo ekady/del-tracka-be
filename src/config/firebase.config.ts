@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { initializeApp } from 'firebase-admin/app';
 import { credential } from 'firebase-admin';
+import { initializeApp } from 'firebase-admin/app';
 
 export const setupFirebase = (config: ConfigService) => {
   const privateKey = JSON.parse(config.get<string>('FIREBASE_PRIVATE_KEY'));

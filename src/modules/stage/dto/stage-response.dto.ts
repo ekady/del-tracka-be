@@ -1,6 +1,7 @@
 import { ApiResponseProperty, OmitType } from '@nestjs/swagger';
-import { IEntityResponseDto } from 'src/shared/dto';
+
 import { ProjectDto } from 'src/modules/project/dto';
+import { IEntityResponseDto } from 'src/shared/dto';
 
 export class StageResponseDto implements IEntityResponseDto {
   @ApiResponseProperty()

@@ -1,10 +1,10 @@
 import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-import { EActivityName } from 'src/shared/enums';
 import { DatabaseTimestampsAbstract } from 'src/common/database/abstracts/database-timestamps.abstract';
 import { TaskEntity } from 'src/modules/task/entities/task.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { EActivityName } from 'src/shared/enums';
 
 export const NotificationDatabaseName = 'notifications';
 

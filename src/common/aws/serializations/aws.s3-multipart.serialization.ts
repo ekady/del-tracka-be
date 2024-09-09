@@ -1,5 +1,6 @@
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class AwsS3MultipartPartsSerialization {

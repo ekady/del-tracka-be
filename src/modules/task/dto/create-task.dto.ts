@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
+
 import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 
 export class CreateTaskRequestDto {

@@ -1,6 +1,8 @@
 import { ApiResponseProperty, OmitType, PartialType } from '@nestjs/swagger';
-import { IEntityResponseDto } from 'src/shared/dto';
+
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { IEntityResponseDto } from 'src/shared/dto';
+
 import { CreateActivityDto } from './create-activity.dto';
 
 export class ActivityResponseDto
