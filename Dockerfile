@@ -12,7 +12,7 @@ COPY --chown=node:node . .
 FROM base as build
 USER node
 ENV NODE_ENV production
-RUN pnpm build && pnpm prune --prod
+RUN pnpm build
 
 FROM node:20.11.1-alpine as production
 USER node
@@ -20,4 +20,4 @@ WORKDIR /tracka
 COPY --chown=node:node --from=build /tracka/node_modules ./node_modules
 COPY --chown=node:node --from=build /tracka/dist ./dist
 EXPOSE 3333
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]

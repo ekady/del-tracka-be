@@ -47,7 +47,7 @@ export class TokenService {
       await this.userRepository.updateOneById(payload.id, {
         hashedRefreshToken,
       });
-    } catch (_) {
+    } catch {
       throw new CredentialInvalidException();
     }
 
@@ -120,7 +120,7 @@ export class TokenService {
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() },
       });
-    } catch (_) {
+    } catch {
       throw new TokenInvalidException();
     }
   }
@@ -136,7 +136,7 @@ export class TokenService {
       const payload = ticket.getPayload();
 
       return payload;
-    } catch (_) {
+    } catch {
       throw new TokenInvalidException();
     }
   }
