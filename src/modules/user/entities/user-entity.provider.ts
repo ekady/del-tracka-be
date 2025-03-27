@@ -9,7 +9,7 @@ export const UserSchemaProvider: AsyncModelFactory = {
   name: UserEntity.name,
   imports: [ConfigModule],
   inject: [ConfigService],
-  useFactory: (config: ConfigService) => {
+  useFactory: () => {
     const schema = UserSchema;
 
     schema.pre<TUserDocument>('save', async function () {
@@ -32,12 +32,8 @@ export const UserSchemaProvider: AsyncModelFactory = {
     schema.post<TUserDocument>(
       /^findOne/,
       { document: true, query: true },
-      function (doc) {
-        if (doc && !doc.picture) {
-          // doc.picture = `${config.get('GRAVATAR_URL')}/${HashHelper.hashCrypto(
-          //   doc.email,
-          // )}?s=300&d=identicon`;
-        }
+      function () {
+        //
       },
     );
 
