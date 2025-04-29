@@ -4,41 +4,33 @@ import { connect, model } from 'mongoose';
 
 import {
   ActivityDatabaseName,
-  TActivityDocument,
   ActivitySchema,
 } from 'src/modules/activity/entities/activity.entity';
 import {
-  TCommentDocument,
   CommentSchema,
   CommentDatabaseName,
 } from 'src/modules/comment/entities/comment.entity';
 import {
   NotificationDatabaseName,
-  TNotificationDocument,
   NotificationSchema,
 } from 'src/modules/notification/entities/notification.entity';
 import {
-  TPermissionDocument,
   PermissionSchema,
   PermissionDatabaseName,
 } from 'src/modules/permission/entities/permission.entity';
 import {
-  TProjectDocument,
   ProjectSchema,
   ProjectDatabaseName,
 } from 'src/modules/project/schema/project.entity';
 import {
-  TRoleDocument,
   RoleSchema,
   RoleDatabaseName,
 } from 'src/modules/role/entities/role.entity';
 import {
-  TStageDocument,
   StageSchema,
   StageDatabaseName,
 } from 'src/modules/stage/entities/stage.entity';
 import {
-  TTaskDocument,
   TaskSchema,
   TaskDatabaseName,
 } from 'src/modules/task/entities/task.entity';
@@ -49,7 +41,6 @@ import {
 } from 'src/modules/user/entities/user.entity';
 import {
   UserProjectEntity,
-  TUserProjectDocument,
   UserProjectSchema,
 } from 'src/modules/user-project/entities/user-project.entity';
 
@@ -64,34 +55,16 @@ import { TaskDemoSeed } from './data/task-demo-seed.constant';
 import { UserDemoConstant } from './data/user-demo-seed.constant';
 import { UserProjectDemoSeed } from './data/user-project-demo-seed.constant';
 
-const RoleModel = model<TRoleDocument>(RoleDatabaseName, RoleSchema);
-const PermissionModel = model<TPermissionDocument>(
-  PermissionDatabaseName,
-  PermissionSchema,
-);
-const ProjectModel = model<TProjectDocument>(
-  ProjectDatabaseName,
-  ProjectSchema,
-);
-const UserProjectModel = model<TUserProjectDocument>(
-  UserProjectEntity.name,
-  UserProjectSchema,
-);
-const UserModel = model<TUserDocument>(UserDatabaseName, UserSchema);
-const StageModel = model<TStageDocument>(StageDatabaseName, StageSchema);
-const TaskModel = model<TTaskDocument>(TaskDatabaseName, TaskSchema);
-const CommentModel = model<TCommentDocument>(
-  CommentDatabaseName,
-  CommentSchema,
-);
-const NotificationModel = model<TNotificationDocument>(
-  NotificationDatabaseName,
-  NotificationSchema,
-);
-const ActivityModel = model<TActivityDocument>(
-  ActivityDatabaseName,
-  ActivitySchema,
-);
+const RoleModel = model(RoleDatabaseName, RoleSchema);
+const PermissionModel = model(PermissionDatabaseName, PermissionSchema);
+const ProjectModel = model(ProjectDatabaseName, ProjectSchema);
+const UserProjectModel = model(UserProjectEntity.name, UserProjectSchema);
+const UserModel = model(UserDatabaseName, UserSchema);
+const StageModel = model(StageDatabaseName, StageSchema);
+const TaskModel = model(TaskDatabaseName, TaskSchema);
+const CommentModel = model(CommentDatabaseName, CommentSchema);
+const NotificationModel = model(NotificationDatabaseName, NotificationSchema);
+const ActivityModel = model(ActivityDatabaseName, ActivitySchema);
 
 const activityDropIndex = async () => {
   try {
