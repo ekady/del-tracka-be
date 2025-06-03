@@ -22,7 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "data:import": "ts-node --project tsconfig.json src/common/database/seeds/seed-data.ts --import",
     "data:delete": "ts-node src/common/database/seeds/seed-data.ts --delete",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.744.0",
