@@ -5,6 +5,9 @@
 # environment variable
 *.env*
 
+# lock files
+pnpm-lock.yaml
+
 # Logs
 logs
 *.log

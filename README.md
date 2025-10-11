@@ -2,28 +2,27 @@
 
 ![Tracka Logo](https://res.cloudinary.com/dwixtayvd/image/upload/v1713677969/tracka-layout_dcbjaj.png)
 
-Tracka is a web application designed to streamline your software development process by efficiently managing and tracking bugs and issues within your projects. 
+Tracka is a web application designed to streamline your software development process by efficiently managing and tracking bugs and issues within your projects.
 
 ### Feature Set
 
 Tracka offers a comprehensive suite of features to empower a smooth bug tracking workflow:
 
-| Feature                 | Description                                                                                                  |
-|-------------------------|--------------------------------------------------------------------------------------------------------------------|
-| **Dashboard**            | Provides a high-level view of all projects, user-assigned tasks, and overall user activity within the system.                     |
-| **Project Management**   | Manage and organize your projects, including sprints and detailed lists of associated issues and tasks.                          |
-| **Issue/Task Tracking**  | Create, assign, and track issues and tasks within specific projects, ensuring clear accountability and streamlined workflows.      |
-| **My Issues**             | View a dedicated section showcasing all issues and tasks currently assigned to you, facilitating focused bug resolution.        |
-| **Log Activities**        | Track and search for project activities within a designated time range, enabling comprehensive project audit trails.           |
-
+| Feature                 | Description                                                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Dashboard**           | Provides a high-level view of all projects, user-assigned tasks, and overall user activity within the system.                 |
+| **Project Management**  | Manage and organize your projects, including sprints and detailed lists of associated issues and tasks.                       |
+| **Issue/Task Tracking** | Create, assign, and track issues and tasks within specific projects, ensuring clear accountability and streamlined workflows. |
+| **My Issues**           | View a dedicated section showcasing all issues and tasks currently assigned to you, facilitating focused bug resolution.      |
+| **Log Activities**      | Track and search for project activities within a designated time range, enabling comprehensive project audit trails.          |
 
 ### Getting Started
 
 **Prerequisites**
 
-* **Node.js (version 18 or higher):** [https://nodejs.org/en](https://nodejs.org/en)
-* **pnpm package manager:** [https://pnpm.io/installation](https://pnpm.io/installation)
-* **Git version control system:** [https://git-scm.com/downloads](https://git-scm.com/downloads)
+- **Node.js (version 18 or higher):** [https://nodejs.org/en](https://nodejs.org/en)
+- **pnpm package manager:** [https://pnpm.io/installation](https://pnpm.io/installation)
+- **Git version control system:** [https://git-scm.com/downloads](https://git-scm.com/downloads)
 
 **1. Clone the Repository:**
 
@@ -48,30 +47,40 @@ This command will initiate the development server at http://localhost:3333/.
 
 **4. Build for Production:**
 
-* Install build dependencies:
+- Install build dependencies:
 
 ```bash
 pnpm install
 ```
 
-* Build the application:
+- Build the application:
 
 ```bash
 pnpm build
 ```
 
-* Start the production server:
+- Start the production server:
 
 ```bash
 pnpm start:prod
 ```
+
+### Documentation
+
+Detailed documentation is available in the [docs](./docs) folder:
+
+- [Architecture](./docs/architecture.md) - System architecture overview
+- [API Endpoints](./docs/api_endpoints.md) - API endpoint reference
+- [Database Schema](./docs/database_schema.md) - Database structure
+- [Module Relationships](./docs/module_relationships.md) - Module dependencies
+- [Flow Diagrams](./docs/flow_diagrams.md) - Process flows
 
 ### Contributing
 
 We highly encourage contributions from the community! If you're passionate about fixing bugs or enhancing existing features, here's how you can get involved:
 
 1. **Fork the Repository:** Create your personal copy of the Tracka repository on GitHub.
-2. **Create a Branch:**  Switch to a new dedicated branch for your changes (e.g., `git checkout -b improve-feature`).
+2. **Create a Branch:** Switch to a new dedicated branch for your changes (e.g., `git checkout -b improve-feature`).
 3. **Implement Changes:** Edit the relevant files to incorporate your contribution.
 4. **Add and Commit:** Stage your changes using `git add` and commit them with a clear and concise message (`git commit -am 'Improve feature'`).
 5. **Push to Branch:** Push your committed changes to your forked branch (`git push origin improve-feature`).
