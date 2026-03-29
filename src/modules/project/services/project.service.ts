@@ -180,7 +180,7 @@ export class ProjectService {
       pdfContent,
       undefined,
       undefined,
-      pdfFonts.vfs,
+      pdfFonts.vfs as unknown as { [file: string]: string },
     );
 
     const pdfBuffer: Buffer = await new Promise((resolve) => {

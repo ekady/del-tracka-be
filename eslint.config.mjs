@@ -1,8 +1,13 @@
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 import pluginJs from '@eslint/js';
 import parserPlugin from '@typescript-eslint/parser';
 import importEslint from 'eslint-plugin-import';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -11,7 +16,7 @@ export default [
   importEslint.flatConfigs.typescript,
   tseslint.configs.base,
   { files: ['**/*.{js,mjs,cjs,ts}'] },
-  { ignores: ['**/*.{spec.ts}'] },
+  { ignores: ['dist/', '**/*.{spec.ts}'] },
   {
     settings: {
       'import/resolver': {
@@ -29,7 +34,7 @@ export default [
       },
       parser: parserPlugin,
       parserOptions: {
-        tsconfigRootDir: '.',
+        tsconfigRootDir: __dirname,
         project: './tsconfig.build.json',
         sourceType: 'module',
       },
